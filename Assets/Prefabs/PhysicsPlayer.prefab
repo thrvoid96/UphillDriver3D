@@ -631,7 +631,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectedParts: []
-  addMotorPowerValue: 20
 --- !u!114 &3173541902981953745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,7 +652,7 @@ MonoBehaviour:
     rightWheel: {fileID: 4308958280305467199}
     motor: 1
     steering: 0
-  maxMotorTorque: 3000
+  maxMotorTorque: 10000
   maxSteeringAngle: 25
 --- !u!54 &8966017060659883230
 Rigidbody:
