@@ -6,6 +6,12 @@ public class CarPartCollector : MonoBehaviour
 {
     [SerializeField] private List<GameObject> collectedParts = new List<GameObject>();
 
+
+    public int collectedPartsCount
+    {
+        get { return collectedParts.Count; }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("CollectablePart"))

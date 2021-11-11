@@ -177,6 +177,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PhysicsPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 7083409860297683784, guid: df8a65550a6c3b34db0fc5970da88a8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7083409860297683785, guid: df8a65550a6c3b34db0fc5970da88a8b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -531,7 +536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd6432d14139bd44841ebee2395a6a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1491634220}
+  target: {fileID: 1099681676}
   smoothSpeed: 0.125
   offset: {x: 2.9, y: 21.8, z: -26.06}
   firstOffset: {x: 0, y: 0, z: 0}
@@ -579,11 +584,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd707e578c8afc74c848038822c8fefa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1491634220 stripped
+--- !u!4 &1099681676 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7087622221972298174, guid: df8a65550a6c3b34db0fc5970da88a8b,
+  m_CorrespondingSourceObject: {fileID: 6740676524655280583, guid: 5e3bb52accf977541a5d185a462eb350,
     type: 3}
-  m_PrefabInstance: {fileID: 434411099}
+  m_PrefabInstance: {fileID: 6927422040880989774}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1685049884
 GameObject:
@@ -1688,11 +1693,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 362626098277090660, guid: 5e3bb52accf977541a5d185a462eb350,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3675039557882701207, guid: 5e3bb52accf977541a5d185a462eb350,
         type: 3}

@@ -7,8 +7,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxSpeed;
     [SerializeField] private float currentSpeed;
 
-    private bool isOnRamp;   
-    private float rampHeight;
+    private CarPartCollector carPartCollector;
+
+    private bool isOnRamp;
+    private float rampHeight, rampLength;
     private float rampAngleX;
 
     private float lastPositionY;
@@ -17,11 +19,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         currentSpeed = maxSpeed;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Debug.DrawRay(transform.position, -transform.up * 3f, Color.red);
+        carPartCollector = transform.GetChild(0).GetComponent<CarPartCollector>();
     }
 
     // Update is called once per frame
@@ -32,55 +30,45 @@ public class PlayerController : MonoBehaviour
             float verticalInput = Input.GetAxis("Vertical");
             float horizontalInput = Input.GetAxis("Horizontal");
 
-            transform.Rotate(0, horizontalInput * verticalInput, 0, Space.Self);
-                       
-            if(isOnRamp)
-            {
-                Debug.LogError(transform.eulerAngles.y);
-                if ((transform.eulerAngles.y >= 0 && transform.eulerAngles.y <= 90 || transform.eulerAngles.y >= 270 && transform.eulerAngles.y <= 360) && verticalInput <= 0)
-                {
-                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
-                }
-                else if (transform.eulerAngles.y > 90 && transform.eulerAngles.y < 270 && verticalInput > 0)
-                {
-                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
-                }
-                else
-                {
-                    transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
-                }
+            transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
 
+            if (isOnRamp)
+            {
                 if (lastPositionY < transform.position.y)
                 {
-                    Debug.LogError("goingUp");
-                    currentSpeed = Mathf.Clamp(currentSpeed - (2 / rampHeight * rampAngleX * (transform.position.y - lastPositionY)), 0, maxSpeed);
-                   
+                    Debug.LogWarning("goingDown");
+                    var clampValue = Mathf.Clamp(2f - (0.02f * carPartCollector.collectedPartsCount), 0.1f, 2f);
+                    currentSpeed = Mathf.Clamp(currentSpeed - (clampValue / 30f * rampAngleX * (transform.position.y - lastPositionY)), 0, maxSpeed);
+
                 }
-                else if(lastPositionY > transform.position.y)
+                else if (lastPositionY > transform.position.y)
                 {
-                    Debug.LogError("goingDown");
-                    currentSpeed = Mathf.Clamp(currentSpeed + (2 / rampHeight * rampAngleX * (lastPositionY - transform.position.y)), 0, maxSpeed);
+                    Debug.LogWarning("goingDown");
+                    currentSpeed = Mathf.Clamp(currentSpeed + (4 / 30f * rampAngleX * (lastPositionY - transform.position.y)), 0, maxSpeed);
                 }
-               
+
             }
             else
             {
-                transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
+                transform.Rotate(0, horizontalInput * verticalInput, 0, Space.Self);
             }
 
             lastPositionY = transform.position.y;
-        }            
+        }
 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Ramp"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ramp"))
         {
-            transform.rotation = Quaternion.LookRotation(other.transform.forward);
-
-            rampHeight = 2 * (other.transform.position.y - other.ClosestPoint(transform.position).y);
+            var closestPoint = other.ClosestPoint(transform.position);
+            rampHeight = 2 * (other.transform.position.y - closestPoint.y);
+            rampLength = 2 * (other.transform.position.z - closestPoint.z);
             rampAngleX = Mathf.Abs(360 - other.transform.eulerAngles.x);
+
+            transform.position = new Vector3(other.transform.position.x, other.transform.position.y - rampHeight / 2, other.transform.position.z - rampLength / 2);
+            transform.rotation = Quaternion.LookRotation(other.transform.forward);
 
             isOnRamp = true;
         }
