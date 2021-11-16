@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CollectablePartSpawner : MonoBehaviour
 {
-    #region singleton
+    #region Singleton
     public static CollectablePartSpawner instance;
 
     private void Awake()
@@ -14,7 +14,7 @@ public class CollectablePartSpawner : MonoBehaviour
         instance = this;
     }
     #endregion
-
+    
     [System.Serializable]
     public class Grid
     {
@@ -27,17 +27,36 @@ public class CollectablePartSpawner : MonoBehaviour
         [System.NonSerialized] public Dictionary<int, List<Vector3>> blockPositions = new Dictionary<int, List<Vector3>>();
     }
 
+    [SerializeField] private int playerCount = 5;
     public List<Grid> grids;
 
     private void Start()
     {
-        for(int i=0; i< grids.Count; i++)
+        foreach (Grid grid in grids)
         {
-            randomizeSpawnPoints(grids[i]);
-            setBlockSpawnPositions(grids[i]);
-            spawnAllBlocks(i);
+            randomizeSpawnPoints(grid);
+
+            for (int i = 0; i < playerCount; i++)
+            {
+                setBlockSpawnPositions(grid, i);
+            }
+        }
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            for (int y = 0; y < grids.Count; y++)
+            {
+
+                SpawnAllPartsForPlayer(i, y);
+            }
         }
     }
+
+    public List<Vector3> getBlockPositionsForPlayer(int gridIdx, int playerNumber)
+    {
+        return grids[gridIdx].blockPositions[playerNumber];
+    }
+
 
     private void randomizeSpawnPoints(Grid grid)
     {
@@ -56,11 +75,12 @@ public class CollectablePartSpawner : MonoBehaviour
         }
     }
 
-    private void setBlockSpawnPositions(Grid grid)
+    private void setBlockSpawnPositions(Grid grid, int playerNum)
     {
+        var longNum = grid.randomList.Count / playerCount;
         var list = new List<Vector3>();
 
-        for (int i = 0; i < grid.randomList.Count; i++)
+        for (int i = playerNum * longNum; i < (playerNum + 1) * longNum; i++)
         {
             var x = Mathf.FloorToInt(grid.randomList[i] / grid.gridSizeZ);
             var z = grid.randomList[i] % grid.gridSizeZ;
@@ -69,15 +89,17 @@ public class CollectablePartSpawner : MonoBehaviour
             list.Add(spawnPosition);
         }
 
-        grid.blockPositions.Add(0, list);
+        grid.blockPositions.Add(playerNum, list);
 
     }
 
-    private void spawnAllBlocks(int gridIndex)
+    public void SpawnAllPartsForPlayer(int playerNum, int gridIndex)
     {
-        for (int i = 0; i < grids[gridIndex].randomList.Count; i++)
+        var longNum = grids[gridIndex].randomList.Count / playerCount;
+
+        for (int i = 0; i < longNum; i++)
         {
-            ObjectPooler.instance.SpawnFromPool("CollectablePart", grids[gridIndex].blockPositions[0][i], Quaternion.identity);
+            ObjectPooler.instance.SpawnFromPool("Player" + playerNum + "Part", grids[gridIndex].blockPositions[playerNum][i], Quaternion.identity);
         }
 
     }

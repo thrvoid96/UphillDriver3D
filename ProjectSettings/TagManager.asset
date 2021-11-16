@@ -16,18 +16,18 @@ TagManager:
   - 
   - Floor
   - Ramp
+  - MiddleSect
   - Car
-  - CollectablePart
-  - Wheel
-  - PartCollector
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Part0
+  - Part1
+  - Part2
+  - Part3
+  - Part4
+  - Part0Collector
+  - Part1Collector
+  - Part2Collector
+  - Part3Collector
+  - Part4Collector
   - 
   - 
   - 

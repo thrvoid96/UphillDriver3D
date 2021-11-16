@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LevelAsset
   m_EditorClassIdentifier: 
   levelPrefabs:
-  - {fileID: 874639466544505503, guid: 1c0aae967e7341d4aa468ac431a3c84f, type: 3}
+  - {fileID: 3699679229356714574, guid: 1c0aae967e7341d4aa468ac431a3c84f, type: 3}
   layoutElements: {fileID: 4284824929103184188, guid: d91ed2b81d0539f4a9557f3bc37febde,
     type: 3}
   layoutElementComponents:
