@@ -63,7 +63,7 @@ public class PlayerController : CommonBehaviours
 
             else
             {
-                ExitRamp();
+                ExitRamp(other.transform);
             }
 
 
@@ -145,7 +145,7 @@ public class PlayerController : CommonBehaviours
             })
             .OnComplete(() =>
             {
-                transform.DOMove(colliderTrans.position, 2f).SetEase(Ease.InOutSine);
+                transform.DOMove(finalPos, 2f).SetEase(Ease.InOutSine);
                 specialSpeed = 0f;
             });
         }
@@ -171,15 +171,15 @@ public class PlayerController : CommonBehaviours
         });
     }
 
-    private void ExitRamp()
+    private void ExitRamp(Transform colliderTrans)
     {
-        transform.DOLookAt(transform.position + new Vector3(0, 0, 10f), 1f, AxisConstraint.None, transform.up).OnStart(() =>
+        transform.DOLookAt(colliderTrans.position + new Vector3(0, 0.573f, 20f), 1f, AxisConstraint.None, transform.up).OnStart(() =>
         {
             canMove = false;
 
             StopCoroutine("RampMovement");
 
-            transform.DOMove(transform.position - new Vector3(0, 0, 25f), 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+            transform.DOMove(colliderTrans.position + new Vector3(0, 0.573f, -15f), 2f).SetEase(Ease.InOutSine).OnComplete(() =>
             {
                 StartCoroutine("Movement");
 
@@ -196,20 +196,25 @@ public class PlayerController : CommonBehaviours
 
     private void ExitRampComplete(Transform colliderTrans)
     {
-        transform.DOLookAt(colliderTrans.position + new Vector3(0, 1f, 10f), 1f).OnStart(() =>
+        transform.DOLookAt(colliderTrans.position + new Vector3(0, 0.573f, 10f), 1.5f).OnStart(() =>
         {
             canMove = false;
 
             StopCoroutine("RampMovement");
 
-            transform.DOMove(colliderTrans.position + new Vector3(0, 1f, 10f), 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+            transform.DOMove(colliderTrans.position + new Vector3(0, 0.573f, -3f), 1f).SetEase(Ease.InOutSine).OnComplete(() =>
               {
-                  StartCoroutine("Movement");
 
-                  canMove = true;
+                  transform.DOMove(colliderTrans.position + new Vector3(0, 0.573f, 10f), 1f).SetEase(Ease.InOutSine).OnComplete(() =>
+                  {
 
-                  currentSpeed = maxSpeed;
+                      StartCoroutine("Movement");
 
+                      canMove = true;
+
+                      currentSpeed = maxSpeed;
+                  });
+                  
               });
 
         }).OnComplete(() =>
