@@ -11,14 +11,18 @@ namespace Behaviours
     public abstract class CommonBehaviours : MonoBehaviour
     {
         #region SerializeFields
-        [SerializeField] private int playerNum;
-        [SerializeField] private int currentGrid;
-
+        [SerializeField] private int playerNum;      
         [SerializeField] protected float maxSpeed;
         [SerializeField] protected float currentSpeed;
-        private Stack<GameObject> blockStack = new Stack<GameObject>();
 
+        public List<Floors> floorsOnScene = new List<Floors>();
+        
 
+        [System.Serializable]
+        public class Floors
+        {
+            public List<int> gridIndexes = new List<int>();
+        }
         #endregion
 
 
@@ -40,22 +44,11 @@ namespace Behaviours
         protected float rampHeight, rampLength, rampAngleX;
         protected float specialSpeed;
 
-        public int getCurrentGrid
-        {
-            get { return currentGrid; }
-        }
 
         public int getPlayerNum
         {
             get { return playerNum; }
         }
-
-
-        public int blockStackCount
-        {
-            get { return blockStack.Count; }
-        }
-
 
         #endregion
 
