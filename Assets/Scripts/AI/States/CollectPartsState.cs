@@ -23,8 +23,10 @@ public class CollectPartsState : IState
     {
         destinations.Clear();
 
-        var randomIndex = UnityEngine.Random.Range(_aIPlayer.floorsOnScene[_aIPlayer.currentFloor].gridIndexes.First(), _aIPlayer.floorsOnScene[_aIPlayer.currentFloor].gridIndexes.Last() + 1);
+        var randomIndex = UnityEngine.Random.Range(SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].gridIndexes.First(), SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].gridIndexes.Last() + 1);
 
+        _aIPlayer.currentGrid = randomIndex;
+        
         var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(randomIndex, _aIPlayer.getPlayerNum);
 
         for (int i = 0; i < list.Count; i++)
@@ -49,6 +51,8 @@ public class CollectPartsState : IState
 
     private void GotoNextPoint()
     {
+        _aIPlayer.lastTweenIsComplete = false;
+
         RaycastHit hit;
         LayerMask partMask = LayerMask.GetMask("Part" + _aIPlayer.getPlayerNum);
 
@@ -62,19 +66,27 @@ public class CollectPartsState : IState
             float clampTime = Mathf.Clamp(distance / 20f, 1f ,8f);
             _aIPlayer.transform.DOMove(destinations[0], clampTime).SetEase(Ease.InOutSine).OnComplete(() => {
 
-                if (_aIPlayer.isCollecting)
+                if (!_aIPlayer.collectAmountReached)
                 {
                     destinations.RemoveAt(0);
                     GotoNextPoint();
+                }
+                else
+                {
+                    _aIPlayer.lastTweenIsComplete = true;
                 }
             });
         }
         else
         {
-            if (_aIPlayer.isCollecting)
+            if (!_aIPlayer.collectAmountReached)
             {
                 destinations.RemoveAt(0);
                 GotoNextPoint();
+            }
+            else
+            {
+                _aIPlayer.lastTweenIsComplete = true;
             }
         }
 

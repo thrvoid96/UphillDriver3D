@@ -14,15 +14,7 @@ namespace Behaviours
         [SerializeField] private int playerNum;      
         [SerializeField] protected float maxSpeed;
         [SerializeField] protected float currentSpeed;
-
-        public List<Floors> floorsOnScene = new List<Floors>();
-        
-
-        [System.Serializable]
-        public class Floors
-        {
-            public List<int> gridIndexes = new List<int>();
-        }
+      
         #endregion
 
 

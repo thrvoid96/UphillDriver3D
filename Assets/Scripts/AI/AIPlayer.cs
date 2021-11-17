@@ -7,14 +7,14 @@ using System;
 
 public class AIPlayer : CommonBehaviours
 {
-    [SerializeField] private List<Vector3> rampPositions = new List<Vector3>();
     [SerializeField] private int collectBlockAmount;
     [SerializeField] private string currentState;
 
     public int currentGrid;
     public int currentFloor;
 
-    public bool isCollecting;
+    public bool collectAmountReached;
+    public bool lastTweenIsComplete;
 
     private Vector3 finalPosition;
 
@@ -40,7 +40,7 @@ public class AIPlayer : CommonBehaviours
         base.Start();
 
         var collectBlocks = new CollectPartsState(this, animator);
-        var goTowardsEnd = new GoTowardsRampState(this, animator, finalPosition);
+        var goTowardsEnd = new GoTowardsRampState(this, animator);
         var idleState = new IdleState(this, animator);
 
         At(collectBlocks, goTowardsEnd, EnoughBlocks(true));
@@ -59,11 +59,12 @@ public class AIPlayer : CommonBehaviours
         {
             return delegate
             {
-                isCollecting = carPartCollector.collectedPartsCount < collectBlockAmount;
+                collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount;
+                var finish = collectAmountReached && lastTweenIsComplete;
 
                 return value
-                ? !isCollecting
-                : isCollecting;
+                ? finish
+                : !finish;
             };
         }
 

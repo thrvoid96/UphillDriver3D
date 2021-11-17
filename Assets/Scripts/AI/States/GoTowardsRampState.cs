@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 using UnityEngine.AI;
 
 //OnEnter get block positions and collect them.
@@ -10,10 +11,10 @@ public class GoTowardsRampState : IState
 {
     private Animator _animator;
     private AIPlayer _aIPlayer;
-    private Vector3 _rampPosition;
 
+    private Vector3 destination;
 
-    public GoTowardsRampState(AIPlayer aIPlayer, Animator animator, Vector3 rampPosition)
+    public GoTowardsRampState(AIPlayer aIPlayer, Animator animator)
     {
         _animator = animator;
         _aIPlayer = aIPlayer;
@@ -21,7 +22,14 @@ public class GoTowardsRampState : IState
 
     public void OnEnter()
     {
+        var randomIndex = UnityEngine.Random.Range(0, SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].AIPositionsToGo.Count);
 
+        destination = SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].AIPositionsToGo[randomIndex].position;
+
+        float distance = Vector3.Distance(_aIPlayer.transform.position, destination);
+        float clampTime = Mathf.Clamp(distance / 20f, 1f, 8f);
+
+        _aIPlayer.transform.DOMove(new Vector3(destination.x,_aIPlayer.transform.position.y, destination.z),clampTime);
     }
 
     public void OnExit()
