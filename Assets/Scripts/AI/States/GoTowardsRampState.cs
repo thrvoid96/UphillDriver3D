@@ -22,14 +22,14 @@ public class GoTowardsRampState : IState
 
     public void OnEnter()
     {
-        var randomIndex = UnityEngine.Random.Range(0, SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].AIPositionsToGo.Count);
+        var randomIndex = UnityEngine.Random.Range(0, SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo.Count);
 
-        destination = SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].AIPositionsToGo[randomIndex].position;
+        destination = SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
 
         float distance = Vector3.Distance(_aIPlayer.transform.position, destination);
-        float clampTime = Mathf.Clamp(distance / 20f, 1f, 8f);
+        float clampTime = Mathf.Clamp(distance / 20f, 2f, 4f);
 
-        _aIPlayer.transform.DOMove(new Vector3(destination.x,_aIPlayer.transform.position.y, destination.z),clampTime);
+        _aIPlayer.transform.DOMove(new Vector3(destination.x,_aIPlayer.transform.position.y, destination.z),clampTime).SetEase(Ease.InOutSine);
     }
 
     public void OnExit()

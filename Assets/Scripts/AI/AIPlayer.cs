@@ -10,9 +10,6 @@ public class AIPlayer : CommonBehaviours
     [SerializeField] private int collectBlockAmount;
     [SerializeField] private string currentState;
 
-    public int currentGrid;
-    public int currentFloor;
-
     public bool collectAmountReached;
     public bool lastTweenIsComplete;
 

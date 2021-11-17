@@ -37,7 +37,7 @@ public class PlayerController : CommonBehaviours
                 else
                 {
                     var clampValue = Mathf.Clamp(2f + (0.02f * carPartCollector.collectedPartsCount), 0.1f, 2f);
-                    currentSpeed = Mathf.Clamp(currentSpeed - (30f * clampValue / rampAngleX * verticalInput * 0.1f), 0, maxSpeed);
+                    currentSpeed = Mathf.Clamp(currentSpeed - (clampValue / rampAngleX * verticalInput * rampClimbSmoothValue), 0, maxSpeed);
                     transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
                     yield return null;
                 }

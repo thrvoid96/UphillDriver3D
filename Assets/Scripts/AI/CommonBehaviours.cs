@@ -11,7 +11,8 @@ namespace Behaviours
     public abstract class CommonBehaviours : MonoBehaviour
     {
         #region SerializeFields
-        [SerializeField] private int playerNum;      
+        [SerializeField] protected int playerNum;
+        [SerializeField] protected float rampClimbSmoothValue;
         [SerializeField] protected float maxSpeed;
         [SerializeField] protected float currentSpeed;
       
@@ -35,6 +36,14 @@ namespace Behaviours
 
         protected float rampHeight, rampLength, rampAngleX;
         protected float specialSpeed;
+
+        private int gridIndex;
+
+        public int getCurrentGrid
+        {
+            get { return gridIndex; }
+            set { gridIndex = value; }
+        }
 
 
         public int getPlayerNum
@@ -118,10 +127,10 @@ namespace Behaviours
             {
                 canMove = false;
 
-                float enteranceAngle = Vector3.Angle(transform.forward, colliderTrans.transform.position - transform.position);
+                float enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
                 float duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
 
-                Vector3 finalPos = new Vector3(colliderTrans.transform.position.x, transform.position.y, colliderTrans.transform.position.z);
+                Vector3 finalPos = transform.position + new Vector3(0, 0, 20f);
 
                 transform.DOLookAt(finalPos, duration).OnUpdate(() =>
                 {
@@ -139,9 +148,9 @@ namespace Behaviours
 
         private void EnterRamp(Transform colliderTrans)
         {
-            transform.DOLookAt(colliderTrans.position, 1f, AxisConstraint.None).OnStart(() =>
+            transform.DOLookAt(colliderTrans.position + new Vector3(transform.position.x - colliderTrans.position.x, 0.573f, 0), 1f, AxisConstraint.None).OnStart(() =>
             {
-                Vector3 finalPos = new Vector3(colliderTrans.position.x, colliderTrans.position.y - (rampHeight * 0.45f), colliderTrans.position.z - (rampLength * 0.45f));
+                Vector3 finalPos = new Vector3(transform.position.x, colliderTrans.position.y - (rampHeight * 0.45f), colliderTrans.position.z - (rampLength * 0.45f));
 
                 transform.DOMove(finalPos, 2f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
@@ -159,11 +168,11 @@ namespace Behaviours
 
         private void ExitRamp(Transform colliderTrans)
         {
-            transform.DOLookAt(colliderTrans.position + new Vector3(0, 0.573f, 20f), 1f, AxisConstraint.None, transform.up).OnStart(() =>
+            transform.DOLookAt(new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, transform.position.z + 20f), 1f, AxisConstraint.None, transform.up).OnStart(() =>
             {
                 canMove = false;
 
-                transform.DOMove(colliderTrans.position + new Vector3(0, 0.573f, -15f), 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+                transform.DOMove(new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, colliderTrans.position.z - 20f), 2f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
                     isOnRamp = false;
 
@@ -189,6 +198,9 @@ namespace Behaviours
 
                     transform.DOMove(colliderTrans.position + new Vector3(0, 0.573f, 10f), 1f).SetEase(Ease.InOutSine).OnComplete(() =>
                     {
+                        gridIndex++;
+
+                        CollectablePartSpawner.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
 
                         isOnRamp = false;
 

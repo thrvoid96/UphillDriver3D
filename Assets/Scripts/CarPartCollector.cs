@@ -13,7 +13,6 @@ public class CarPartCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        collectedParts.Add(other.gameObject);
-        other.gameObject.SetActive(false);      
+        collectedParts.Add(other.gameObject.transform.parent.parent.gameObject);
     }
 }

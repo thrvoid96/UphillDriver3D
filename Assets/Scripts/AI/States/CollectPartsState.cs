@@ -22,12 +22,8 @@ public class CollectPartsState : IState
     public void OnEnter()
     {
         destinations.Clear();
-
-        var randomIndex = UnityEngine.Random.Range(SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].gridIndexes.First(), SceneSetup.instance.floorsOnScene[_aIPlayer.currentFloor].gridIndexes.Last() + 1);
-
-        _aIPlayer.currentGrid = randomIndex;
-        
-        var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(randomIndex, _aIPlayer.getPlayerNum);
+       
+        var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(_aIPlayer.getCurrentGrid, _aIPlayer.getPlayerNum);
 
         for (int i = 0; i < list.Count; i++)
         {
@@ -64,7 +60,7 @@ public class CollectPartsState : IState
         {
             float distance = Vector3.Distance(_aIPlayer.transform.position, destinations[0]);
             float clampTime = Mathf.Clamp(distance / 20f, 1f ,8f);
-            _aIPlayer.transform.DOMove(destinations[0], clampTime).SetEase(Ease.InOutSine).OnComplete(() => {
+            _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0,-0.8f,0), clampTime).SetEase(Ease.InOutSine).OnComplete(() => {
 
                 if (!_aIPlayer.collectAmountReached)
                 {

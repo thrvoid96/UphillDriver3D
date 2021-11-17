@@ -264,16 +264,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNum: 1
+  rampClimbSmoothValue: 1
   maxSpeed: 30
   currentSpeed: 0
-  floorsOnScene:
-  - gridIndexes: 00000000010000000200000003000000
-  - gridIndexes: 04000000050000000600000007000000
-  - gridIndexes: 0800000009000000
-  rampPositions: []
-  collectBlockAmount: 10
-  currentGrid: 0
-  currentFloor: 0
+  collectBlockAmount: 1
+  currentState: 
+  collectAmountReached: 0
+  lastTweenIsComplete: 0
 --- !u!1 &5791897807154819872
 GameObject:
   m_ObjectHideFlags: 0

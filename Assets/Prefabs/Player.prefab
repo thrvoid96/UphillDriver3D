@@ -509,7 +509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNum: 0
-  currentGrid: 0
+  rampClimbSmoothValue: 1
   maxSpeed: 30
   currentSpeed: 0
 --- !u!65 &3154363375389511365

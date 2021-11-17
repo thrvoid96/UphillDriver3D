@@ -19,10 +19,7 @@ public class SceneSetup : MonoBehaviour
     [System.Serializable]
     public class Floors
     {
-        public List<int> gridIndexes = new List<int>();
         public List<Transform> AIPositionsToGo = new List<Transform>();
     }
-
-    
-
+  
 }
