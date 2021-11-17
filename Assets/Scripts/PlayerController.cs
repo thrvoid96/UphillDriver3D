@@ -5,20 +5,12 @@ using DG.Tweening;
 using UnityEngine;
 
 public class PlayerController : CommonBehaviours
-{
-
-
-    private CarPartCollector carPartCollector;
-
-
-
+{  
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        
-        carPartCollector = transform.GetChild(0).GetComponent<CarPartCollector>();
-
+            
         StartCoroutine("Movement");
     }
 
@@ -45,7 +37,7 @@ public class PlayerController : CommonBehaviours
                 else
                 {
                     var clampValue = Mathf.Clamp(2f + (0.02f * carPartCollector.collectedPartsCount), 0.1f, 2f);
-                    currentSpeed = Mathf.Clamp(currentSpeed - (clampValue / 30f * rampAngleX * verticalInput * 0.1f), 0, maxSpeed);
+                    currentSpeed = Mathf.Clamp(currentSpeed - (30f * clampValue / rampAngleX * verticalInput * 0.1f), 0, maxSpeed);
                     transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
                     yield return null;
                 }
@@ -56,12 +48,5 @@ public class PlayerController : CommonBehaviours
                 yield return null;
             }
         }
-    }
-   
-
-    
-
-
-
-
+    }   
 }

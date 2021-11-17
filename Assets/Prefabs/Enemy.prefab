@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 717880692145652659}
   - component: {fileID: 8697198073290058322}
   m_Layer: 11
-  m_Name: CarBlack
+  m_Name: CarBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,7 +215,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5490912320879508957}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.67246246, z: -0.027244568}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 573074370411679900}
@@ -265,6 +265,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNum: 0
   currentGrid: 0
+  maxSpeed: 0
+  currentSpeed: 0
   rampPositions: []
 --- !u!1 &5791897807154819872
 GameObject:
@@ -322,7 +324,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5942730102585571582}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 28.657597, y: -21.426308, z: -92.35854}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5493121672493274043}

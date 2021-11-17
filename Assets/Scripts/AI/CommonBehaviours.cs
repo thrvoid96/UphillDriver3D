@@ -25,6 +25,7 @@ namespace Behaviours
         #region Components       
 
         protected Animator animator;
+        protected CarPartCollector carPartCollector;
 
         #endregion
 
@@ -62,6 +63,7 @@ namespace Behaviours
         protected virtual void Awake()
         {
             animator = transform.parent.GetComponent<Animator>();
+            carPartCollector = transform.GetChild(0).GetComponent<CarPartCollector>();
         }
 
         protected virtual void Start()
