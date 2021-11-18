@@ -462,7 +462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd6432d14139bd44841ebee2395a6a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1842647822}
+  target: {fileID: 1099681676}
   smoothSpeed: 0.125
   offset: {x: 2.9, y: 21.8, z: -26.06}
   firstOffset: {x: 0, y: 0, z: 0}
@@ -510,6 +510,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd707e578c8afc74c848038822c8fefa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1099681676 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6740676524655280583, guid: 5e3bb52accf977541a5d185a462eb350,
+    type: 3}
+  m_PrefabInstance: {fileID: 6927422040880989774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1685049884
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,12 +582,6 @@ Transform:
   m_Father: {fileID: 953178927}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1842647822 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5493121672493274043, guid: 247612831335c144f8671e385848e93a,
-    type: 3}
-  m_PrefabInstance: {fileID: 2215971751017223840}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2005407037
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,16 +26,10 @@ public class CollectPartsState : IState
 
         destinations.Clear();
 
-        var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(_aIPlayer.getCurrentGrid, _aIPlayer.getPlayerNum);
-
-        for (int i = 0; i < list.Count; i++)
-        {
-            destinations.Add(list[i]);
-        }
-
-        destinations = destinations.OrderBy(i => Guid.NewGuid()).ToList();
+        randomizePoints();
 
         GotoNextPoint();
+        
     }
 
     public void OnExit()
@@ -48,6 +42,19 @@ public class CollectPartsState : IState
 
     }
 
+    private void randomizePoints()
+    {
+        var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(_aIPlayer.getCurrentGrid, _aIPlayer.getPlayerNum);
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            destinations.Add(list[i]);
+        }
+
+        destinations = destinations.OrderBy(i => Guid.NewGuid()).ToList();
+
+    }
+
     private void GotoNextPoint()
     {
         RaycastHit hit;
@@ -56,7 +63,12 @@ public class CollectPartsState : IState
         //If AI collided with blocks on the way, remove them from destinations list if they're not there anymore
 
         //Debug.DrawRay(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down * Mathf.Infinity, Color.green, 10f);
-
+        if (destinations == null)
+        {
+            randomizePoints();
+            GotoNextPoint();
+            return;
+        }
         var finalDest = destinations[0] + new Vector3(0, -0.8f, 0);
 
         if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, out hit, Mathf.Infinity, partMask, QueryTriggerInteraction.Collide))
