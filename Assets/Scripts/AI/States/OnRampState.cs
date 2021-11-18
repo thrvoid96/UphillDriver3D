@@ -12,9 +12,7 @@ public class OnRampState : IState
     private Animator _animator;
     private AIPlayer _aIPlayer;
 
-    private float smoothInput;
     private int amountToAdd;
-    private bool isGoingUp;
 
 
     public OnRampState(AIPlayer aIPlayer, Animator animator, int increaseAmount)
@@ -26,9 +24,20 @@ public class OnRampState : IState
 
     public void OnEnter()
     {
-        isGoingUp = true;
-        _aIPlayer.getCurrentSpeed = _aIPlayer.getMaxSpeed;
-        smoothInput = 0f;
+        var distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
+        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, moveDuration).SetEase(Ease.InOutSine)
+            .OnComplete(()=> {
+
+                if (_aIPlayer.coefficient < 0.9f)
+                {
+                    distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
+                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+                    _aIPlayer.transform.DOMove(_aIPlayer.rampStartPos + new Vector3(0, -1f, -10f), moveDuration).SetEase(Ease.InOutSine);
+                }                   
+            });
     }
 
     public void OnExit()
@@ -39,26 +48,7 @@ public class OnRampState : IState
 
     public void Tick()
     {
-        if (isGoingUp)
-        {
-            smoothInput += Time.deltaTime;
-        }
-        else
-        {
-            smoothInput -= Time.deltaTime;
-        }
-
-        smoothInput = Mathf.Clamp(smoothInput, -1f, 1f);
         
-
-        var clampValue = Mathf.Clamp(2f + (0.02f *  _aIPlayer.getCollectedAmount), 0.1f, 2f);
-        _aIPlayer.getCurrentSpeed = Mathf.Clamp(_aIPlayer.getCurrentSpeed - (clampValue / _aIPlayer.rampAngleX * smoothInput * _aIPlayer.rampClimbSmoothValue), 0, _aIPlayer.getMaxSpeed);
-        _aIPlayer.transform.Translate(_aIPlayer.getCurrentSpeed * Time.deltaTime * smoothInput * Vector3.forward, Space.Self);
-
-        if(_aIPlayer.getCurrentSpeed == 0f)
-        {
-            isGoingUp = false;
-        }
     }
 
 }

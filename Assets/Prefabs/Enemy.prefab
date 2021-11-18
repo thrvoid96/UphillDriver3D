@@ -267,7 +267,7 @@ MonoBehaviour:
   maxSpeed: 30
   currentSpeed: 0
   rampClimbSmoothValue: 1
-  collectBlockAmount: 20
+  collectBlockAmount: 10
   currentState: 
 --- !u!1 &5791897807154819872
 GameObject:

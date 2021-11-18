@@ -579,6 +579,7 @@ GameObject:
   - component: {fileID: 3699679228737557678}
   - component: {fileID: 3699679228737557673}
   - component: {fileID: 3699679228737557672}
+  - component: {fileID: 1204909934560599778}
   m_Layer: 9
   m_Name: Ramp2
   m_TagString: Untagged
@@ -660,6 +661,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1204909934560599778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699679228737557674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99481c0a131843540b8b4c657f49af74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksNeededToClimb: 20
 --- !u!1 &3699679228742699008
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,6 +686,7 @@ GameObject:
   - component: {fileID: 3699679228742699012}
   - component: {fileID: 3699679228742699015}
   - component: {fileID: 3699679228742699014}
+  - component: {fileID: 6959223848906589908}
   m_Layer: 9
   m_Name: Ramp1
   m_TagString: Untagged
@@ -753,6 +768,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6959223848906589908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699679228742699008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99481c0a131843540b8b4c657f49af74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksNeededToClimb: 10
 --- !u!1 &3699679228793588760
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,6 +886,7 @@ GameObject:
   - component: {fileID: 3699679228854150339}
   - component: {fileID: 3699679228854150338}
   - component: {fileID: 3699679228854150337}
+  - component: {fileID: 6525347803913497442}
   m_Layer: 9
   m_Name: Ramp3
   m_TagString: Untagged
@@ -939,6 +968,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6525347803913497442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699679228854150343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99481c0a131843540b8b4c657f49af74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blocksNeededToClimb: 30
 --- !u!1 &3699679228901335277
 GameObject:
   m_ObjectHideFlags: 0

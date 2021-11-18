@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class PlayerController : CommonBehaviours
 {
+    private bool var1, var2, var3;
+    private float distance,moveDuration;
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -30,16 +32,73 @@ public class PlayerController : CommonBehaviours
 
                 if (!isOnRamp)
                 {
+                    var1 = false;
+                    var2 = false;
+                    var3 = false;
+                                        
                     transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
                     transform.Rotate(0, horizontalInput * verticalInput * 2f, 0, Space.Self);
                     yield return null;
                 }
                 else
                 {
-                    var clampValue = Mathf.Clamp(2f + (0.02f * carPartCollector.collectedPartsCount), 0.1f, 2f);
-                    currentSpeed = Mathf.Clamp(currentSpeed - (clampValue / rampAngleX * verticalInput * rampClimbSmoothValue), 0, maxSpeed);
-                    transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
-                    yield return null;
+                    if (verticalInput > 0)
+                    {
+                        if (!var1)
+                        {
+                            distance = Vector3.Distance(rampStartPos, finalPos);
+                            moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+                            transform.DOMove(finalPos,moveDuration).SetEase(Ease.InOutSine);
+
+
+                            var1 = true;
+                            var2 = false;
+                            var3 = false;
+                            yield return null;
+                        }
+                        yield return null;
+                    }
+                    else if (verticalInput == 0)
+                    {
+
+                        if(rampStartPos.y < transform.position.y)
+                        {
+                            if (!var2)
+                            {
+                                distance = Vector3.Distance(rampStartPos, finalPos);
+                                moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+                                transform.DOMove(rampStartPos, moveDuration * 2f);
+
+                                var1 = false;
+                                var2 = true;
+                                var3 = false;
+                                yield return null;
+                            }
+                            yield return null;
+                        }
+                        yield return null;
+
+                    }
+                    else
+                    {
+                        if (!var3)
+                        {
+                            distance = Vector3.Distance(rampStartPos, finalPos);
+                            moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+                            transform.DOMove(rampStartPos + new Vector3(0,-1f,-10f), moveDuration).SetEase(Ease.InOutSine);
+
+
+                            var1 = false;
+                            var2 = false;
+                            var3 = true;
+                            yield return null;
+                        }
+                        yield return null;
+                    }
+
                 }
 
             }
