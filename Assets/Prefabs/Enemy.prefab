@@ -264,13 +264,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNum: 1
-  rampClimbSmoothValue: 1
   maxSpeed: 30
   currentSpeed: 0
-  collectBlockAmount: 1
+  rampClimbSmoothValue: 1
+  collectBlockAmount: 20
   currentState: 
-  collectAmountReached: 0
-  lastTweenIsComplete: 0
 --- !u!1 &5791897807154819872
 GameObject:
   m_ObjectHideFlags: 0

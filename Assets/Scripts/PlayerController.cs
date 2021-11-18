@@ -5,7 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 
 public class PlayerController : CommonBehaviours
-{  
+{
     // Start is called before the first frame update
     protected override void Start()
     {

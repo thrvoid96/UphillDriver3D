@@ -7,13 +7,14 @@ using System;
 
 public class AIPlayer : CommonBehaviours
 {
-    [SerializeField] private int collectBlockAmount;
+    public int collectBlockAmount;
+
+    [Header("For Debug Only")]
     [SerializeField] private string currentState;
+      
+    [NonSerialized] public float angle, distance, rotDuration, moveDuration;
 
-    public bool collectAmountReached;
-    public bool lastTweenIsComplete;
-
-    private Vector3 finalPosition;
+    [NonSerialized] public bool collectAmountReached;
 
     private StateMachine _stateMachine;
 
@@ -37,48 +38,91 @@ public class AIPlayer : CommonBehaviours
         base.Start();
 
         var collectBlocks = new CollectPartsState(this, animator);
-        var goTowardsEnd = new GoTowardsRampState(this, animator);
-        var idleState = new IdleState(this, animator);
+        var goTowardsRamp = new GoTowardsRampState(this, animator);
+        var idle = new IdleState(this, animator);
+        var onRamp = new OnRampState(this, animator, collectBlockAmount);
 
-        At(collectBlocks, goTowardsEnd, EnoughBlocks(true));
-        At(idleState, collectBlocks, EnoughBlocks(false));
-        At(goTowardsEnd, collectBlocks, ZeroBlocks());
+        At(collectBlocks, goTowardsRamp, EnoughBlocks(true));
+        At(idle, collectBlocks, EnoughBlocks(false));
+        At(idle, onRamp, ClimbingRamp(true));
+        At(goTowardsRamp, collectBlocks, ZeroBlocks());
 
-        _stateMachine.AddAnyTransition(idleState, GameIsPlaying(false));
+        _stateMachine.AddAnyTransition(idle, CanMove(false));
 
-        _stateMachine.SetState(idleState);
+        _stateMachine.SetState(idle);
 
-        void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
-
-        
+        void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);      
 
         Func<bool> EnoughBlocks(bool value)
         {
             return delegate
             {
                 collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount;
-                var finish = collectAmountReached && lastTweenIsComplete;
 
                 return value
-                ? finish
-                : !finish;
+                ? collectAmountReached
+                : !collectAmountReached;
             };
         }
 
         Func<bool> ZeroBlocks() => () => carPartCollector.collectedPartsCount == 0;
 
-        Func<bool> GameIsPlaying(bool value) 
+
+        Func<bool> ClimbingRamp(bool value)
         {
             return delegate
             {
-                var canMove = LevelManager.gameState == GameState.Normal;
+                var move = canMove && isOnRamp;
 
                 return value
-                ? canMove
-                : !canMove;
+                ? move
+                : !move;
             };
         }
 
+        Func<bool> CanMove(bool value)
+        {
+            return delegate
+            {
+                var move = canMove && LevelManager.gameState == GameState.Normal;
+
+                return value
+                ? move
+                : !move;
+            };
+        }
+
+    }
+    public void calculateValues(Vector3 destination)
+    {      
+        distance = Vector3.Distance(transform.position, destination);
+        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+        angle = Vector3.Angle(transform.forward, destination - transform.position);
+        rotDuration = Mathf.Clamp(angle * 0.02f, 0.5f, 1.5f);
+
+    }
+
+    public void SmoothMovement()
+    {
+        smoothSpeed += 1f;
+        smoothSpeed = Mathf.Clamp(smoothSpeed, 0f, maxSpeed);
+
+        if (angle > 90f)
+        {
+            transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
+        }
+        else
+        {
+            transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * Vector3.forward, Space.Self);
+        }
+
+        
+    }
+
+    public void ResetSmoothValue()
+    {
+        smoothSpeed = 0f;
     }
 
 }

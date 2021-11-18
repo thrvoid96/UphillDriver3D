@@ -13,6 +13,7 @@ public class CollectPartsState : IState
 
     private List<Vector3> destinations = new List<Vector3>();
 
+
     public CollectPartsState(AIPlayer aIPlayer, Animator animator)
     {
         _animator = animator;
@@ -21,8 +22,10 @@ public class CollectPartsState : IState
 
     public void OnEnter()
     {
+        _aIPlayer.ResetSmoothValue();
+
         destinations.Clear();
-       
+
         var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(_aIPlayer.getCurrentGrid, _aIPlayer.getPlayerNum);
 
         for (int i = 0; i < list.Count; i++)
@@ -37,7 +40,7 @@ public class CollectPartsState : IState
 
     public void OnExit()
     {
-
+        _aIPlayer.DOKill();
     }
 
     public void Tick()
@@ -47,8 +50,6 @@ public class CollectPartsState : IState
 
     private void GotoNextPoint()
     {
-        _aIPlayer.lastTweenIsComplete = false;
-
         RaycastHit hit;
         LayerMask partMask = LayerMask.GetMask("Part" + _aIPlayer.getPlayerNum);
 
@@ -56,37 +57,42 @@ public class CollectPartsState : IState
 
         //Debug.DrawRay(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down * Mathf.Infinity, Color.green, 10f);
 
+        var finalDest = destinations[0] + new Vector3(0, -0.8f, 0);
+
         if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, out hit, Mathf.Infinity, partMask, QueryTriggerInteraction.Collide))
         {
-            float distance = Vector3.Distance(_aIPlayer.transform.position, destinations[0]);
-            float clampTime = Mathf.Clamp(distance / 20f, 1f ,8f);
-            _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0,-0.8f,0), clampTime).SetEase(Ease.InOutSine).OnComplete(() => {
+            _aIPlayer.calculateValues(finalDest);
 
-                if (!_aIPlayer.collectAmountReached)
+            _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration).SetEase(Ease.InOutSine).OnUpdate(() =>
+            {
+
+                _aIPlayer.SmoothMovement();
+
+            }).OnComplete(() =>
+            {
+                _aIPlayer.transform.DOLookAt(finalDest, 1f).SetEase(Ease.InOutSine);
+                _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0, -0.8f, 0), _aIPlayer.moveDuration).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
-                    destinations.RemoveAt(0);
-                    GotoNextPoint();
-                }
-                else
-                {
-                    _aIPlayer.lastTweenIsComplete = true;
-                }
+                    Loop();
+                });
+
             });
         }
         else
         {
-            if (!_aIPlayer.collectAmountReached)
-            {
-                destinations.RemoveAt(0);
-                GotoNextPoint();
-            }
-            else
-            {
-                _aIPlayer.lastTweenIsComplete = true;
-            }
+            Loop();
         }
 
 
+    }
+
+    private void Loop()
+    {
+        if (!_aIPlayer.collectAmountReached && LevelManager.gameState == GameState.Normal)
+        {
+            destinations.RemoveAt(0);
+            GotoNextPoint();
+        }
     }
 
 }

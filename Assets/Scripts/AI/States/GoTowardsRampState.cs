@@ -12,7 +12,7 @@ public class GoTowardsRampState : IState
     private Animator _animator;
     private AIPlayer _aIPlayer;
 
-    private Vector3 destination;
+    private float smoothSpeed;
 
     public GoTowardsRampState(AIPlayer aIPlayer, Animator animator)
     {
@@ -22,25 +22,35 @@ public class GoTowardsRampState : IState
 
     public void OnEnter()
     {
+        _aIPlayer.ResetSmoothValue();
+
         var randomIndex = UnityEngine.Random.Range(0, SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo.Count);
 
-        destination = SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
+        var destination = SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
 
-        float distance = Vector3.Distance(_aIPlayer.transform.position, destination);
-        float clampTime = Mathf.Clamp(distance / 20f, 2f, 4f);
+        var finalDest = new Vector3(destination.x, _aIPlayer.transform.position.y, destination.z);
 
-        _aIPlayer.transform.DOMove(new Vector3(destination.x,_aIPlayer.transform.position.y, destination.z),clampTime).SetEase(Ease.InOutSine);
+        _aIPlayer.calculateValues(finalDest);
+
+        _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration).SetEase(Ease.InOutSine).OnUpdate(() =>
+        {
+            _aIPlayer.SmoothMovement();
+
+        }).OnComplete(() => 
+        {
+            _aIPlayer.transform.DOLookAt(finalDest, 1f).SetEase(Ease.InOutSine);
+            _aIPlayer.transform.DOMove(finalDest, _aIPlayer.moveDuration).SetEase(Ease.InOutSine);
+        });
     }
 
     public void OnExit()
     {
-
+        _aIPlayer.DOKill();
     }
 
     public void Tick()
     {
 
     }
-
 
 }

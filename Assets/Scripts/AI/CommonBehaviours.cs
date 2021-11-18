@@ -11,11 +11,11 @@ namespace Behaviours
     public abstract class CommonBehaviours : MonoBehaviour
     {
         #region SerializeFields
-        [SerializeField] protected int playerNum;
-        [SerializeField] protected float rampClimbSmoothValue;
+        [SerializeField] protected int playerNum;       
         [SerializeField] protected float maxSpeed;
         [SerializeField] protected float currentSpeed;
-      
+        public float rampClimbSmoothValue;
+
         #endregion
 
 
@@ -34,10 +34,15 @@ namespace Behaviours
         protected bool enteringRamp;
 
 
-        protected float rampHeight, rampLength, rampAngleX;
-        protected float specialSpeed;
+        [System.NonSerialized]public float rampHeight, rampLength, rampAngleX;
+        protected float smoothSpeed;
 
         private int gridIndex;
+
+        public int getCollectedAmount
+        {
+            get { return carPartCollector.collectedPartsCount; }
+        }
 
         public int getCurrentGrid
         {
@@ -45,11 +50,22 @@ namespace Behaviours
             set { gridIndex = value; }
         }
 
+        public float getCurrentSpeed
+        {
+            get { return currentSpeed; }
+            set { currentSpeed = value; }
+        }
+
+        public float getMaxSpeed
+        {
+            get { return maxSpeed; }
+        }
 
         public int getPlayerNum
         {
             get { return playerNum; }
         }
+
 
         #endregion
 
@@ -112,6 +128,25 @@ namespace Behaviours
 
             }
 
+            else if(other.gameObject.layer == LayerMask.NameToLayer("Finish"))
+            {
+                transform.DOKill();
+
+                LevelManager.gameState = GameState.Finish;
+
+                if (gameObject.transform.GetChild(0).gameObject.layer != LayerMask.NameToLayer("Part0Collector"))
+                {
+
+                    LevelManager.instance.Fail();
+                }
+                else
+                {                   
+
+                    LevelManager.instance.Victory();
+                }
+                
+            }
+
         }
 
         private void SetRampValues(Vector3 closestPoint, Transform colliderTrans)
@@ -134,69 +169,101 @@ namespace Behaviours
 
                 transform.DOLookAt(finalPos, duration).OnUpdate(() =>
                 {
-                    specialSpeed += 1f;
-                    float finalSpeed = Mathf.Clamp(specialSpeed, 0, maxSpeed);
-                    transform.Translate(finalSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
+                    smoothSpeed += 1f;
+                    smoothSpeed = Mathf.Clamp(smoothSpeed, 0, maxSpeed);
+                    transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
                 })
                 .OnComplete(() =>
                 {
-                    transform.DOMove(finalPos, 2f).SetEase(Ease.InOutSine);
-                    specialSpeed = 0f;
+                    transform.DOMove(finalPos, 0.75f).SetEase(Ease.InOutSine);
+                    smoothSpeed = 0f;
                 });
             }
         }
 
         private void EnterRamp(Transform colliderTrans)
         {
-            transform.DOLookAt(colliderTrans.position + new Vector3(transform.position.x - colliderTrans.position.x, 0.573f, 0), 1f, AxisConstraint.None).OnStart(() =>
+            transform.DOLookAt(colliderTrans.position + new Vector3(transform.position.x - colliderTrans.position.x, 0.573f, 0), 0.75f, AxisConstraint.None).SetEase(Ease.InOutSine)
+            
+                .OnStart(() =>
             {
                 Vector3 finalPos = new Vector3(transform.position.x, colliderTrans.position.y - (rampHeight * 0.45f), colliderTrans.position.z - (rampLength * 0.45f));
 
-                transform.DOMove(finalPos, 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+                transform.DOMove(finalPos, 0.75f).SetEase(Ease.InOutSine);
+
+            }).OnComplete(() =>
+            {
+                transform.DORotateQuaternion(colliderTrans.rotation, 0.1f).OnComplete(() =>
                 {
                     isOnRamp = true;
 
                     canMove = true;
 
-                });
-
-            }).OnComplete(() =>
-            {
-                transform.DORotateQuaternion(colliderTrans.rotation, 0.5f);
+                }); ;
             });
         }
 
         private void ExitRamp(Transform colliderTrans)
         {
-            transform.DOLookAt(new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, transform.position.z + 20f), 1f, AxisConstraint.None, transform.up).OnStart(() =>
+            var random = 0;
+            if (Random.Range(0, 2) > 0)
+            {
+                random = -1;
+            }
+            else
+            {
+                random = 1;
+            }
+
+            transform.DOLookAt(transform.position + transform.right * random, 0.75f).SetEase(Ease.InOutSine)
+            .OnStart(() =>
             {
                 canMove = false;
 
-                transform.DOMove(new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, colliderTrans.position.z - 20f), 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z), 0.75f).SetEase(Ease.InOutSine);
+
+
+            })
+            .OnComplete(() =>
+            {
+                transform.DORotateQuaternion(Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0), 0.1f)
+                .OnComplete(() =>
                 {
-                    isOnRamp = false;
+                    transform.DOLookAt(transform.position - Vector3.forward, 0.75f).SetEase(Ease.InOutSine)
+                .OnStart(() =>
+                {
+                    canMove = false;
 
-                    canMove = true;
+                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z - 10f), 0.75f).SetEase(Ease.InOutSine)
+                    .OnComplete(() =>
+                    {
+                        isOnRamp = false;
 
-                    currentSpeed = maxSpeed;
+                        canMove = true;
+
+                        currentSpeed = maxSpeed;
+                    }); ;
+
+
                 });
 
-            }).OnComplete(() =>
-            {
-                transform.DORotateQuaternion(Quaternion.Euler(0, 0, 0), 0.5f);
+
+                });
             });
         }
 
         private void ExitRampComplete(Transform colliderTrans)
         {
-            transform.DOLookAt(colliderTrans.position + new Vector3(0, 0.573f, 20f), 1.5f).OnStart(() =>
+            Vector3 finalPos = new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, colliderTrans.position.z);
+
+            transform.DOLookAt(finalPos+ new Vector3(0,0,20f), 0.75f).OnStart(() =>
             {
                 canMove = false;
 
-                transform.DOMove(colliderTrans.position + new Vector3(0, 0.7f, -3f), 1f).SetEase(Ease.InOutSine).OnComplete(() =>
+                transform.DOMove(finalPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
 
-                    transform.DOMove(colliderTrans.position + new Vector3(0, 0.573f, 10f), 1f).SetEase(Ease.InOutSine).OnComplete(() =>
+                    transform.DOMove(finalPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                     {
                         gridIndex++;
 
@@ -213,10 +280,12 @@ namespace Behaviours
 
             }).OnComplete(() =>
             {
-                transform.DORotateQuaternion(Quaternion.Euler(0, 0, 0), 0.5f);
+                transform.DORotateQuaternion(Quaternion.Euler(0, 0, 0), 0.1f);
             });
         }
 
-    }           
-    
+    }
+
+
+
 }

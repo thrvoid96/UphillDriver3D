@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 using UnityEngine.AI;
 
 //OnEnter get block positions and collect them.
@@ -20,12 +21,12 @@ public class IdleState : IState
 
     public void OnEnter()
     {
-        
+        _aIPlayer.DOKill();
     }
 
     public void OnExit()
     {
-       
+        _aIPlayer.DOKill();
     }
 
     public void Tick()
