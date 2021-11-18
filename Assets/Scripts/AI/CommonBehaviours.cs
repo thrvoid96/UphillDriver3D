@@ -122,6 +122,8 @@ namespace Behaviours
                     }
                     else
                     {
+                        transform.DOKill();
+
                         ExitRampComplete(other.transform);
                     }
 
@@ -129,6 +131,8 @@ namespace Behaviours
 
                 else
                 {
+                    transform.DOKill();
+
                     ExitRamp(other.transform);
                 }
 
