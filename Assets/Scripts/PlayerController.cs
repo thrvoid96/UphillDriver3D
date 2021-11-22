@@ -36,7 +36,7 @@ public class PlayerController : CommonBehaviours
                     var2 = false;
                     var3 = false;
                                         
-                    transform.Translate(currentSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
+                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
                     transform.Rotate(0, horizontalInput * verticalInput * 2f, 0, Space.Self);
                     yield return null;
                 }
@@ -51,6 +51,7 @@ public class PlayerController : CommonBehaviours
 
                             transform.DOMove(finalPos,moveDuration).SetEase(Ease.InOutSine);
 
+                            startTrails();
 
                             var1 = true;
                             var2 = false;
@@ -71,6 +72,8 @@ public class PlayerController : CommonBehaviours
 
                                 transform.DOMove(rampStartPos, moveDuration * 2f);
 
+                                startTrails();
+
                                 var1 = false;
                                 var2 = true;
                                 var3 = false;
@@ -88,7 +91,9 @@ public class PlayerController : CommonBehaviours
                             distance = Vector3.Distance(rampStartPos, finalPos);
                             moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-                            transform.DOMove(rampStartPos + new Vector3(0,-1f,-10f), moveDuration).SetEase(Ease.InOutSine);
+                            transform.DOMove(rampStartPos + new Vector3(0,-2f,-10f), moveDuration).SetEase(Ease.InOutSine);
+
+                            startTrails();
 
 
                             var1 = false;
@@ -107,5 +112,5 @@ public class PlayerController : CommonBehaviours
                 yield return null;
             }
         }
-    }   
+    }
 }

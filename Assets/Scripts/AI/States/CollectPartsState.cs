@@ -13,7 +13,6 @@ public class CollectPartsState : IState
 
     private List<Vector3> destinations = new List<Vector3>();
 
-
     public CollectPartsState(AIPlayer aIPlayer, Animator animator)
     {
         _animator = animator;
@@ -63,7 +62,7 @@ public class CollectPartsState : IState
         //If AI collided with blocks on the way, remove them from destinations list if they're not there anymore
 
         //Debug.DrawRay(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down * Mathf.Infinity, Color.green, 10f);
-        if (destinations == null)
+        if (destinations.Count == 0)
         {
             randomizePoints();
             GotoNextPoint();

@@ -13,10 +13,10 @@ namespace Behaviours
         #region SerializeFields
         [SerializeField] protected int playerNum;       
         [SerializeField] protected float maxSpeed;
-        [SerializeField] protected float currentSpeed;
+        [SerializeField] protected CarPartCollector carPartCollector;
+        [SerializeField] private List<TrailRenderer> allTrails = new List<TrailRenderer>();
+        [SerializeField] private float trailStayTime;
         public float rampClimbSmoothValue;
-
-        
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace Behaviours
         #region Components       
 
         protected Animator animator;
-        protected CarPartCollector carPartCollector;
+
         protected Ramp currentRamp;
 
         #endregion
@@ -55,12 +55,6 @@ namespace Behaviours
             set { gridIndex = value; }
         }
 
-        public float getCurrentSpeed
-        {
-            get { return currentSpeed; }
-            set { currentSpeed = value; }
-        }
-
         public float getMaxSpeed
         {
             get { return maxSpeed; }
@@ -78,12 +72,11 @@ namespace Behaviours
         protected virtual void Awake()
         {
             animator = transform.parent.GetComponent<Animator>();
-            carPartCollector = transform.GetChild(0).GetComponent<CarPartCollector>();
         }
 
         protected virtual void Start()
         {
-            currentSpeed = maxSpeed;
+
         }
 
         protected virtual void Update()
@@ -158,6 +151,16 @@ namespace Behaviours
                 
             }
 
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Car"))
+            {
+                var enemyCar = other.GetComponent<CommonBehaviours>();
+
+                if(enemyCar.getCollectedAmount > getCollectedAmount)
+                {
+                    carPartCollector.DowngradeCar();
+                }
+            }
+
         }
 
         private void SetRampValues(Vector3 closestPoint, Transform colliderTrans,Ramp ramp)
@@ -196,13 +199,12 @@ namespace Behaviours
 
         private void EnterRamp(Collider collider)
         {
-            transform.DOLookAt(collider.transform.position + new Vector3(transform.position.x - collider.transform.position.x, 0.573f, 0), 0.75f, AxisConstraint.None).SetEase(Ease.InOutSine)
-            
-                .OnStart(() =>
+            transform.DOLookAt(collider.transform.position + new Vector3(transform.position.x - collider.transform.position.x, 0.573f, 0), 0.75f).SetEase(Ease.InOutSine)
+            .OnStart(() =>
             {
-                Vector3 finalPos = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
+                Vector3 startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f) + 0.2f, collider.transform.position.z - (rampLength * 0.45f));
 
-                transform.DOMove(finalPos, 0.75f).SetEase(Ease.InOutSine);
+                transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
 
             }).OnComplete(() =>
             {
@@ -212,7 +214,7 @@ namespace Behaviours
 
                     coefficient = Mathf.Clamp((float) carPartCollector.collectedPartsCount / currentRamp.getBlocksNeededToClimb, 0.1f, 0.9f);
 
-                    finalPos = rampStartPos + new Vector3(0, rampHeight * coefficient, rampLength * coefficient);
+                    finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + 0.773f, rampLength * coefficient);
 
                     isOnRamp = true;
 
@@ -259,8 +261,6 @@ namespace Behaviours
                         isOnRamp = false;
 
                         canMove = true;
-
-                        currentSpeed = maxSpeed;
                     }); ;
 
 
@@ -291,8 +291,6 @@ namespace Behaviours
                         isOnRamp = false;
 
                         canMove = true;
-
-                        currentSpeed = maxSpeed;
                     });
 
                 });
@@ -303,8 +301,32 @@ namespace Behaviours
             });
         }
 
-    }
+        public void startTrails()
+        {
+            foreach(TrailRenderer trail in allTrails)
+            {
+                trail.emitting = true;
+            }
 
+            StartCoroutine("closeDelay");
+        }
+
+        public void stopTrails()
+        {
+            foreach (TrailRenderer trail in allTrails)
+            {
+                trail.emitting = false;
+            }
+        }
+
+        private IEnumerator closeDelay()
+        {
+            yield return new WaitForSeconds(trailStayTime);
+            stopTrails();
+            yield break;
+        }
+
+    }
 
 
 }
