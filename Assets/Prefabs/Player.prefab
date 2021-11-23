@@ -218,6 +218,7 @@ MonoBehaviour:
   - {fileID: 5199900138405161330}
   trailStayTime: 1
   rampClimbSmoothValue: 1
+  color: 0
 --- !u!65 &3154363375389511365
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -258,7 +259,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: a0c896520a106bb44959bada95a088aa, type: 2}
+      objectReference: {fileID: 2100000, guid: 796ac5aeeed4750459e6142717575f83, type: 2}
     - target: {fileID: 6182978039441977477, guid: c885030bd71e6124a9dde0a3dcf82626,
         type: 3}
       propertyPath: m_LocalPosition.x

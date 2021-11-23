@@ -48,7 +48,7 @@ public class ObjectPooler : MonoBehaviour
 
     }
 
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, int playerNum)
     {
         if (!poolDictionary.ContainsKey(tag))
         {
@@ -61,12 +61,12 @@ public class ObjectPooler : MonoBehaviour
         objToSpawn.transform.position = position;
         objToSpawn.transform.rotation = rotation;
 
+        var partScript = objToSpawn.GetComponent<CarPart>();
+        partScript.playerNum = playerNum;
+
         var pooledObj = objToSpawn.GetComponent<IPooledObject>();
 
-        if (pooledObj != null)
-        {
-            pooledObj.onObjectSpawn();
-        }
+        pooledObj?.onObjectSpawn();
 
         poolDictionary[tag].Enqueue(objToSpawn);
 

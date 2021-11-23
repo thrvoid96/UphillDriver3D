@@ -17,6 +17,7 @@ namespace Behaviours
         [SerializeField] private List<TrailRenderer> allTrails = new List<TrailRenderer>();
         [SerializeField] private float trailStayTime;
         public float rampClimbSmoothValue;
+        public GameColor color;
 
         #endregion
 

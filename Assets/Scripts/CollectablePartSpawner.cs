@@ -26,8 +26,7 @@ public class CollectablePartSpawner : MonoBehaviour
         [System.NonSerialized] public List<int> randomList = new List<int>();
         [System.NonSerialized] public Dictionary<int, List<Vector3>> blockPositions = new Dictionary<int, List<Vector3>>();
     }
-
-    [SerializeField] private int playerCount = 5;
+    
     public List<Grid> grids;
 
     private void Start()
@@ -36,13 +35,13 @@ public class CollectablePartSpawner : MonoBehaviour
         {
             randomizeSpawnPoints(grid);
 
-            for (int i = 0; i < playerCount; i++)
+            for (int i = 0; i < LevelManager.instance.playersOnGameList.Count; i++)
             {
                 setBlockSpawnPositions(grid, i);
             }
         }
 
-        for (int i = 0; i < playerCount; i++)
+        for (int i = 0; i < LevelManager.instance.playersOnGameList.Count; i++)
         {
             SpawnAllPartsForPlayer(i, 0);
         }
@@ -73,7 +72,7 @@ public class CollectablePartSpawner : MonoBehaviour
 
     private void setBlockSpawnPositions(Grid grid, int playerNum)
     {
-        var longNum = grid.randomList.Count / playerCount;
+        var longNum = grid.randomList.Count / LevelManager.instance.playersOnGameList.Count;
         var list = new List<Vector3>();
 
         for (int i = playerNum * longNum; i < (playerNum + 1) * longNum; i++)
@@ -91,11 +90,11 @@ public class CollectablePartSpawner : MonoBehaviour
 
     public void SpawnAllPartsForPlayer(int playerNum, int gridIndex)
     {
-        var longNum = grids[gridIndex].randomList.Count / playerCount;
+        var longNum = grids[gridIndex].randomList.Count / LevelManager.instance.playersOnGameList.Count;
 
         for (int i = 0; i < longNum; i++)
         {
-            ObjectPooler.instance.SpawnFromPool("Player" + playerNum, grids[gridIndex].blockPositions[playerNum][i], Quaternion.identity);
+           var objToSpawn= ObjectPooler.instance.SpawnFromPool("Part", grids[gridIndex].blockPositions[playerNum][i], Quaternion.identity, playerNum);
         }
 
     }

@@ -16,6 +16,17 @@ MonoBehaviour:
   - {fileID: 3699679229356714574, guid: 1c0aae967e7341d4aa468ac431a3c84f, type: 3}
   layoutElements: {fileID: 4284824929103184188, guid: d91ed2b81d0539f4a9557f3bc37febde,
     type: 3}
+  gameColor: 01000000000000000200000003000000040000000500000006000000
+  materials:
+  - {fileID: 2100000, guid: 796ac5aeeed4750459e6142717575f83, type: 2}
+  - {fileID: 2100000, guid: 8b810ecf0c17f6b428dfbd4809bd8fec, type: 2}
+  - {fileID: 2100000, guid: 35b9ec19e1f1dfd45863655d15a9dda7, type: 2}
+  - {fileID: 2100000, guid: a0c896520a106bb44959bada95a088aa, type: 2}
+  - {fileID: 2100000, guid: 48ea1dfb9a3f3f74bb6e3df28a917ce6, type: 2}
+  - {fileID: 2100000, guid: cd45f3d894eb3f948af06a0f6384ff54, type: 2}
+  - {fileID: 2100000, guid: 0ea85d8e9ae09554db4199216ae83482, type: 2}
+  enemyPrefab: {fileID: 1493086318597838616, guid: 247612831335c144f8671e385848e93a,
+    type: 3}
   layoutElementComponents:
   - {fileID: 21300000, guid: b613a6bc0ff00294d977d43953a24b19, type: 3}
   - {fileID: 21300000, guid: 3b22ef1da3d4fea4fadc9dad51712024, type: 3}

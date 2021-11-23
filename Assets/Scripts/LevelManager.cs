@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Behaviours;
 using UnityEngine;
 using DG.Tweening;
 
@@ -7,21 +8,29 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
     public static GameState gameState;
-
-    [System.NonSerialized] public int propertyId;
+    
+    [HideInInspector] public GameObject enemy_Prefab;
+    
+    public List<GameColor> gameColor;
+    public List<Material> materials;
+    public List<GameObject> playersOnGameList;
+    
     LevelAssetCreate levelAsset;
-    public bool isLevelCompletedSuccesfully = false;
+
+    private int loopAmount;
+    private int i = 1;
+
     private void Awake()
     {
         instance = this;
-       
     }
     //-------------------------------------------------------------------------------------------
     private void Start()
     {
-        isLevelCompletedSuccesfully = false;
-        propertyId = Shader.PropertyToID("_Cutoff");
         levelAsset = Resources.Load<LevelAssetCreate>("Scriptables/LevelAsset");
+        enemy_Prefab = levelAsset.enemyPrefab;
+        gameColor = levelAsset.gameColor;
+        materials = levelAsset.materials;
 
         Levelgenerator();
     }
@@ -56,5 +65,104 @@ public class LevelManager : MonoBehaviour
         LosePanel.instance.LoseCase();
         Debug.Log("FAILED");
     }
+    
+    
+    //--------------------------------------------------------------------------------------------------------------//
+    public GameObject GiveEnemyFromGameColor(GameColor color, int playerNum)
+    {
+        var pos= PlayerController.instance.gameObject.transform.position + new Vector3(15f * i,0,0);
+        i = -i;
+        loopAmount++;
+        if (loopAmount % 2 == 0)
+        {
+            i += i;
+        }
+        
+        var createdEnemy = Instantiate(enemy_Prefab.gameObject , pos , Quaternion.identity);
+        createdEnemy.transform.GetChild(0).GetChild(0).GetComponent<CommonBehaviours>().color = color;
+        createdEnemy.transform.GetChild(0).GetChild(0).GetChild(0).tag = "Player" + playerNum;
+        createdEnemy.name = color + "_Enemy";
+
+
+        switch (color)
+        {
+            case GameColor.PlayerColor:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[0];
+                return createdEnemy;
+
+            case GameColor.Red:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[1];
+                return createdEnemy;
+
+            case GameColor.Green:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[2];
+                return createdEnemy;
+
+            case GameColor.Orange:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[3];
+                return createdEnemy;
+
+            case GameColor.Yellow:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[4];
+                return createdEnemy;
+
+            case GameColor.Pink:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[5];
+                return createdEnemy;
+
+            case GameColor.Black:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[6];
+                return createdEnemy;
+
+            default:
+                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<MeshRenderer>().material = materials[0];
+                return createdEnemy;
+
+        }
+    }
+    
+    //--------------------------------------------------------------------------------------------------------------//
+    public GameObject GiveBrickPrefabFromGameColor(GameColor color, GameObject objToSpawn, int playerNum)
+    {
+        objToSpawn.tag = "Player" + playerNum;
+        objToSpawn.transform.GetChild(0).GetChild(0).tag = "Player" + playerNum;
+        
+        switch (color)
+        {
+            case GameColor.PlayerColor:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[0];
+                return objToSpawn;
+
+            case GameColor.Red:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[1];
+                return objToSpawn;
+
+            case GameColor.Green:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[2];
+                return objToSpawn;
+
+            case GameColor.Orange:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[3];
+                return objToSpawn;
+
+            case GameColor.Yellow:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[4];
+                return objToSpawn;
+
+            case GameColor.Pink:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[5];
+                return objToSpawn;
+
+            case GameColor.Black:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[6];
+                return objToSpawn;
+
+            default:
+                objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[0];
+                return objToSpawn;
+
+        }
+    }
+    
 
 }

@@ -1345,6 +1345,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78047175d2c3692499032285da4f71fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colorsInThisLevelList: 
+  howManyEnemy: 2
   howManyRequired: 3
 --- !u!114 &5657796903972336577
 MonoBehaviour:
@@ -1398,7 +1400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4885f604f3496a4cb7511539a63cfe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCount: 5
   grids:
   - gridSizeX: 10
     gridSizeZ: 10
@@ -1428,25 +1429,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - tag: Player0
+  - tag: Part
     prefab: {fileID: 7101884677563921374, guid: 3dc0777335e20dc40baf98588035b3d7,
       type: 3}
-    size: 250
-  - tag: Player1
-    prefab: {fileID: 7086976607565408552, guid: 6dd569acb1bbc514a83e31c6a0c130ba,
-      type: 3}
-    size: 250
-  - tag: Player2
-    prefab: {fileID: 3948734463432644997, guid: 794af2b9c3696a5479c96dd410f93589,
-      type: 3}
-    size: 250
-  - tag: Player3
-    prefab: {fileID: 300605833268167782, guid: 589e0d70e4b31e341b3c99031f8ab066, type: 3}
-    size: 250
-  - tag: Player4
-    prefab: {fileID: 2500225996296068569, guid: 77bf3115bbc6b0949850866a6b9cf40d,
-      type: 3}
-    size: 250
+    size: 400
 --- !u!1 &3699679229591180539
 GameObject:
   m_ObjectHideFlags: 0

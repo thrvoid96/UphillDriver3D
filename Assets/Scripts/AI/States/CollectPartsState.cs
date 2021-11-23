@@ -67,6 +67,8 @@ public class CollectPartsState : IState
             return;
         }
         var finalDest = destinations[0] + new Vector3(0, -0.8f, 0);
+        
+        Debug.LogError(finalDest);
 
         if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, 1.5f, partMask, QueryTriggerInteraction.Collide))
         {

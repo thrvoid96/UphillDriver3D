@@ -38,7 +38,7 @@ public class StructurePanel : MonoBehaviour
             completedLayoutElement++;
             if(completedLayoutElement == childCount)
             {
-                LevelManager.instance.isLevelCompletedSuccesfully = true;
+
             }
         }
         

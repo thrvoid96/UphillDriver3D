@@ -6,21 +6,24 @@ using UnityEngine;
 
 public class PlayerController : CommonBehaviours
 {
+    public static PlayerController instance;
+    
     private bool var1, var2, var3;
     private float distance,moveDuration;
-    // Start is called before the first frame update
+
+    protected override void Awake()
+    {
+        base.Awake();
+        instance = this;
+    }
+
     protected override void Start()
     {
         base.Start();
             
         StartCoroutine(nameof(Movement));
     }
-
-    protected override void OnTriggerEnter(Collider other)
-    {
-        base.OnTriggerEnter(other);
-    }
-
+    
     private IEnumerator Movement()
     {
         while (true)
