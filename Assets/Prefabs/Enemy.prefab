@@ -80,7 +80,7 @@ MonoBehaviour:
   - {fileID: 446164529385618136}
   amountForUpgrade: 5
   collectedParts: []
-  blendSmoothSpeed: 0.75
+  blendSmoothSpeed: 0.3
 --- !u!65 &4481650543213432281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -196,6 +196,7 @@ MonoBehaviour:
   - {fileID: 3704177130284696405}
   trailStayTime: 1
   rampClimbSmoothValue: 1
+  color: 0
   randomRanges: 0100000005000000
   currentState: 
   collectBlockAmount: 0

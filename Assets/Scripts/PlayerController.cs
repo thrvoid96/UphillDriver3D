@@ -40,7 +40,7 @@ public class PlayerController : CommonBehaviours
                     var3 = false;
                                         
                     transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
-                    transform.Rotate(0, horizontalInput * verticalInput * 2f, 0, Space.Self);
+                    transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 125f, 0, Space.Self);
                     yield return null;
                 }
                 else

@@ -80,7 +80,7 @@ MonoBehaviour:
   - {fileID: 9043008835957199103}
   amountForUpgrade: 5
   collectedParts: []
-  blendSmoothSpeed: 0.75
+  blendSmoothSpeed: 0.3
 --- !u!65 &3423520732984827813
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -92,6 +92,8 @@ public class CollectablePartSpawner : MonoBehaviour
     {
         var longNum = grids[gridIndex].randomList.Count / LevelManager.instance.playersOnGameList.Count;
 
+        //100'den 99 çıkar. Mathf.floor yap. Kalanı random spawnla.
+        
         for (int i = 0; i < longNum; i++)
         {
            var objToSpawn= ObjectPooler.instance.SpawnFromPool("Part", grids[gridIndex].blockPositions[playerNum][i], Quaternion.identity, playerNum);
