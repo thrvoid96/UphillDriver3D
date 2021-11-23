@@ -7,26 +7,32 @@ public class CarPartCollector : MonoBehaviour
     [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
     [SerializeField] private int amountForUpgrade;
     [SerializeField] private List<GameObject> collectedParts = new List<GameObject>();
+    
+    [Header("0 for instant, 1 for slowest")]
+    [SerializeField] private float blendSmoothSpeed;
 
     private int inBetween;
     private int currentUpgrade;
     private int currentMesh;
 
+    private bool currentlyUpgrading;
+    private int awaitingUpgrades;
 
-    public int collectedPartsCount
-    {
-        get { return collectedParts.Count; }
-    }
+
+    public int collectedPartsCount => collectedParts.Count;
 
     private void OnTriggerEnter(Collider other)
     {
-        collectedParts.Add(other.gameObject.transform.parent.parent.gameObject);
+        if (other.CompareTag(gameObject.tag))
+        {
+            collectedParts.Add(other.gameObject.transform.parent.parent.gameObject);
 
-        inBetween++;
-        checkCarUpgrade();
+            inBetween++;
+            CheckCarUpgrade();
+        }
     }
 
-    private void checkCarUpgrade()
+    private void CheckCarUpgrade()
     {
         if(inBetween == amountForUpgrade)
         {
@@ -34,8 +40,16 @@ public class CarPartCollector : MonoBehaviour
 
             if(currentUpgrade< carMeshes[0].sharedMesh.blendShapeCount)
             {
-                carMeshes[currentMesh].SetBlendShapeWeight(currentUpgrade, 0f);
-                currentUpgrade++;
+                if (!currentlyUpgrading)
+                {
+                    StartCoroutine(nameof(BlendShapeSmooth));
+                    currentlyUpgrading = true;
+                }
+                else
+                {
+                    awaitingUpgrades++;
+                }
+                
             }
             else
             {
@@ -56,7 +70,9 @@ public class CarPartCollector : MonoBehaviour
 
     public void DowngradeCar()
     {
-        if (currentMesh - 1 <= carMeshes.Count) { return; } //Do lose case here.
+        if (currentMesh - 1 <= carMeshes.Count) { return; }
+        
+        StopAllCoroutines();
         ResetBlendShapes();
 
         carMeshes[currentMesh].gameObject.SetActive(false);
@@ -71,5 +87,28 @@ public class CarPartCollector : MonoBehaviour
             carMeshes[currentMesh].SetBlendShapeWeight(i, 100f);
             currentUpgrade = 0;
         }
+    }
+
+    private IEnumerator BlendShapeSmooth()
+    {
+        var value = 100f;
+        while (value > 0f)
+        {
+            var clampValue = Mathf.Clamp( value -= 1f - blendSmoothSpeed,0f,100f);
+            carMeshes[currentMesh].SetBlendShapeWeight(currentUpgrade, clampValue);
+            yield return null;
+        }
+        
+        currentUpgrade++;
+        
+        if (awaitingUpgrades > 0 && currentUpgrade< carMeshes[0].sharedMesh.blendShapeCount)
+        {
+            awaitingUpgrades--;
+            StartCoroutine(nameof(BlendShapeSmooth));
+            yield break;
+        }
+        
+        currentlyUpgrading = false;
+        yield break;
     }
 }

@@ -4,25 +4,31 @@ using UnityEngine;
 using Behaviours;
 using UnityEngine.AI;
 using System;
+using Random = UnityEngine.Random;
 
 public class AIPlayer : CommonBehaviours
 {
-    public int collectBlockAmount;
-
+    public int[] randomRanges = new int[2];
+    
     [Header("For Debug Only")]
     [SerializeField] private string currentState;
-      
-    [NonSerialized] public float angle, distance, rotDuration, moveDuration;
+    public int collectBlockAmount;
+    
+    [NonSerialized] public float rotDuration, moveDuration;
 
     [NonSerialized] public bool collectAmountReached;
+      
+    private float angle, distance;
 
+    public int getCollectedPartCount => carPartCollector.collectedPartsCount;
+    
     private StateMachine _stateMachine;
 
 
     protected override void Awake()
     {
         base.Awake();
-        
+        collectBlockAmount = Random.Range(randomRanges[0], randomRanges[1] + 1);
         _stateMachine = new StateMachine();
 
     }

@@ -13,7 +13,7 @@ public class PlayerController : CommonBehaviours
     {
         base.Start();
             
-        StartCoroutine("Movement");
+        StartCoroutine(nameof(Movement));
     }
 
     protected override void OnTriggerEnter(Collider other)
@@ -91,7 +91,7 @@ public class PlayerController : CommonBehaviours
                             distance = Vector3.Distance(rampStartPos, finalPos);
                             moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-                            transform.DOMove(rampStartPos + new Vector3(0,-2f,-10f), moveDuration).SetEase(Ease.InOutSine);
+                            transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * coefficient,- rampLength * coefficient), moveDuration).SetEase(Ease.InOutSine);
 
                             startTrails();
 

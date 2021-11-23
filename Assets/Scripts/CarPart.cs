@@ -19,15 +19,19 @@ public class CarPart : MonoBehaviour, IPooledObject
     private IEnumerator respawnCube()
     {
         yield return new WaitForSeconds(respawnTime);
-        ObjectPooler.instance.SpawnFromPool(LayerMask.LayerToName(gameObject.layer), startPos, Quaternion.identity);
+        ObjectPooler.instance.SpawnFromPool(gameObject.tag, startPos, Quaternion.identity);
         gameObject.SetActive(false);
         yield break;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(respawnCube());
-        blockModelTransform.gameObject.SetActive(false);
+        if (other.CompareTag(gameObject.tag))
+        {
+            StartCoroutine(respawnCube());
+            blockModelTransform.gameObject.SetActive(false);
+        }
+        
     }
 
 }

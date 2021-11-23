@@ -6,8 +6,5 @@ public class Ramp : MonoBehaviour
 {
     [SerializeField] private int blocksNeededToClimb;
 
-    public int getBlocksNeededToClimb
-    {
-        get { return blocksNeededToClimb; }
-    }
+    public int getBlocksNeededToClimb => blocksNeededToClimb;
 }

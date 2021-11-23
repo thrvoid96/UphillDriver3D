@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3614895348950659508}
   m_Layer: 12
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Player0
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 8704441667054596030}
   m_Layer: 12
   m_Name: Part0
-  m_TagString: Untagged
+  m_TagString: Player0
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -165,7 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7101884678481880091}
   - component: {fileID: 7101884678481880088}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Animator
   m_TagString: Untagged
   m_Icon: {fileID: 0}

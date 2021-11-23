@@ -95,7 +95,7 @@ public class CollectablePartSpawner : MonoBehaviour
 
         for (int i = 0; i < longNum; i++)
         {
-            ObjectPooler.instance.SpawnFromPool("Part" + playerNum, grids[gridIndex].blockPositions[playerNum][i], Quaternion.identity);
+            ObjectPooler.instance.SpawnFromPool("Player" + playerNum, grids[gridIndex].blockPositions[playerNum][i], Quaternion.identity);
         }
 
     }

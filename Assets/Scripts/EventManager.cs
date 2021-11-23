@@ -17,10 +17,7 @@ public class EventManager : MonoBehaviour
 
     private static EventParam param = new EventParam();
 
-    public static EventParam nullEventParam
-    {
-        get { return param; }
-    }
+    public static EventParam nullEventParam => param;
 
     public static EventManager instance
     {

@@ -1428,22 +1428,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - tag: Part0
+  - tag: Player0
     prefab: {fileID: 7101884677563921374, guid: 3dc0777335e20dc40baf98588035b3d7,
       type: 3}
     size: 250
-  - tag: Part1
+  - tag: Player1
     prefab: {fileID: 7086976607565408552, guid: 6dd569acb1bbc514a83e31c6a0c130ba,
       type: 3}
     size: 250
-  - tag: Part2
+  - tag: Player2
     prefab: {fileID: 3948734463432644997, guid: 794af2b9c3696a5479c96dd410f93589,
       type: 3}
     size: 250
-  - tag: Part3
+  - tag: Player3
     prefab: {fileID: 300605833268167782, guid: 589e0d70e4b31e341b3c99031f8ab066, type: 3}
     size: 250
-  - tag: Part4
+  - tag: Player4
     prefab: {fileID: 2500225996296068569, guid: 77bf3115bbc6b0949850866a6b9cf40d,
       type: 3}
     size: 250

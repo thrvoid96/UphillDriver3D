@@ -61,10 +61,7 @@ public class GameManager : MonoBehaviour
     }
     public static int Sound
     {
-        get
-        {
-            return PlayerPrefs.GetInt("soundLevel");
-        }
+        get => PlayerPrefs.GetInt("soundLevel");
         set
         {
             soundLevel = value;

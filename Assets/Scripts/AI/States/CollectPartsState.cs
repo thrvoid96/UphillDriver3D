@@ -38,7 +38,7 @@ public class CollectPartsState : IState
 
     public void Tick()
     {
-
+        
     }
 
     private void randomizePoints()
@@ -51,13 +51,11 @@ public class CollectPartsState : IState
         }
 
         destinations = destinations.OrderBy(i => Guid.NewGuid()).ToList();
-
     }
 
     private void GotoNextPoint()
     {
-        RaycastHit hit;
-        LayerMask partMask = LayerMask.GetMask("Part" + _aIPlayer.getPlayerNum);
+        var partMask = LayerMask.GetMask("Part");
 
         //If AI collided with blocks on the way, remove them from destinations list if they're not there anymore
 
@@ -70,13 +68,12 @@ public class CollectPartsState : IState
         }
         var finalDest = destinations[0] + new Vector3(0, -0.8f, 0);
 
-        if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, out hit, Mathf.Infinity, partMask, QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, 1.5f, partMask, QueryTriggerInteraction.Collide))
         {
             _aIPlayer.calculateValues(finalDest);
 
             _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration).SetEase(Ease.InOutSine).OnUpdate(() =>
             {
-
                 _aIPlayer.SmoothMovement();
 
             }).OnComplete(() =>
@@ -84,6 +81,7 @@ public class CollectPartsState : IState
                 _aIPlayer.transform.DOLookAt(finalDest, 1f).SetEase(Ease.InOutSine);
                 _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0, -0.8f, 0), _aIPlayer.moveDuration).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
+                    _aIPlayer.ResetSmoothValue();
                     Loop();
                 });
 

@@ -43,28 +43,16 @@ namespace Behaviours
         protected float smoothSpeed;
 
         private int gridIndex;
-       
-        public int getCollectedAmount
-        {
-            get { return carPartCollector.collectedPartsCount; }
-        }
-
+        
         public int getCurrentGrid
         {
-            get { return gridIndex; }
-            set { gridIndex = value; }
+            get => gridIndex;
+            set => gridIndex = value;
         }
 
-        public float getMaxSpeed
-        {
-            get { return maxSpeed; }
-        }
+        public float getMaxSpeed => maxSpeed;
 
-        public int getPlayerNum
-        {
-            get { return playerNum; }
-        }
-
+        public int getPlayerNum => playerNum;
 
         #endregion
 
@@ -138,6 +126,8 @@ namespace Behaviours
 
                 LevelManager.gameState = GameState.Finish;
 
+                Debug.LogError("here");
+
                 if (gameObject.transform.GetChild(0).gameObject.layer != LayerMask.NameToLayer("Part0Collector"))
                 {
 
@@ -155,7 +145,7 @@ namespace Behaviours
             {
                 var enemyCar = other.GetComponent<CommonBehaviours>();
 
-                if(enemyCar.getCollectedAmount > getCollectedAmount)
+                if(enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount)
                 {
                     carPartCollector.DowngradeCar();
                 }
@@ -174,16 +164,15 @@ namespace Behaviours
 
         private void EnterMiddleSection(Transform colliderTrans)
         {
-            if (canMove)
-            {
-                canMove = false;
+            if (!canMove) return;
+            canMove = false;
 
-                float enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
-                float duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
+            float enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
+            float duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
 
-                Vector3 finalPos = transform.position + new Vector3(0, 0, 20f);
-
-                transform.DOLookAt(finalPos, duration).OnUpdate(() =>
+            Vector3 finalPos = transform.position + new Vector3(0, 0, 20f);
+            
+            transform.DOLookAt(finalPos, duration).OnUpdate(() =>
                 {
                     smoothSpeed += 1f;
                     smoothSpeed = Mathf.Clamp(smoothSpeed, 0, maxSpeed);
@@ -194,7 +183,6 @@ namespace Behaviours
                     transform.DOMove(finalPos, 0.75f).SetEase(Ease.InOutSine);
                     smoothSpeed = 0f;
                 });
-            }
         }
 
         private void EnterRamp(Collider collider)
@@ -202,7 +190,7 @@ namespace Behaviours
             transform.DOLookAt(collider.transform.position + new Vector3(transform.position.x - collider.transform.position.x, 0.573f, 0), 0.75f).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
-                Vector3 startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f) + 0.2f, collider.transform.position.z - (rampLength * 0.45f));
+                Vector3 startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
 
                 transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
 
@@ -214,7 +202,7 @@ namespace Behaviours
 
                     coefficient = Mathf.Clamp((float) carPartCollector.collectedPartsCount / currentRamp.getBlocksNeededToClimb, 0.1f, 0.9f);
 
-                    finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + 0.773f, rampLength * coefficient);
+                    finalPos = rampStartPos + new Vector3(0, rampHeight * coefficient, rampLength * coefficient);
 
                     isOnRamp = true;
 
@@ -273,21 +261,23 @@ namespace Behaviours
 
         private void ExitRampComplete(Transform colliderTrans)
         {
-            Vector3 finalPos = new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, colliderTrans.position.z);
+            var goToPos = new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, colliderTrans.position.z);
 
-            transform.DOLookAt(finalPos+ new Vector3(0,0,20f), 0.75f).OnStart(() =>
+            transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f).OnStart(() =>
             {
                 canMove = false;
 
-                transform.DOMove(finalPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
+                transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
+                    gridIndex++;
 
-                    transform.DOMove(finalPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
+                    if(gridIndex <= CollectablePartSpawner.instance.grids.Count)
                     {
-                        gridIndex++;
-
                         CollectablePartSpawner.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
+                    }
 
+                    transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
+                    {                      
                         isOnRamp = false;
 
                         canMove = true;
@@ -326,7 +316,8 @@ namespace Behaviours
             yield break;
         }
 
-    }
+        
 
+    }
 
 }

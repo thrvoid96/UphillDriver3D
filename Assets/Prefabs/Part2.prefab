@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2524491357237711129}
   - component: {fileID: 2524491357237711130}
   - component: {fileID: 2524491357237711131}
-  m_Layer: 14
+  m_Layer: 12
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,9 +104,9 @@ GameObject:
   - component: {fileID: 3948734463432644996}
   - component: {fileID: 9067358299297354838}
   - component: {fileID: 8200166914489477470}
-  m_Layer: 14
+  m_Layer: 12
   m_Name: Part2
-  m_TagString: Untagged
+  m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -165,7 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3948734464036314366}
   - component: {fileID: 5347167128274629739}
-  m_Layer: 14
+  m_Layer: 0
   m_Name: Animator
   m_TagString: Untagged
   m_Icon: {fileID: 0}

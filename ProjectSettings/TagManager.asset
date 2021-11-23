@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - FinishLine
+  - Player0
+  - Player1
+  - Player2
+  - Player3
+  - Player4
   layers:
   - Default
   - TransparentFX
@@ -18,17 +23,17 @@ TagManager:
   - Ramp
   - MiddleSect
   - Car
-  - Part0
-  - Part1
-  - Part2
-  - Part3
-  - Part4
-  - Part0Collector
-  - Part1Collector
-  - Part2Collector
-  - Part3Collector
-  - Part4Collector
+  - Part
+  - PartCollector
   - Finish
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

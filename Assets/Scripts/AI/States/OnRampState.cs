@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 //OnEnter get block positions and collect them.
 public class OnRampState : IState
@@ -24,6 +25,7 @@ public class OnRampState : IState
 
     public void OnEnter()
     {
+        amountToAdd = Random.Range(_aIPlayer.getCollectedPartCount + _aIPlayer.randomRanges[0], _aIPlayer.getCollectedPartCount + _aIPlayer.randomRanges[1] + 1);
         var distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
         var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
@@ -42,12 +44,12 @@ public class OnRampState : IState
 
                     _aIPlayer.startTrails();
                 }                   
-            });
+        });
     }
 
     public void OnExit()
     {       
-        _aIPlayer.collectBlockAmount += amountToAdd;
+        _aIPlayer.collectBlockAmount = amountToAdd;
         _aIPlayer.DOKill();
     }
 
