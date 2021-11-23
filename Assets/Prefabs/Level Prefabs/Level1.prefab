@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 2
+  howManyEnemy: 4
   howManyRequired: 3
 --- !u!114 &5657796903972336577
 MonoBehaviour:
