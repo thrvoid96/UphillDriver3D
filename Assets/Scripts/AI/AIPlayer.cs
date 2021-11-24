@@ -38,7 +38,7 @@ public class AIPlayer : CommonBehaviours
         _stateMachine.Tick();
         currentState = _stateMachine.CurrentState.ToString();
         
-        Debug.LogError(carPartCollector.collectedPartsCount >= collectBlockAmount);
+        //Debug.LogError(carPartCollector.collectedPartsCount >= collectBlockAmount);
         
     }
 
