@@ -45,13 +45,13 @@ public class PlayerController : CommonBehaviours
                 }
                 else
                 {
+                    distance = Vector3.Distance(rampStartPos, finalPos);
+                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+                    
                     if (verticalInput > 0)
                     {
                         if (!var1)
                         {
-                            distance = Vector3.Distance(rampStartPos, finalPos);
-                            moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
-
                             transform.DOMove(finalPos,moveDuration).SetEase(Ease.InOutSine);
 
                             StartTrails();
@@ -70,9 +70,6 @@ public class PlayerController : CommonBehaviours
                         {
                             if (!var2)
                             {
-                                distance = Vector3.Distance(rampStartPos, finalPos);
-                                moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
-
                                 transform.DOMove(rampStartPos, moveDuration * 2f);
 
                                 StartTrails();
@@ -91,9 +88,6 @@ public class PlayerController : CommonBehaviours
                     {
                         if (!var3)
                         {
-                            distance = Vector3.Distance(rampStartPos, finalPos);
-                            moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
-
                             transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * coefficient,- rampLength * coefficient), moveDuration).SetEase(Ease.InOutSine);
 
                             StartTrails();

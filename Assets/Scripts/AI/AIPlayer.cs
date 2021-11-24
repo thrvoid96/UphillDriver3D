@@ -4,6 +4,7 @@ using UnityEngine;
 using Behaviours;
 using UnityEngine.AI;
 using System;
+using DG.Tweening;
 using Random = UnityEngine.Random;
 
 public class AIPlayer : CommonBehaviours
@@ -14,11 +15,11 @@ public class AIPlayer : CommonBehaviours
     public int collectBlockAmount;
     
     [NonSerialized] public float rotDuration, moveDuration;
-
-    [NonSerialized] public bool collectAmountReached;
+    
+    public bool collectAmountReached;
       
     private float angle, distance;
-
+    
     public int getCollectedPartCount => carPartCollector.collectedPartsCount;
     
     private StateMachine _stateMachine;
@@ -36,6 +37,9 @@ public class AIPlayer : CommonBehaviours
         base.Update();
         _stateMachine.Tick();
         currentState = _stateMachine.CurrentState.ToString();
+        
+        Debug.LogError(carPartCollector.collectedPartsCount >= collectBlockAmount);
+        
     }
 
     protected override void Start()
@@ -46,13 +50,16 @@ public class AIPlayer : CommonBehaviours
         var goTowardsRamp = new GoTowardsRampState(this, animator);
         var idle = new IdleState(this, animator);
         var onRamp = new OnRampState(this, animator);
+        var collided = new CollisionState(this, animator);
 
         At(collectBlocks, goTowardsRamp, EnoughBlocks(true));
         At(idle, collectBlocks, EnoughBlocks(false));
         At(idle, onRamp, ClimbingRamp(true));
         At(goTowardsRamp, collectBlocks, ZeroBlocks());
+        At(collided, idle, Collided(false));
 
         _stateMachine.AddAnyTransition(idle, CanMove(false));
+        _stateMachine.AddAnyTransition(collided, Collided(true));
 
         _stateMachine.SetState(idle);
 
@@ -84,6 +91,18 @@ public class AIPlayer : CommonBehaviours
                 : !move;
             };
         }
+        
+        Func<bool> Collided(bool value)
+        {
+            return delegate
+            {
+                var move = isCollided;
+
+                return value
+                    ? move
+                    : !move;
+            };
+        }
 
         Func<bool> CanMove(bool value)
         {
@@ -98,6 +117,7 @@ public class AIPlayer : CommonBehaviours
         }
 
     }
+    
     public void calculateValues(Vector3 destination)
     {      
         distance = Vector3.Distance(transform.position, destination);

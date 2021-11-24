@@ -1,18 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CarPartCollector : MonoBehaviour
 {
+    public int partCount;
     [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
     [SerializeField] private int amountForUpgrade;
-    [SerializeField] private List<GameObject> collectedParts = new List<GameObject>();
+    [SerializeField] private int upgradeAmountIncrement;
+    
+    private Stack<GameObject> collectedParts = new Stack<GameObject>();
     
     [Header("0 for instant, 1 for slowest")]
     [SerializeField] private float blendSmoothSpeed;
 
     private int inBetween;
-    private int currentUpgrade;
+    private int currentBlendShape;
     private int currentMesh;
 
     private bool currentlyUpgrading;
@@ -21,11 +25,16 @@ public class CarPartCollector : MonoBehaviour
 
     public int collectedPartsCount => collectedParts.Count;
 
+    private void Update()
+    {
+        partCount = collectedPartsCount;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(gameObject.tag))
         {
-            collectedParts.Add(other.gameObject.transform.parent.parent.gameObject);
+            collectedParts.Push(other.gameObject.transform.parent.parent.gameObject);
 
             inBetween++;
             CheckCarUpgrade();
@@ -38,11 +47,11 @@ public class CarPartCollector : MonoBehaviour
         {
             inBetween = 0;
 
-            if(currentUpgrade< carMeshes[0].sharedMesh.blendShapeCount)
+            if(currentBlendShape < carMeshes[currentMesh].sharedMesh.blendShapeCount)
             {
                 if (!currentlyUpgrading)
                 {
-                    StartCoroutine(nameof(BlendShapeSmooth));
+                    StartCoroutine(nameof(UpgradeSmooth));
                     currentlyUpgrading = true;
                 }
                 else
@@ -65,15 +74,35 @@ public class CarPartCollector : MonoBehaviour
 
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh++;
+        amountForUpgrade += upgradeAmountIncrement;
         carMeshes[currentMesh].gameObject.SetActive(true);
     }
 
     public void DowngradeCar()
     {
-        if (currentMesh - 1 <= carMeshes.Count) { return; }
-        
         StopAllCoroutines();
         ResetBlendShapes();
+        
+        amountForUpgrade = Mathf.Clamp(amountForUpgrade - upgradeAmountIncrement,0,99999);
+        
+        for (int i = 0; i < inBetween; i++)
+        {
+            collectedParts.Pop();
+        }
+
+        if (collectedParts.Count != 0)
+        {
+            for (int i = 0; i < amountForUpgrade; i++)
+            {
+                collectedParts.Pop();
+            }
+        }
+        
+        awaitingUpgrades = 0;
+        inBetween = 0;
+
+        if (currentMesh - 1 <= carMeshes.Count) { return; }
+        
 
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh--;
@@ -82,29 +111,29 @@ public class CarPartCollector : MonoBehaviour
 
     private void ResetBlendShapes()
     {
-        for(int i=0; i< carMeshes[0].sharedMesh.blendShapeCount; i++)
+        for(int i=0; i< carMeshes[currentMesh].sharedMesh.blendShapeCount; i++)
         {
             carMeshes[currentMesh].SetBlendShapeWeight(i, 100f);
-            currentUpgrade = 0;
+            currentBlendShape = 0;
         }
     }
 
-    private IEnumerator BlendShapeSmooth()
+    private IEnumerator UpgradeSmooth()
     {
         var value = 100f;
         while (value > 0f)
         {
             var clampValue = Mathf.Clamp( value -= 1f - blendSmoothSpeed,0f,100f);
-            carMeshes[currentMesh].SetBlendShapeWeight(currentUpgrade, clampValue);
+            carMeshes[currentMesh].SetBlendShapeWeight(currentBlendShape, clampValue);
             yield return null;
         }
         
-        currentUpgrade++;
+        currentBlendShape++;
         
-        if (awaitingUpgrades > 0 && currentUpgrade< carMeshes[0].sharedMesh.blendShapeCount)
+        if (awaitingUpgrades > 0 && currentBlendShape< carMeshes[0].sharedMesh.blendShapeCount)
         {
             awaitingUpgrades--;
-            StartCoroutine(nameof(BlendShapeSmooth));
+            StartCoroutine(nameof(UpgradeSmooth));
             yield break;
         }
         

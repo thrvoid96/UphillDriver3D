@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 4
+  howManyEnemy: 1
   howManyRequired: 3
   rampsOnScene:
   - {fileID: 6959223848906589908}

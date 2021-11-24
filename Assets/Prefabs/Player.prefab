@@ -79,7 +79,7 @@ MonoBehaviour:
   carMeshes:
   - {fileID: 9043008835957199103}
   amountForUpgrade: 5
-  collectedParts: []
+  upgradeAmountIncrement: 5
   blendSmoothSpeed: 0.3
 --- !u!65 &3423520732984827813
 BoxCollider:
@@ -219,6 +219,7 @@ MonoBehaviour:
   trailStayTime: 1
   rampClimbSmoothValue: 1
   color: 0
+  collisionFinalPos: {x: 0, y: 0, z: 0}
 --- !u!65 &3154363375389511365
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -230,8 +231,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.271768, y: 2.516272, z: 3.5159922}
-  m_Center: {x: 0, y: -0.008135597, z: 0.523551}
+  m_Size: {x: 1.6859453, y: 2.516272, z: 3.5374904}
+  m_Center: {x: 0, y: -0.008135557, z: 0.5128044}
 --- !u!54 &1749261654092583375
 Rigidbody:
   m_ObjectHideFlags: 0

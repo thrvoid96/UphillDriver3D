@@ -34,10 +34,12 @@ namespace Behaviours
         [System.NonSerialized] public float rampHeight, rampLength, rampAngleX, coefficient;
         [System.NonSerialized] public Vector3 finalPos;
         [System.NonSerialized] public Vector3 rampStartPos;
+        public Vector3 collisionFinalPos;
 
         protected bool canMove = true;
         protected bool isOnRamp;
         protected bool enteringRamp;
+        protected bool isCollided;
         
         protected float smoothSpeed;
 
@@ -143,10 +145,39 @@ namespace Behaviours
             else if (other.gameObject.layer == LayerMask.NameToLayer("Car"))
             {
                 var enemyCar = other.GetComponent<CommonBehaviours>();
-
+                
                 if(enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount)
                 {
-                    carPartCollector.DowngradeCar();
+                    transform.DOKill();
+                    isCollided = true;
+                    
+                    if (!isOnRamp)
+                    {
+                        var direction = transform.position - other.transform.position;
+                        collisionFinalPos = transform.position + direction;
+                        
+                        transform.DOMove(collisionFinalPos, 0.5f).SetEase(Ease.InOutSine)
+                            
+                            .OnComplete(() => 
+                            {
+                            isCollided = false; 
+                            });
+                    
+                        carPartCollector.DowngradeCar();
+                    }
+                    else
+                    {
+                        var distance = Vector3.Distance(rampStartPos, finalPos);
+                        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+                        
+                        transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * coefficient,- rampLength * coefficient), moveDuration).SetEase(Ease.InOutSine)
+                            
+                            .OnComplete(() => 
+                            {
+                            isCollided = false; 
+                            });;
+                    }
+                    
                 }
             }
 
