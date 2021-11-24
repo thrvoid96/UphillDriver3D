@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Behaviours;
 using UnityEngine;
 
 public enum GameColor
@@ -19,6 +20,7 @@ public class LevelHolder : MonoBehaviour
     public List<GameColor> colorsInThisLevelList = new List<GameColor>();
     public int howManyEnemy;
     public int howManyRequired;
+    public List<Ramp> rampsOnScene = new List<Ramp>();
 
     #region Singleton
     public static LevelHolder instance;

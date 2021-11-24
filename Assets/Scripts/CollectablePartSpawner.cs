@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 ////Script attached to Grid gameobject. Spawns a grid to be used.
@@ -39,7 +40,9 @@ public class CollectablePartSpawner : MonoBehaviour
             {
                 setBlockSpawnPositions(grid, i);
             }
+            
         }
+        
 
         for (int i = 0; i < LevelManager.instance.playersOnGameList.Count; i++)
         {
@@ -56,7 +59,7 @@ public class CollectablePartSpawner : MonoBehaviour
     private void randomizeSpawnPoints(Grid grid)
     {
 
-        List<int> uniqueNumbers = new List<int>();
+        var uniqueNumbers = new List<int>();
 
         for (int i = 0; i < grid.gridSizeX * grid.gridSizeZ; i++)
         {
@@ -83,7 +86,24 @@ public class CollectablePartSpawner : MonoBehaviour
             Vector3 spawnPosition = new Vector3(x * grid.gridSpacingX, 0, z * grid.gridSpacingZ) + grid.gridOrigin;
             list.Add(spawnPosition);
         }
+        
+        var difference = grid.randomList.Count % LevelManager.instance.playersOnGameList.Count;
+            
+        if (difference > 0 && playerNum == LevelManager.instance.playersOnGameList.Count - 1 )
+        {
+            for (int i = grid.randomList.Count - difference; i < grid.randomList.Count; i++)
+            {
+                var x = Mathf.FloorToInt(grid.randomList[i] / grid.gridSizeZ);
+                var z = grid.randomList[i] % grid.gridSizeZ; 
+                    
+                Vector3 spawnPosition = new Vector3(x * grid.gridSpacingX, 0, z * grid.gridSpacingZ) + grid.gridOrigin; 
 
+                list.Add(spawnPosition);
+                    
+            }
+
+        }
+        
         grid.blockPositions.Add(playerNum, list);
 
     }
@@ -91,8 +111,11 @@ public class CollectablePartSpawner : MonoBehaviour
     public void SpawnAllPartsForPlayer(int playerNum, int gridIndex)
     {
         var longNum = grids[gridIndex].randomList.Count / LevelManager.instance.playersOnGameList.Count;
-
-        //100'den 99 çıkar. Mathf.floor yap. Kalanı random spawnla.
+        
+        if (playerNum == LevelManager.instance.playersOnGameList.Count - 1)
+        {
+            longNum += grids[gridIndex].randomList.Count % LevelManager.instance.playersOnGameList.Count;
+        }
         
         for (int i = 0; i < longNum; i++)
         {

@@ -79,9 +79,14 @@ public class LevelManager : MonoBehaviour
         }
         
         var createdEnemy = Instantiate(enemy_Prefab.gameObject , pos , Quaternion.identity);
-        createdEnemy.transform.GetChild(0).GetChild(0).GetComponent<CommonBehaviours>().color = color;
+        
+        var common = createdEnemy.transform.GetChild(0).GetChild(0).GetComponent<CommonBehaviours>();
+        common.color = color;
+        common.getPlayerNum = playerNum;
+        
         createdEnemy.transform.GetChild(0).GetChild(0).GetChild(0).tag = "Player" + playerNum;
         createdEnemy.name = color + "_Enemy";
+        
 
 
         switch (color)

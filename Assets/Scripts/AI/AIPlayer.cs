@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 
 public class AIPlayer : CommonBehaviours
 {
-    public int[] randomRanges = new int[2];
     
     [Header("For Debug Only")]
     [SerializeField] private string currentState;
@@ -28,7 +27,7 @@ public class AIPlayer : CommonBehaviours
     protected override void Awake()
     {
         base.Awake();
-        collectBlockAmount = Random.Range(randomRanges[0], randomRanges[1] + 1);
+        collectBlockAmount = Random.Range(1, LevelHolder.instance.rampsOnScene[getCurrentGrid].getBlocksNeededToClimb + 1);
         _stateMachine = new StateMachine();
 
     }
@@ -46,7 +45,7 @@ public class AIPlayer : CommonBehaviours
         var collectBlocks = new CollectPartsState(this, animator);
         var goTowardsRamp = new GoTowardsRampState(this, animator);
         var idle = new IdleState(this, animator);
-        var onRamp = new OnRampState(this, animator, collectBlockAmount);
+        var onRamp = new OnRampState(this, animator);
 
         At(collectBlocks, goTowardsRamp, EnoughBlocks(true));
         At(idle, collectBlocks, EnoughBlocks(false));

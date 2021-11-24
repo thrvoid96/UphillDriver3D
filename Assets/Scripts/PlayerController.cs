@@ -54,7 +54,7 @@ public class PlayerController : CommonBehaviours
 
                             transform.DOMove(finalPos,moveDuration).SetEase(Ease.InOutSine);
 
-                            startTrails();
+                            StartTrails();
 
                             var1 = true;
                             var2 = false;
@@ -75,7 +75,7 @@ public class PlayerController : CommonBehaviours
 
                                 transform.DOMove(rampStartPos, moveDuration * 2f);
 
-                                startTrails();
+                                StartTrails();
 
                                 var1 = false;
                                 var2 = true;
@@ -96,7 +96,7 @@ public class PlayerController : CommonBehaviours
 
                             transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * coefficient,- rampLength * coefficient), moveDuration).SetEase(Ease.InOutSine);
 
-                            startTrails();
+                            StartTrails();
 
 
                             var1 = false;

@@ -25,9 +25,7 @@ namespace Behaviours
         #region Components       
 
         protected Animator animator;
-
-        protected Ramp currentRamp;
-
+        
         #endregion
 
 
@@ -53,7 +51,11 @@ namespace Behaviours
 
         public float getMaxSpeed => maxSpeed;
 
-        public int getPlayerNum => playerNum;
+        public int getPlayerNum  
+        {
+            get => playerNum;
+            set => playerNum = value;
+        }
 
         #endregion
 
@@ -78,9 +80,8 @@ namespace Behaviours
             if (other.gameObject.layer == LayerMask.NameToLayer("Ramp"))
             {
                 var closestPoint = other.ClosestPoint(transform.position);
-                var ramp = other.GetComponent<Ramp>();
 
-                SetRampValues(closestPoint, other.transform, ramp);
+                SetRampValues(closestPoint, other.transform);
                 
                 EnterRamp(other);
 
@@ -126,12 +127,9 @@ namespace Behaviours
                 transform.DOKill();
 
                 LevelManager.gameState = GameState.Finish;
-
-                Debug.LogError("here");
-
-                if (gameObject.transform.GetChild(0).gameObject.layer != LayerMask.NameToLayer("Part0Collector"))
+                
+                if (playerNum != 0)
                 {
-
                     LevelManager.instance.Fail();
                 }
                 else
@@ -154,13 +152,12 @@ namespace Behaviours
 
         }
 
-        private void SetRampValues(Vector3 closestPoint, Transform colliderTrans,Ramp ramp)
+        private void SetRampValues(Vector3 closestPoint, Transform colliderTrans)
         {
-            rampHeight = 2 * (colliderTrans.position.y - closestPoint.y);
-            rampLength = 2 * (colliderTrans.position.z - closestPoint.z);
+            var position = colliderTrans.position;
+            rampHeight = 2 * (position.y - closestPoint.y);
+            rampLength = 2 * (position.z - closestPoint.z);
             rampAngleX = Mathf.Abs(360 - colliderTrans.eulerAngles.x);
-
-            currentRamp = ramp;
         }
 
         private void EnterMiddleSection(Transform colliderTrans)
@@ -168,10 +165,10 @@ namespace Behaviours
             if (!canMove) return;
             canMove = false;
 
-            float enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
-            float duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
+            var enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
+            var duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
 
-            Vector3 finalPos = transform.position + new Vector3(0, 0, 20f);
+            var finalPos = transform.position + new Vector3(0, 0, 20f);
             
             transform.DOLookAt(finalPos, duration).OnUpdate(() =>
                 {
@@ -191,7 +188,7 @@ namespace Behaviours
             transform.DOLookAt(collider.transform.position + new Vector3(transform.position.x - collider.transform.position.x, 0.573f, 0), 0.75f).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
-                Vector3 startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
+                var startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
 
                 transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
 
@@ -201,7 +198,7 @@ namespace Behaviours
                 {
                     rampStartPos = transform.position;
 
-                    coefficient = Mathf.Clamp((float) carPartCollector.collectedPartsCount / currentRamp.getBlocksNeededToClimb, 0.1f, 0.9f);
+                    coefficient = Mathf.Clamp((float) carPartCollector.collectedPartsCount / LevelHolder.instance.rampsOnScene[gridIndex].getBlocksNeededToClimb, 0.1f, 0.9f);
 
                     finalPos = rampStartPos + new Vector3(0, rampHeight * coefficient, rampLength * coefficient);
 
@@ -270,15 +267,16 @@ namespace Behaviours
 
                 transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
-                    gridIndex++;
-
-                    if(gridIndex <= CollectablePartSpawner.instance.grids.Count)
+                    if(gridIndex < CollectablePartSpawner.instance.grids.Count - 1)
                     {
+                        gridIndex++;
+                        
                         CollectablePartSpawner.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
                     }
 
                     transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
-                    {                      
+                    {                     
+                        
                         isOnRamp = false;
 
                         canMove = true;
@@ -292,17 +290,17 @@ namespace Behaviours
             });
         }
 
-        public void startTrails()
+        public void StartTrails()
         {
             foreach(TrailRenderer trail in allTrails)
             {
                 trail.emitting = true;
             }
 
-            StartCoroutine("closeDelay");
+            StartCoroutine(nameof(CloseDelay));
         }
 
-        public void stopTrails()
+        public void StopTrails()
         {
             foreach (TrailRenderer trail in allTrails)
             {
@@ -310,10 +308,10 @@ namespace Behaviours
             }
         }
 
-        private IEnumerator closeDelay()
+        private IEnumerator CloseDelay()
         {
             yield return new WaitForSeconds(trailStayTime);
-            stopTrails();
+            StopTrails();
             yield break;
         }
 

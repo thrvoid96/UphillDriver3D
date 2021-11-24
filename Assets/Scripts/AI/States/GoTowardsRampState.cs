@@ -14,6 +14,10 @@ public class GoTowardsRampState : IState
 
     private float smoothSpeed;
 
+    private float timer;
+
+    private Vector3 lastPos;
+    
     public GoTowardsRampState(AIPlayer aIPlayer, Animator animator)
     {
         _animator = animator;
@@ -22,8 +26,43 @@ public class GoTowardsRampState : IState
 
     public void OnEnter()
     {
+        lastPos = _aIPlayer.transform.position;
+        
+        _aIPlayer.DOKill();
+        
         _aIPlayer.ResetSmoothValue();
 
+        goTowardsPosition();
+    }
+
+    public void OnExit()
+    {
+        _aIPlayer.DOKill();
+    }
+
+    public void Tick()
+    {
+        if (lastPos == _aIPlayer.transform.position)
+        {
+            timer += Time.deltaTime;
+            if (timer>=0.5f)
+            {
+                _aIPlayer.DOKill();
+                goTowardsPosition();
+                timer = 0f;
+            }
+        }
+        else
+        {
+            timer = 0f;
+        }
+
+        lastPos = _aIPlayer.transform.position;
+    }
+
+
+    private void goTowardsPosition()
+    {
         var randomIndex = UnityEngine.Random.Range(0, SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo.Count);
 
         var destination = SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
@@ -42,15 +81,4 @@ public class GoTowardsRampState : IState
             _aIPlayer.transform.DOMove(finalDest, _aIPlayer.moveDuration).SetEase(Ease.InOutSine);
         });
     }
-
-    public void OnExit()
-    {
-        _aIPlayer.DOKill();
-    }
-
-    public void Tick()
-    {
-
-    }
-
 }

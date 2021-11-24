@@ -1086,7 +1086,7 @@ GameObject:
   - component: {fileID: 3699679228955079420}
   - component: {fileID: 3699679228955079411}
   - component: {fileID: 3699679228955079410}
-  m_Layer: 22
+  m_Layer: 14
   m_Name: Finish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1348,6 +1348,10 @@ MonoBehaviour:
   colorsInThisLevelList: 
   howManyEnemy: 4
   howManyRequired: 3
+  rampsOnScene:
+  - {fileID: 6959223848906589908}
+  - {fileID: 1204909934560599778}
+  - {fileID: 6525347803913497442}
 --- !u!114 &5657796903972336577
 MonoBehaviour:
   m_ObjectHideFlags: 0
