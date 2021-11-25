@@ -76,11 +76,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2a40ae04785ab84d87770ef85b8b37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  partCount: 0
   carMeshes:
   - {fileID: 9043008835957199103}
   amountForUpgrade: 5
   upgradeAmountIncrement: 5
   blendSmoothSpeed: 0.3
+  inBetween: 0
+  currentBlendShape: 0
+  currentMesh: 0
+  awaitingUpgrades: 0
 --- !u!65 &3423520732984827813
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -92,8 +97,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.0202882, y: 1.3833518, z: 4.612194}
-  m_Center: {x: 0, y: 0.6739573, z: 0}
+  m_Size: {x: 2.0202882, y: 1.3833518, z: 4.1143146}
+  m_Center: {x: 0, y: 0.6739573, z: 0.24894238}
 --- !u!54 &4659897280541997327
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -220,6 +225,7 @@ MonoBehaviour:
   rampClimbSmoothValue: 1
   color: 0
   collisionFinalPos: {x: 0, y: 0, z: 0}
+  isCollided: 0
 --- !u!65 &3154363375389511365
 BoxCollider:
   m_ObjectHideFlags: 0

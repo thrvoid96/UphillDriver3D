@@ -76,11 +76,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2a40ae04785ab84d87770ef85b8b37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  partCount: 0
   carMeshes:
   - {fileID: 446164529385618136}
   amountForUpgrade: 5
-  collectedParts: []
+  upgradeAmountIncrement: 0
   blendSmoothSpeed: 0.3
+  inBetween: 0
+  currentBlendShape: 0
+  currentMesh: 0
+  awaitingUpgrades: 0
 --- !u!65 &4481650543213432281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -92,8 +97,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.0202882, y: 1.3833518, z: 4.612194}
-  m_Center: {x: 0, y: 0.6739573, z: 0}
+  m_Size: {x: 2.0202882, y: 1.3833518, z: 4.1143146}
+  m_Center: {x: 0, y: 0.6739573, z: 0.24894238}
 --- !u!54 &5844418290995243891
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -197,9 +202,11 @@ MonoBehaviour:
   trailStayTime: 1
   rampClimbSmoothValue: 1
   color: 0
-  randomRanges: 0100000005000000
+  collisionFinalPos: {x: 0, y: 0, z: 0}
+  isCollided: 0
   currentState: 
   collectBlockAmount: 0
+  collectAmountReached: 0
 --- !u!1 &5942730102585571582
 GameObject:
   m_ObjectHideFlags: 0
