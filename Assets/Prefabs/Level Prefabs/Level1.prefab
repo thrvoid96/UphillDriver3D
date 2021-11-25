@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 4
+  howManyEnemy: 1
   howManyRequired: 3
   rampsOnScene:
   - {fileID: 6959223848906589908}
@@ -1436,7 +1436,7 @@ MonoBehaviour:
   - tag: Part
     prefab: {fileID: 7101884677563921374, guid: 3dc0777335e20dc40baf98588035b3d7,
       type: 3}
-    size: 400
+    size: 1000
 --- !u!1 &3699679229591180539
 GameObject:
   m_ObjectHideFlags: 0

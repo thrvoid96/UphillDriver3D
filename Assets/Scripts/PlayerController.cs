@@ -45,11 +45,10 @@ public class PlayerController : CommonBehaviours
                 }
                 else
                 {
-                    distance = Vector3.Distance(rampStartPos, finalPos);
-                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
-                    
                     if (verticalInput > 0)
                     {
+                        distance = Vector3.Distance(transform.position, finalPos);
+                        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         if (!var1)
                         {
                             transform.DOMove(finalPos,moveDuration).SetEase(Ease.InOutSine);
@@ -65,12 +64,13 @@ public class PlayerController : CommonBehaviours
                     }
                     else if (verticalInput == 0)
                     {
-
+                        distance = Vector3.Distance(transform.position, rampStartPos);
+                        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         if(rampStartPos.y < transform.position.y)
                         {
                             if (!var2)
                             {
-                                transform.DOMove(rampStartPos, moveDuration * 2f);
+                                transform.DOMove(rampStartPos, moveDuration * 4f).SetEase(Ease.InExpo);
 
                                 StartTrails();
 
@@ -86,12 +86,13 @@ public class PlayerController : CommonBehaviours
                     }
                     else
                     {
+                        distance = Vector3.Distance(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), transform.position);
+                        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         if (!var3)
                         {
-                            transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * coefficient,- rampLength * coefficient), moveDuration).SetEase(Ease.InOutSine);
+                            transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutExpo);
 
                             StartTrails();
-
 
                             var1 = false;
                             var2 = false;

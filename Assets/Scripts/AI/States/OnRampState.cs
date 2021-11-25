@@ -24,7 +24,7 @@ public class OnRampState : IState
 
     public void OnEnter()
     {
-        nextCollectAmount = Random.Range(_aIPlayer.getCollectedPartCount + 1, _aIPlayer.getCollectedPartCount + LevelHolder.instance.rampsOnScene[_aIPlayer.getCurrentGrid].getBlocksNeededToClimb + 1);
+        nextCollectAmount = Random.Range(_aIPlayer.getCollectedPartCount + 1, _aIPlayer.getCollectedPartCount + 1 + LevelHolder.instance.rampsOnScene[_aIPlayer.getCurrentGrid].getBlocksNeededToClimb);
         var distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
         var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
@@ -39,7 +39,7 @@ public class OnRampState : IState
                     distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
                     moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-                    _aIPlayer.transform.DOMove(_aIPlayer.rampStartPos + new Vector3(0, -1f, -10f), moveDuration).SetEase(Ease.InOutSine);
+                    _aIPlayer.transform.DOMove(_aIPlayer.rampStartPos + new Vector3(0,- _aIPlayer.rampHeight * 0.05f,- _aIPlayer.rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutExpo);
 
                     _aIPlayer.StartTrails();
                 }                   

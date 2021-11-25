@@ -4,6 +4,7 @@ using UnityEngine;
 using Behaviours;
 using UnityEngine.AI;
 using System;
+using System.Timers;
 using DG.Tweening;
 using Random = UnityEngine.Random;
 
@@ -17,12 +18,15 @@ public class AIPlayer : CommonBehaviours
     [NonSerialized] public float rotDuration, moveDuration;
     
     public bool collectAmountReached;
+
+    private bool forceIntoIdle;
       
     private float angle, distance;
     
     public int getCollectedPartCount => carPartCollector.collectedPartsCount;
     
     private StateMachine _stateMachine;
+    
 
 
     protected override void Awake()
@@ -37,9 +41,6 @@ public class AIPlayer : CommonBehaviours
         base.Update();
         _stateMachine.Tick();
         currentState = _stateMachine.CurrentState.ToString();
-        
-        //Debug.LogError(carPartCollector.collectedPartsCount >= collectBlockAmount);
-        
     }
 
     protected override void Start()
@@ -53,10 +54,14 @@ public class AIPlayer : CommonBehaviours
         var collided = new CollisionState(this, animator);
 
         At(collectBlocks, goTowardsRamp, EnoughBlocks(true));
-        At(idle, collectBlocks, EnoughBlocks(false));
+        
+        At(idle, goTowardsRamp, EnoughBlocks(true));
         At(idle, onRamp, ClimbingRamp(true));
+        
+        At(idle, collectBlocks, EnoughBlocks(false));
+        At(collided, collectBlocks, EnoughBlocks(false));
+        At(collided, collectBlocks, Collided(false));
         At(goTowardsRamp, collectBlocks, ZeroBlocks());
-        At(collided, idle, Collided(false));
 
         _stateMachine.AddAnyTransition(idle, CanMove(false));
         _stateMachine.AddAnyTransition(collided, Collided(true));
@@ -69,7 +74,8 @@ public class AIPlayer : CommonBehaviours
         {
             return delegate
             {
-                collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount;
+
+                collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount && !isOnRamp;
 
                 return value
                 ? collectAmountReached
@@ -96,14 +102,14 @@ public class AIPlayer : CommonBehaviours
         {
             return delegate
             {
-                var move = isCollided;
+                var collide = isCollided;
 
                 return value
-                    ? move
-                    : !move;
+                    ? collide
+                    : !collide;
             };
         }
-
+        
         Func<bool> CanMove(bool value)
         {
             return delegate
@@ -118,7 +124,7 @@ public class AIPlayer : CommonBehaviours
 
     }
     
-    public void calculateValues(Vector3 destination)
+    public void CalculateValues(Vector3 destination)
     {      
         distance = Vector3.Distance(transform.position, destination);
         moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);

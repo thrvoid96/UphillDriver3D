@@ -37,9 +37,9 @@ namespace Behaviours
         public Vector3 collisionFinalPos;
 
         protected bool canMove = true;
-        protected bool isOnRamp;
-        protected bool enteringRamp;
-        protected bool isCollided;
+        protected bool isOnRamp, isInMidSection, enteringRamp;
+        public bool isCollided;
+
         
         protected float smoothSpeed;
 
@@ -146,15 +146,16 @@ namespace Behaviours
             {
                 var enemyCar = other.GetComponent<CommonBehaviours>();
                 
-                if(enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount)
+                if(enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount && !isInMidSection)
                 {
                     transform.DOKill();
                     isCollided = true;
+                    carPartCollector.DowngradeCar();
                     
                     if (!isOnRamp)
                     {
                         var direction = transform.position - other.transform.position;
-                        collisionFinalPos = transform.position + direction;
+                        collisionFinalPos = transform.position + new Vector3(direction.x, 0, direction.z);
                         
                         transform.DOMove(collisionFinalPos, 0.5f).SetEase(Ease.InOutSine)
                             
@@ -162,19 +163,18 @@ namespace Behaviours
                             {
                             isCollided = false; 
                             });
-                    
-                        carPartCollector.DowngradeCar();
+                        
                     }
                     else
                     {
-                        var distance = Vector3.Distance(rampStartPos, finalPos);
-                        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+                        var distance = Vector3.Distance(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), transform.position);
+                        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         
-                        transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * coefficient,- rampLength * coefficient), moveDuration).SetEase(Ease.InOutSine)
+                        transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration).SetEase(Ease.InOutSine)
                             
                             .OnComplete(() => 
                             {
-                            isCollided = false; 
+                                isCollided = false;
                             });;
                     }
                     
@@ -196,12 +196,14 @@ namespace Behaviours
             if (!canMove) return;
             canMove = false;
 
+            isInMidSection = true;
+
             var enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
             var duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
 
-            var finalPos = transform.position + new Vector3(0, 0, 20f);
+            var posToGo = transform.position + new Vector3(0, 0, 20f);
             
-            transform.DOLookAt(finalPos, duration).OnUpdate(() =>
+            transform.DOLookAt(posToGo, duration).OnUpdate(() =>
                 {
                     smoothSpeed += 1f;
                     smoothSpeed = Mathf.Clamp(smoothSpeed, 0, maxSpeed);
@@ -209,7 +211,10 @@ namespace Behaviours
                 })
                 .OnComplete(() =>
                 {
-                    transform.DOMove(finalPos, 0.75f).SetEase(Ease.InOutSine);
+                    transform.DOMove(posToGo, 0.75f).SetEase(Ease.InOutSine);
+                    
+                    isInMidSection = false;
+                    
                     smoothSpeed = 0f;
                 });
         }
@@ -220,6 +225,8 @@ namespace Behaviours
             .OnStart(() =>
             {
                 var startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
+                
+                isOnRamp = true;
 
                 transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
 
@@ -229,11 +236,9 @@ namespace Behaviours
                 {
                     rampStartPos = transform.position;
 
-                    coefficient = Mathf.Clamp((float) carPartCollector.collectedPartsCount / LevelHolder.instance.rampsOnScene[gridIndex].getBlocksNeededToClimb, 0.1f, 0.9f);
+                    coefficient = Mathf.Clamp(((float) carPartCollector.collectedPartsCount / LevelHolder.instance.rampsOnScene[gridIndex].getBlocksNeededToClimb)* 0.9f, 0.1f, 0.9f);
 
-                    finalPos = rampStartPos + new Vector3(0, rampHeight * coefficient, rampLength * coefficient);
-
-                    isOnRamp = true;
+                    finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + 0.573f, rampLength * coefficient);
 
                     canMove = true;
 
@@ -256,6 +261,8 @@ namespace Behaviours
             transform.DOLookAt(transform.position + transform.right * random, 0.75f).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
+                isInMidSection = true;
+                
                 canMove = false;
 
                 transform.DOMove(new Vector3(transform.position.x + (-random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z), 0.75f).SetEase(Ease.InOutSine);
@@ -278,6 +285,8 @@ namespace Behaviours
                         isOnRamp = false;
 
                         canMove = true;
+                        
+                        isInMidSection = false;
                     }); ;
 
 
@@ -295,6 +304,8 @@ namespace Behaviours
             transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f).OnStart(() =>
             {
                 canMove = false;
+                
+                isInMidSection = true;
 
                 transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
@@ -307,6 +318,7 @@ namespace Behaviours
 
                     transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                     {                     
+                        isInMidSection = false;
                         
                         isOnRamp = false;
 

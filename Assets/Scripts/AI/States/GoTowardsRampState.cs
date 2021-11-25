@@ -13,8 +13,10 @@ public class GoTowardsRampState : IState
     private AIPlayer _aIPlayer;
 
     private float smoothSpeed;
-    
-    
+
+    private float timer;
+    private Vector3 lastPos;
+
     public GoTowardsRampState(AIPlayer aIPlayer, Animator animator)
     {
         _animator = animator;
@@ -23,8 +25,8 @@ public class GoTowardsRampState : IState
 
     public void OnEnter()
     {
-        _aIPlayer.DOKill();
-        
+        timer = 0f;
+        lastPos = _aIPlayer.transform.position;
         _aIPlayer.ResetSmoothValue();
 
         goTowardsPosition();
@@ -37,7 +39,15 @@ public class GoTowardsRampState : IState
 
     public void Tick()
     {
-
+        if (lastPos == _aIPlayer.transform.position)
+        {
+            timer += Time.deltaTime;
+            if (timer > 0.2f)
+            {
+                goTowardsPosition();
+                timer = 0f;
+            }
+        }
     }
 
 
@@ -49,7 +59,7 @@ public class GoTowardsRampState : IState
 
         var finalDest = new Vector3(destination.x, _aIPlayer.transform.position.y, destination.z);
 
-        _aIPlayer.calculateValues(finalDest);
+        _aIPlayer.CalculateValues(finalDest);
 
         _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration).SetEase(Ease.InOutSine).OnUpdate(() =>
         {

@@ -70,7 +70,7 @@ public class CollectPartsState : IState
 
         if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, 1.5f, partMask, QueryTriggerInteraction.Collide))
         {
-            _aIPlayer.calculateValues(finalDest);
+            _aIPlayer.CalculateValues(finalDest);
 
             _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration).SetEase(Ease.InOutSine).OnUpdate(() =>
             {

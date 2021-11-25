@@ -57,6 +57,11 @@ public class LevelManager : MonoBehaviour
     {
         VictoryPanel.instance.VictoryCase();
         Debug.Log("VICTORY");
+
+        for (int i = 0; i < playersOnGameList.Count; i++)
+        {
+            playersOnGameList[i].transform.DOKill();
+        }
     }
 
     //-------------------------------------------------------------------------------------------
@@ -64,6 +69,11 @@ public class LevelManager : MonoBehaviour
     {
         LosePanel.instance.LoseCase();
         Debug.Log("FAILED");
+        
+        for (int i = 0; i < playersOnGameList.Count; i++)
+        {
+            playersOnGameList[i].transform.DOKill();
+        }
     }
     
     
