@@ -44,9 +44,14 @@ public class GoTowardsRampState : IState
             timer += Time.deltaTime;
             if (timer > 0.2f)
             {
+                Debug.LogError("door stuck");
                 goTowardsPosition();
                 timer = 0f;
             }
+        }
+        else
+        {
+            lastPos = _aIPlayer.transform.position;
         }
     }
 

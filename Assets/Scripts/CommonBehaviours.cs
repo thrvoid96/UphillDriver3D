@@ -168,14 +168,11 @@ namespace Behaviours
                     else
                     {
                         var distance = Vector3.Distance(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), transform.position);
-                        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
-                        
-                        transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration).SetEase(Ease.InOutSine)
-                            
-                            .OnComplete(() => 
-                            {
-                                isCollided = false;
-                            });;
+                        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+                        transform.DOMove(rampStartPos + new Vector3(0, -rampHeight * 0.05f, -rampLength * 0.05f),
+                            moveDuration).SetEase(Ease.InOutSine);
+
                     }
                     
                 }
@@ -267,7 +264,6 @@ namespace Behaviours
 
                 transform.DOMove(new Vector3(transform.position.x + (-random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z), 0.75f).SetEase(Ease.InOutSine);
 
-
             })
             .OnComplete(() =>
             {
@@ -282,9 +278,11 @@ namespace Behaviours
                     transform.DOMove(new Vector3(transform.position.x + (random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z - 10f), 0.75f).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
                     {
-                        isOnRamp = false;
-
                         canMove = true;
+
+                        isOnRamp = false;
+                        
+                        isCollided = false;
                         
                         isInMidSection = false;
                     }); ;
