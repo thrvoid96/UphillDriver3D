@@ -163,7 +163,46 @@ namespace Behaviours
                             {
                             isCollided = false; 
                             });
-                        
+
+                        var rotateValue = Quaternion.Euler(10, transform.eulerAngles.y, 10);
+
+                        if (transform.position.x >= collisionFinalPos.x)
+                        {
+                            if (transform.position.z >= collisionFinalPos.z)
+                            {
+                                rotateValue.x = rotateValue.x;
+                                rotateValue.z = -rotateValue.z;
+                            }
+                            else
+                            {
+                                rotateValue.x = -rotateValue.x;
+                                rotateValue.z = -rotateValue.z;
+                            }
+                        }
+                        else
+                        {
+                            if (transform.position.z >= collisionFinalPos.z)
+                            {
+                                rotateValue.x = rotateValue.x;
+                                rotateValue.z = rotateValue.z;
+                            }
+                            else
+                            {
+                                rotateValue.x = -rotateValue.x;
+                                rotateValue.z = rotateValue.z;
+                            }
+                        }
+
+                        transform.DORotateQuaternion(rotateValue,0.25f).SetEase(Ease.InOutSine).OnComplete(
+                            () =>
+                            {
+                                transform.DORotateQuaternion(Quaternion.Euler(0,transform.eulerAngles.y,0), 0.25f).SetEase(Ease.InOutSine).OnComplete(
+                                    () =>
+                                    {
+
+                                    });
+                            });
+
                     }
                     else
                     {
