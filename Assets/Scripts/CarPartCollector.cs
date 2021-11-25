@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class CarPartCollector : MonoBehaviour
@@ -37,7 +38,7 @@ public class CarPartCollector : MonoBehaviour
     {
         if (other.CompareTag(gameObject.tag))
         {
-            collectedParts.Push(other.gameObject.transform.parent.parent.gameObject);
+            collectedParts.Push(other.gameObject.transform.gameObject);
 
             inBetween++;
             CheckCarUpgrade();
@@ -125,6 +126,7 @@ public class CarPartCollector : MonoBehaviour
                     
                     yield return null;
                 }
+                
                 
             }
             
