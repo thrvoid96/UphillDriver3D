@@ -146,77 +146,100 @@ namespace Behaviours
             {
                 var enemyCar = other.GetComponent<CommonBehaviours>();
                 
-                if(enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount && !isInMidSection)
-                {
-                    transform.DOKill();
-                    isCollided = true;
-                    carPartCollector.DowngradeCar();
+                if(!isInMidSection){
                     
-                    if (!isOnRamp)
-                    {
-                        var direction = transform.position - other.transform.position;
-                        collisionFinalPos = transform.position + new Vector3(direction.x, 0, direction.z);
-                        
-                        transform.DOMove(collisionFinalPos, 0.5f).SetEase(Ease.InOutSine)
-                            
-                            .OnComplete(() => 
-                            {
-                            isCollided = false; 
-                            });
+                    if (enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount)
+                    { 
+                        transform.DOKill();
+                        isCollided = true;
+                        carPartCollector.DowngradeCar();
 
-                        var rotateValue = Quaternion.Euler(10, transform.eulerAngles.y, 10);
-
-                        if (transform.position.x >= collisionFinalPos.x)
+                        if (!isOnRamp)
                         {
-                            if (transform.position.z >= collisionFinalPos.z)
-                            {
-                                rotateValue.x = rotateValue.x;
-                                rotateValue.z = -rotateValue.z;
-                            }
-                            else
-                            {
-                                rotateValue.x = -rotateValue.x;
-                                rotateValue.z = -rotateValue.z;
-                            }
+                            CollisionCalculate(other);
+
+                            ShakeCalculate();
+
                         }
                         else
                         {
-                            if (transform.position.z >= collisionFinalPos.z)
-                            {
-                                rotateValue.x = rotateValue.x;
-                                rotateValue.z = rotateValue.z;
-                            }
-                            else
-                            {
-                                rotateValue.x = -rotateValue.x;
-                                rotateValue.z = rotateValue.z;
-                            }
+                            GetDownFromRamp();
                         }
-
-                        transform.DORotateQuaternion(rotateValue,0.25f).SetEase(Ease.InOutSine).OnComplete(
-                            () =>
-                            {
-                                transform.DORotateQuaternion(Quaternion.Euler(0,transform.eulerAngles.y,0), 0.25f).SetEase(Ease.InOutSine).OnComplete(
-                                    () =>
-                                    {
-
-                                    });
-                            });
-
                     }
-                    else
+                    else if(enemyCar.carPartCollector.collectedPartsCount == carPartCollector.collectedPartsCount)
                     {
-                        var distance = Vector3.Distance(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), transform.position);
-                        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
-
-                        transform.DOMove(rampStartPos + new Vector3(0, -rampHeight * 0.05f, -rampLength * 0.05f),
-                            moveDuration).SetEase(Ease.InOutSine);
-
+                        transform.DOKill();
+                        isCollided = true;
+                        
+                        CollisionCalculate(other);
+                        ShakeCalculate();
                     }
-                    
                 }
             }
 
+        }
+
+        private void GetDownFromRamp()
+        {
+            var distance =
+                Vector3.Distance(
+                    rampStartPos + new Vector3(0, -rampHeight * 0.05f, -rampLength * 0.05f),
+                    transform.position);
+            var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+
+            transform.DOMove(rampStartPos + new Vector3(0, -rampHeight * 0.05f, -rampLength * 0.05f),
+                moveDuration).SetEase(Ease.InOutSine).OnComplete(
+                () => { isCollided = false; });
+        }
+
+        private void CollisionCalculate(Collider other)
+        {
+            var direction = transform.position - other.transform.position;
+            collisionFinalPos = transform.position +
+                                new Vector3(direction.x * 1.2f, 0, direction.z * 1.2f);
+
+            transform.DOMove(collisionFinalPos, 0.5f).SetEase(Ease.InOutSine)
+
+                .OnComplete(() => { isCollided = false; });
+        }
+
+        private void ShakeCalculate()
+        {
+            var rotateValue = Quaternion.Euler(10, transform.eulerAngles.y, 10);
+
+            if (transform.position.x >= collisionFinalPos.x)
+            {
+                if (transform.position.z >= collisionFinalPos.z)
+                {
+                    rotateValue.x = rotateValue.x;
+                    rotateValue.z = -rotateValue.z;
+                }
+                else
+                {
+                    rotateValue.x = -rotateValue.x;
+                    rotateValue.z = -rotateValue.z;
+                }
+            }
+            else
+            {
+                if (transform.position.z >= collisionFinalPos.z)
+                {
+                    rotateValue.x = rotateValue.x;
+                    rotateValue.z = rotateValue.z;
+                }
+                else
+                {
+                    rotateValue.x = -rotateValue.x;
+                    rotateValue.z = rotateValue.z;
+                }
+            }
+
+            transform.DORotateQuaternion(rotateValue, 0.25f).SetEase(Ease.InOutSine).OnComplete(
+                () =>
+                {
+                    transform.DORotateQuaternion(Quaternion.Euler(0, transform.eulerAngles.y, 0), 0.25f)
+                        .SetEase(Ease.InOutSine);
+                });
         }
 
         private void SetRampValues(Vector3 closestPoint, Transform colliderTrans)
@@ -248,9 +271,7 @@ namespace Behaviours
                 .OnComplete(() =>
                 {
                     transform.DOMove(posToGo, 0.75f).SetEase(Ease.InOutSine);
-                    
-                    isInMidSection = false;
-                    
+
                     smoothSpeed = 0f;
                 });
         }
@@ -261,8 +282,6 @@ namespace Behaviours
             .OnStart(() =>
             {
                 var startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
-                
-                isOnRamp = true;
 
                 transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
 
@@ -272,9 +291,13 @@ namespace Behaviours
                 {
                     rampStartPos = transform.position;
 
-                    coefficient = Mathf.Clamp(((float) carPartCollector.collectedPartsCount / LevelHolder.instance.rampsOnScene[gridIndex].getBlocksNeededToClimb)* 0.9f, 0.1f, 0.9f);
+                    coefficient = Mathf.Clamp(((float) carPartCollector.collectedPartsCount / LevelHolder.instance.howManyFloors[gridIndex].blocksToPassRamp)* 0.9f, 0.1f, 0.9f);
 
                     finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + 0.573f, rampLength * coefficient);
+                    
+                    isInMidSection = false;
+                    
+                    isOnRamp = true;
 
                     canMove = true;
 
@@ -312,8 +335,6 @@ namespace Behaviours
                     transform.DOLookAt(transform.position - Vector3.forward, 0.75f).SetEase(Ease.InOutSine)
                 .OnStart(() =>
                 {
-                    canMove = false;
-
                     transform.DOMove(new Vector3(transform.position.x + (random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z - 10f), 0.75f).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
                     {
@@ -346,11 +367,11 @@ namespace Behaviours
 
                 transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
-                    if(gridIndex < CollectablePartSpawner.instance.grids.Count - 1)
+                    if(gridIndex < LevelHolder.instance.howManyFloors.Count - 1)
                     {
                         gridIndex++;
                         
-                        CollectablePartSpawner.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
+                        LevelHolder.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
                     }
 
                     transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>

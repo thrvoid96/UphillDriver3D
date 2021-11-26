@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelPrefabs:
   - {fileID: 3699679229356714574, guid: 1c0aae967e7341d4aa468ac431a3c84f, type: 3}
-  layoutElements: {fileID: 4284824929103184188, guid: d91ed2b81d0539f4a9557f3bc37febde,
-    type: 3}
+  floorPrefabs:
+  - {fileID: 424445057561914669, guid: a40001b575e2ec04b9a3ee794f7576e2, type: 3}
+  - {fileID: 4711003283999332107, guid: b5936536f646f7c4aa35f8c9c6706ff7, type: 3}
+  - {fileID: 7543185204763268468, guid: 0d1f8e3c0f496ba45892629e0cede7a6, type: 3}
+  - {fileID: 2824514326783346252, guid: c178127f8f3a4fe41bc02f31a5a29926, type: 3}
   gameColor: 01000000000000000200000003000000040000000500000006000000
   materials:
   - {fileID: 2100000, guid: 796ac5aeeed4750459e6142717575f83, type: 2}
@@ -30,3 +33,5 @@ MonoBehaviour:
   layoutElementComponents:
   - {fileID: 21300000, guid: b613a6bc0ff00294d977d43953a24b19, type: 3}
   - {fileID: 21300000, guid: 3b22ef1da3d4fea4fadc9dad51712024, type: 3}
+  layoutElements: {fileID: 4284824929103184188, guid: d91ed2b81d0539f4a9557f3bc37febde,
+    type: 3}

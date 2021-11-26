@@ -90,7 +90,7 @@ public class PlayerController : CommonBehaviours
                         moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         if (!var3)
                         {
-                            transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutExpo);
+                            transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutQuint);
 
                             StartTrails();
 

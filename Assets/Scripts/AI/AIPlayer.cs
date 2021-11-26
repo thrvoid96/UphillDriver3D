@@ -32,7 +32,7 @@ public class AIPlayer : CommonBehaviours
     protected override void Awake()
     {
         base.Awake();
-        collectBlockAmount = Random.Range(1, LevelHolder.instance.rampsOnScene[getCurrentGrid].getBlocksNeededToClimb + 1);
+        collectBlockAmount = Random.Range(1, LevelHolder.instance.howManyFloors[getCurrentGrid].blocksToPassRamp + 1);
         _stateMachine = new StateMachine();
 
     }
@@ -74,7 +74,6 @@ public class AIPlayer : CommonBehaviours
         {
             return delegate
             {
-
                 collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount && !isOnRamp;
 
                 return value

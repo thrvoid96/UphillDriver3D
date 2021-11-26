@@ -26,7 +26,7 @@ public class CollisionState : IState
 
     public void OnExit()
     {
-
+        _aIPlayer.DOKill();
     }
 
     public void Tick()

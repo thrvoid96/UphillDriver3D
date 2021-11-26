@@ -48,7 +48,7 @@ public class ObjectPooler : MonoBehaviour
 
     }
 
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, int playerNum)
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation,Transform parentObj, int playerNum)
     {
         if (!poolDictionary.ContainsKey(tag))
         {
@@ -60,6 +60,7 @@ public class ObjectPooler : MonoBehaviour
         objToSpawn.SetActive(true);
         objToSpawn.transform.position = position;
         objToSpawn.transform.rotation = rotation;
+        objToSpawn.transform.parent = parentObj;
 
         var partScript = objToSpawn.GetComponent<CarPart>();
         partScript.playerNum = playerNum;

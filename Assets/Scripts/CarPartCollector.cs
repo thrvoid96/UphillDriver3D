@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class CarPartCollector : MonoBehaviour
 {
-    public int partCount;
     [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
     
     [SerializeField] private int amountForUpgrade;
@@ -17,48 +16,54 @@ public class CarPartCollector : MonoBehaviour
     [Header("0 for instant, 1 for slowest")]
     [SerializeField] private float blendSmoothSpeed;
     
-    private Stack<GameObject> collectedParts = new Stack<GameObject>();
+    public int collectedPartsCount;
 
-    public int inBetween,currentBlendShape,currentMesh,awaitingUpgrades;
+    public int inBetween,currentBlendShape,currentMesh,awaitingUpgrades,totalAmountNeeded;
 
-    public int collectedPartsCount => collectedParts.Count;
+    private List<int> totalNeededForEachCar = new List<int>();
+
+
 
     private void Start()
     {
         StartCoroutine(nameof(UpgradeSmooth));
         firstAmountForUpgrade = amountForUpgrade;
+        
+        for (int i = 0; i < carMeshes.Count; i++)
+        {
+            totalAmountNeeded += (amountForUpgrade + (upgradeAmountIncrement * i)) *
+                                 carMeshes[i].sharedMesh.blendShapeCount;
+            totalNeededForEachCar.Add((amountForUpgrade + (upgradeAmountIncrement * i)) * carMeshes[i].sharedMesh.blendShapeCount);
+        }
     }
-
-    private void Update()
-    {
-        partCount = collectedPartsCount;
-    }
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(gameObject.tag))
         {
-            collectedParts.Push(other.gameObject.transform.gameObject);
+            collectedPartsCount++;
 
-            inBetween++;
             CheckCarUpgrade();
         }
     }
 
     private void CheckCarUpgrade()
     {
-        if(inBetween == amountForUpgrade)
+        if (collectedPartsCount <= totalAmountNeeded)
         {
-            inBetween = 0;
-
-            if(awaitingUpgrades + currentBlendShape < carMeshes[currentMesh].sharedMesh.blendShapeCount)
+            inBetween++;
+            
+            if (inBetween == amountForUpgrade)
             {
+                inBetween = 0;
+                
                 awaitingUpgrades++;
+                
+                if (collectedPartsCount == totalNeededForEachCar[currentMesh])
+                {
+                    amountForUpgrade += upgradeAmountIncrement;
+                }
             }
-            else
-            {
-                UpgradeCar();
-            }          
         }
     }
 
@@ -69,18 +74,16 @@ public class CarPartCollector : MonoBehaviour
 
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh++;
-        amountForUpgrade += upgradeAmountIncrement;
         carMeshes[currentMesh].gameObject.SetActive(true);
     }
 
     public void DowngradeCar()
     {
-        var blocksToPopCount = Mathf.Clamp(inBetween + (amountForUpgrade * (currentBlendShape +1)),0,collectedParts.Count);
-        
-        for (int i = 0; i < blocksToPopCount; i++)
-        {
-            collectedParts.Pop();
-        }
+        var blocksToPopCount = Mathf.Clamp(inBetween + (amountForUpgrade * (currentBlendShape +1)),0,collectedPartsCount);
+
+        collectedPartsCount -= blocksToPopCount;
+
+        awaitingUpgrades = 0;
         
         ResetValues();
         
@@ -101,7 +104,6 @@ public class CarPartCollector : MonoBehaviour
             carMeshes[currentMesh].SetBlendShapeWeight(i, 100f);
         }
         currentBlendShape = 0;
-        awaitingUpgrades = 0;
         inBetween = 0;
     }
 
@@ -120,9 +122,14 @@ public class CarPartCollector : MonoBehaviour
                 }
                 else
                 {
-                    currentBlendShape = Mathf.Clamp(currentBlendShape+=1, 0, carMeshes[0].sharedMesh.blendShapeCount);
+                    currentBlendShape = Mathf.Clamp(currentBlendShape+=1, 0, carMeshes[currentMesh].sharedMesh.blendShapeCount);
                     value = 100f; 
                     awaitingUpgrades--;
+                    
+                    if (currentBlendShape == carMeshes[0].sharedMesh.blendShapeCount)
+                    {
+                        UpgradeCar();
+                    }
                     
                     yield return null;
                 }

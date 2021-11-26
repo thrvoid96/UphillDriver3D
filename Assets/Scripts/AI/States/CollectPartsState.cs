@@ -33,7 +33,7 @@ public class CollectPartsState : IState
 
     public void OnExit()
     {
-        _aIPlayer.DOKill();
+        
     }
 
     public void Tick()
@@ -43,7 +43,7 @@ public class CollectPartsState : IState
 
     private void randomizePoints()
     {
-        var list = CollectablePartSpawner.instance.getBlockPositionsForPlayer(_aIPlayer.getCurrentGrid, _aIPlayer.getPlayerNum);
+        var list = LevelHolder.instance.getBlockPositionsForPlayer(_aIPlayer.getCurrentGrid, _aIPlayer.getPlayerNum);
 
         for (int i = 0; i < list.Count; i++)
         {

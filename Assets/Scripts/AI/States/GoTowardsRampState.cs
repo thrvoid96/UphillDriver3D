@@ -34,7 +34,7 @@ public class GoTowardsRampState : IState
 
     public void OnExit()
     {
-        _aIPlayer.DOKill();
+        
     }
 
     public void Tick()
@@ -57,9 +57,9 @@ public class GoTowardsRampState : IState
 
     private void goTowardsPosition()
     {
-        var randomIndex = UnityEngine.Random.Range(0, SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo.Count);
+        var randomIndex = UnityEngine.Random.Range(0, LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].AIPositionsToGo.Count);
 
-        var destination = SceneSetup.instance.floorsOnScene[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
+        var destination = LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
 
         var finalDest = new Vector3(destination.x, _aIPlayer.transform.position.y, destination.z);
 

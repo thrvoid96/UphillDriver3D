@@ -13,7 +13,7 @@ public class OnRampState : IState
     private Animator _animator;
     private AIPlayer _aIPlayer;
 
-    private int nextCollectAmount;
+    private int addAmount;
 
 
     public OnRampState(AIPlayer aIPlayer, Animator animator)
@@ -24,7 +24,7 @@ public class OnRampState : IState
 
     public void OnEnter()
     {
-        nextCollectAmount = Random.Range(_aIPlayer.getCollectedPartCount + 1, _aIPlayer.getCollectedPartCount + 1 + LevelHolder.instance.rampsOnScene[_aIPlayer.getCurrentGrid].getBlocksNeededToClimb);
+        addAmount = Random.Range(1, LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].blocksToPassRamp);
         var distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
         var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
@@ -39,17 +39,19 @@ public class OnRampState : IState
                     distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
                     moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-                    _aIPlayer.transform.DOMove(_aIPlayer.rampStartPos + new Vector3(0,- _aIPlayer.rampHeight * 0.05f,- _aIPlayer.rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutExpo);
-
+                    _aIPlayer.transform
+                        .DOMove(
+                            _aIPlayer.rampStartPos + new Vector3(0, -_aIPlayer.rampHeight * 0.05f,
+                                -_aIPlayer.rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutQuint);
+                    
                     _aIPlayer.StartTrails();
-                }                   
+                }  
         });
     }
 
     public void OnExit()
-    {       
-        _aIPlayer.collectBlockAmount = nextCollectAmount;
-        _aIPlayer.DOKill();
+    {
+        _aIPlayer.collectBlockAmount = _aIPlayer.getCollectedPartCount + addAmount;
     }
 
     public void Tick()

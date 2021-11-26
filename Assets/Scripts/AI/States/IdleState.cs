@@ -21,12 +21,10 @@ public class IdleState : IState
 
     public void OnEnter()
     {
-        _aIPlayer.DOKill();
     }
 
     public void OnExit()
     {
-
     }
 
     public void Tick()
