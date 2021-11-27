@@ -79,15 +79,11 @@ MonoBehaviour:
   carMeshes:
   - {fileID: 9043008835957199103}
   - {fileID: 7697581430624835103}
-  amountForUpgrade: 5
-  upgradeAmountIncrement: 5
-  blendSmoothSpeed: 0.3
   collectedPartsCount: 0
   inBetween: 0
-  currentBlendShape: 0
+  amountForUpgrade: 5
   currentMesh: 0
-  awaitingUpgrades: 0
-  totalAmountNeeded: 0
+  currentBlendShape: 0
 --- !u!65 &3423520732984827813
 BoxCollider:
   m_ObjectHideFlags: 0

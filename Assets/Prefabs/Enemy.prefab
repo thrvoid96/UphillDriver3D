@@ -79,14 +79,11 @@ MonoBehaviour:
   carMeshes:
   - {fileID: 446164529385618136}
   - {fileID: 5006778777666328234}
-  amountForUpgrade: 5
-  upgradeAmountIncrement: 0
-  blendSmoothSpeed: 0.3
   collectedPartsCount: 0
   inBetween: 0
-  currentBlendShape: 0
+  amountForUpgrade: 5
   currentMesh: 0
-  awaitingUpgrades: 0
+  currentBlendShape: 0
 --- !u!65 &4481650543213432281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -352,9 +349,9 @@ TrailRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 2195514969931888036}
   m_PrefabAsset: {fileID: 0}
---- !u!96 &6419147479454273438 stripped
+--- !u!96 &3704177130284696405 stripped
 TrailRenderer:
-  m_CorrespondingSourceObject: {fileID: 5146890503523990074, guid: c885030bd71e6124a9dde0a3dcf82626,
+  m_CorrespondingSourceObject: {fileID: 3251572830083053297, guid: c885030bd71e6124a9dde0a3dcf82626,
     type: 3}
   m_PrefabInstance: {fileID: 2195514969931888036}
   m_PrefabAsset: {fileID: 0}
@@ -364,9 +361,9 @@ TrailRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 2195514969931888036}
   m_PrefabAsset: {fileID: 0}
---- !u!96 &3704177130284696405 stripped
+--- !u!96 &6419147479454273438 stripped
 TrailRenderer:
-  m_CorrespondingSourceObject: {fileID: 3251572830083053297, guid: c885030bd71e6124a9dde0a3dcf82626,
+  m_CorrespondingSourceObject: {fileID: 5146890503523990074, guid: c885030bd71e6124a9dde0a3dcf82626,
     type: 3}
   m_PrefabInstance: {fileID: 2195514969931888036}
   m_PrefabAsset: {fileID: 0}
