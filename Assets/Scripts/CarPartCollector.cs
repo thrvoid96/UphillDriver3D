@@ -58,7 +58,8 @@ public class CarPartCollector : MonoBehaviour
     private void UpgradeCar()
     {
         if(currentMesh == carMeshes.Count - 1) { return; }
-        currentBlendShape = 0;
+
+        ResetValues();
 
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh++;
@@ -73,27 +74,24 @@ public class CarPartCollector : MonoBehaviour
         
         collectedPartsCount -= blocksToRemove;
         
-        inBetween = 0;
-        
-        currentBlendShape = 0;
-        
-        ResetShapes();
+        ResetValues();
         
         if (currentMesh == 0) { return; }
 
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh--;
         carMeshes[currentMesh].gameObject.SetActive(true);
-        
-        ResetShapes();
     }
 
-    private void ResetShapes()
+    private void ResetValues()
     {
         for(int i=0; i< carMeshes[currentMesh].sharedMesh.blendShapeCount; i++)
         {
             carMeshes[currentMesh].SetBlendShapeWeight(i, 100f);
         }
+        
+        inBetween = 0;
+        currentBlendShape = 0;
     }
     
     
