@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using Behaviours;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -37,41 +38,41 @@ public class LevelHolder : MonoBehaviour
         public RampType rampType;
         public int blocksToPassRamp;
         
-        [Header("AI Stats")]
-        public List<Transform> AIPositionsToGo = new List<Transform>();
         
         [Header("Grid Stats")]
         public int gridSizeX = 10;
         public int gridSizeZ = 10;
         public float gridSpacingX = 6f;
         public float gridSpacingZ = 6f;
-        public Transform gridOrigin;
+        
+        
+        [System.NonSerialized] public Transform gridOrigin;
         [System.NonSerialized] public int directionX,directionZ;
         [System.NonSerialized] public List<int> randomList = new List<int>();
         [System.NonSerialized] public Dictionary<int, List<Vector3>> blockPositions = new Dictionary<int, List<Vector3>>();
+        [System.NonSerialized] public List<Vector3> AIPositionsToGo = new List<Vector3>();
     }
     
     public List<Floor> howManyFloors;
 
-    #region Singleton
+
     public static LevelHolder instance;
     private void Awake()
     {
         instance = this;
     }
-    #endregion
-    
     
     private void Start()
     {
         var howMany = 0;
         StructurePanel.instance.CreateLayoutElement(howMany);
-        DetermineColorsInThisLevelList();
+        CreateFloors();
         
-        //CreateFloors();
+        DetermineColorsInThisLevelList();
         CreateGridPositions();
     }
     
+    //----------------------------------------------------------------------------------------//
     private void CreateGridPositions()
     {
         foreach (Floor floor in howManyFloors)
@@ -95,6 +96,7 @@ public class LevelHolder : MonoBehaviour
         }
     }
     
+    //----------------------------------------------------------------------------------------//
     private void randomizeSpawnPoints(Floor floor)
     {
 
@@ -111,7 +113,8 @@ public class LevelHolder : MonoBehaviour
             uniqueNumbers.Remove(ranNum);
         }
     }
-
+    
+    //----------------------------------------------------------------------------------------//
     private void setBlockSpawnPositions(Floor floor, int playerNum)
     {
         var longNum = floor.randomList.Count / LevelManager.instance.playersOnGameList.Count;
@@ -122,8 +125,9 @@ public class LevelHolder : MonoBehaviour
             var x = Mathf.FloorToInt(floor.randomList[i] / floor.gridSizeZ);
             var z = floor.randomList[i] % floor.gridSizeZ;
 
-            Vector3 spawnPosition = new Vector3(x * floor.gridSpacingX, 0, z * floor.gridSpacingZ) 
-                                    + floor.gridOrigin.transform.position;
+            Vector3 spawnPosition = new Vector3(x * floor.gridSpacingX, 0, z * floor.gridSpacingZ)
+                                    + new Vector3(floor.gridOrigin.transform.position.x - ((floor.gridSizeX - 1) * floor.gridSpacingX * 0.5f),
+                                        floor.gridOrigin.transform.position.y, floor.gridOrigin.transform.position.z - ((floor.gridSizeZ - 1) * floor.gridSpacingZ * 0.5f));
             
             list.Add(spawnPosition);
         }
@@ -131,6 +135,7 @@ public class LevelHolder : MonoBehaviour
         floor.blockPositions.Add(playerNum , list);
     }
     
+    //----------------------------------------------------------------------------------------//
     private void AddMissingBlocks(Floor floor)
     {
         var difference = floor.randomList.Count % LevelManager.instance.playersOnGameList.Count;
@@ -143,7 +148,8 @@ public class LevelHolder : MonoBehaviour
                 var z = floor.randomList[i] % floor.gridSizeZ;
 
                 Vector3 spawnPosition = new Vector3(x * floor.gridSpacingX, 0, z * floor.gridSpacingZ)
-                                        + floor.gridOrigin.transform.position;
+                                        + new Vector3(floor.gridOrigin.transform.position.x - ((floor.gridSizeX - 1) * floor.gridSpacingX * 0.5f),
+                                            floor.gridOrigin.transform.position.y, floor.gridOrigin.transform.position.z - ((floor.gridSizeZ - 1) * floor.gridSpacingZ * 0.5f));
 
                 var randomPlayer = Random.Range(0, LevelManager.instance.playersOnGameList.Count);
                 floor.blockPositions[randomPlayer].Add(spawnPosition);
@@ -151,6 +157,7 @@ public class LevelHolder : MonoBehaviour
         }
     }
     
+    //----------------------------------------------------------------------------------------//
     private void CalculateGridOriginDirection(Floor floor)
     {
         if (floor.gridSizeX > 10)
@@ -180,6 +187,7 @@ public class LevelHolder : MonoBehaviour
         }
     }
     
+    //----------------------------------------------------------------------------------------//
     public List<Vector3> getBlockPositionsForPlayer(int gridIdx, int playerNumber)
     {
         return howManyFloors[gridIdx].blockPositions[playerNumber];
@@ -193,36 +201,83 @@ public class LevelHolder : MonoBehaviour
         }
 
     }
-
-
     
     //----------------------------------------------------------------------------------------//
-    /*private void CreateFloors()
+    private void CreateFloors()
     {
-        for (int i = 0; i < howManyFloors.Count + 1; i++)
+        GameObject createdFloor = null;
+        Transform endPos = null;
+        
+        for (int i = 0; i < howManyFloors.Count; i++)
         {
             switch (howManyFloors[i].rampType)
             {
                 case RampType.LowRamp:
-                    LevelAssetCreate.insta
-                    createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[0];
-                    return createdEnemy;
-
+                    createdFloor = Instantiate(LevelManager.instance.floorPrefabList[0],transform.position, Quaternion.identity,gameObject.transform);
+                    break;
+                
                 case RampType.MidRamp:
-                    createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[1];
-                    return createdEnemy;
+                    createdFloor = Instantiate(LevelManager.instance.floorPrefabList[1],transform.position, Quaternion.identity,gameObject.transform);
+                    
+                    break;
 
                 case RampType.HighRamp:
-                    createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[2];
-                    return createdEnemy;
+                    createdFloor = Instantiate(LevelManager.instance.floorPrefabList[2],transform.position, Quaternion.identity,gameObject.transform);
+                    break;
+                
                 default:
-                    createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<MeshRenderer>().material = materials[0];
-                    return createdEnemy;
-
+                    Debug.LogError("Please select the floorType");
+                    break;
             }
+            
+            howManyFloors[i].gridOrigin = createdFloor.transform.GetChild(0).GetChild(0);
+            
+            createdFloor.transform.GetChild(3).parent = createdFloor.transform.GetChild(0);
+
+            if (i > 0)
+            {
+                var objToMove = createdFloor.transform.GetChild(0);
+                var newStartPos = createdFloor.transform.GetChild(1);
+                var newEndPos = createdFloor.transform.GetChild(2);
+                
+                objToMove.transform.parent = newStartPos;
+                newEndPos.transform.parent = newStartPos;
+
+                newStartPos.transform.position = endPos.position;
+                
+                endPos = newStartPos.transform.GetChild(1);
+                
+                foreach (Transform trans in createdFloor.transform.GetChild(0).GetChild(0).GetChild(createdFloor.transform.GetChild(0).GetChild(0).childCount - 1))
+                {
+                    howManyFloors[i].AIPositionsToGo.Add(trans.position);
+                }
+                
+            }
+            else
+            {
+                endPos = createdFloor.transform.GetChild(2);
+                createdFloor.transform.GetChild(0).transform.parent = endPos;
+                
+                foreach (Transform trans in createdFloor.transform.GetChild(1).GetChild(0).GetChild(createdFloor.transform.GetChild(1).GetChild(0).childCount - 1))
+                {
+                    howManyFloors[i].AIPositionsToGo.Add(trans.position);
+                }
+            }
+            
+
+            
         }
-        
-    }*/
+        //Add finish floor
+        createdFloor = Instantiate(LevelManager.instance.floorPrefabList[3],transform.position, Quaternion.identity, gameObject.transform);
+
+        var finalObjToMove = createdFloor.transform.GetChild(0);
+        var finalStartPos = createdFloor.transform.GetChild(1);
+        var finalEndPos = createdFloor.transform.GetChild(2);
+
+        finalObjToMove.transform.parent = finalStartPos;
+        finalEndPos.transform.parent = finalStartPos;
+        finalStartPos.transform.position = endPos.transform.position;
+    }
     
     //----------------------------------------------------------------------------------------//
     void DetermineColorsInThisLevelList()

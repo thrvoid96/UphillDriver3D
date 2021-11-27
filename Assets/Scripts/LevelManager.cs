@@ -13,8 +13,9 @@ public class LevelManager : MonoBehaviour
     
     public List<GameColor> gameColor;
     public List<Material> materials;
+    public List<GameObject> floorPrefabList;
     public List<CommonBehaviours> playersOnGameList;
-    
+
     LevelAssetCreate levelAsset;
 
     private int loopAmount;
@@ -31,6 +32,7 @@ public class LevelManager : MonoBehaviour
         enemy_Prefab = levelAsset.enemyPrefab;
         gameColor = levelAsset.gameColor;
         materials = levelAsset.materials;
+        floorPrefabList = levelAsset.floorPrefabs;
 
         Levelgenerator();
     }

@@ -39,7 +39,7 @@ public class ObjectPooler : MonoBehaviour
             {
                 GameObject obj = Instantiate(pool.prefab);
                 obj.SetActive(false);
-                obj.transform.parent = gameObject.transform;
+                obj.transform.parent = gameObject.transform.GetChild(0).transform;
                 objectPool.Enqueue(obj);
             }
 

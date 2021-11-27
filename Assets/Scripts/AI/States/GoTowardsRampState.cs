@@ -59,7 +59,7 @@ public class GoTowardsRampState : IState
     {
         var randomIndex = UnityEngine.Random.Range(0, LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].AIPositionsToGo.Count);
 
-        var destination = LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex].position;
+        var destination = LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].AIPositionsToGo[randomIndex];
 
         var finalDest = new Vector3(destination.x, _aIPlayer.transform.position.y, destination.z);
 
