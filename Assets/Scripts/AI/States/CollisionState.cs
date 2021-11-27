@@ -21,12 +21,12 @@ public class CollisionState : IState
 
     public void OnEnter()
     {
-        _aIPlayer.DOKill();
+ 
     }
 
     public void OnExit()
     {
-        _aIPlayer.DOKill();
+
     }
 
     public void Tick()

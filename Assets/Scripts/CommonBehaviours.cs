@@ -107,8 +107,6 @@ namespace Behaviours
                     }
                     else
                     {
-                        transform.DOKill();
-
                         ExitRampComplete(other.transform);
                     }
 
@@ -116,8 +114,6 @@ namespace Behaviours
 
                 else
                 {
-                    transform.DOKill();
-
                     ExitRamp(other.transform);
                 }
 
@@ -345,12 +341,10 @@ namespace Behaviours
                         isCollided = false;
                         
                         isInMidSection = false;
-                    }); ;
-
+                    });
 
                 });
-
-
+                    
                 });
             });
         }
@@ -389,6 +383,7 @@ namespace Behaviours
             {
                 transform.DORotateQuaternion(Quaternion.Euler(0, 0, 0), 0.1f);
             });
+            
         }
 
         public void StartTrails()

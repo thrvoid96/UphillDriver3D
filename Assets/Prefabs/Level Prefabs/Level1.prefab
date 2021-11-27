@@ -48,36 +48,48 @@ MonoBehaviour:
   colorsInThisLevelList: 
   howManyEnemy: 4
   howManyFloors:
-  - rampType: 0
+  - rampType: 2
     blocksToPassRamp: 10
     gridSizeX: 10
     gridSizeZ: 10
-    gridSpacingX: 6
-    gridSpacingZ: 6
-  - rampType: 2
-    blocksToPassRamp: 30
-    gridSizeX: 9
-    gridSizeZ: 9
-    gridSpacingX: 6
-    gridSpacingZ: 6
-  - rampType: 1
-    blocksToPassRamp: 60
-    gridSizeX: 8
-    gridSizeZ: 8
-    gridSpacingX: 6
-    gridSpacingZ: 6
+    gridSpacingX: 5
+    gridSpacingZ: 5
   - rampType: 0
+    blocksToPassRamp: 30
+    gridSizeX: 5
+    gridSizeZ: 5
+    gridSpacingX: 5
+    gridSpacingZ: 5
+  - rampType: 0
+    blocksToPassRamp: 60
+    gridSizeX: 10
+    gridSizeZ: 10
+    gridSpacingX: 5
+    gridSpacingZ: 5
+  - rampType: 2
     blocksToPassRamp: 100
-    gridSizeX: 7
-    gridSizeZ: 7
-    gridSpacingX: 6
-    gridSpacingZ: 6
+    gridSizeX: 5
+    gridSizeZ: 5
+    gridSpacingX: 5
+    gridSpacingZ: 5
   - rampType: 2
     blocksToPassRamp: 150
-    gridSizeX: 6
-    gridSizeZ: 6
-    gridSpacingX: 6
-    gridSpacingZ: 6
+    gridSizeX: 10
+    gridSizeZ: 10
+    gridSpacingX: 5
+    gridSpacingZ: 5
+  - rampType: 1
+    blocksToPassRamp: 250
+    gridSizeX: 5
+    gridSizeZ: 5
+    gridSpacingX: 5
+    gridSpacingZ: 5
+  - rampType: 1
+    blocksToPassRamp: 500
+    gridSizeX: 10
+    gridSizeZ: 10
+    gridSpacingX: 5
+    gridSpacingZ: 5
 --- !u!114 &754885227464592602
 MonoBehaviour:
   m_ObjectHideFlags: 0

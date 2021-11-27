@@ -17,6 +17,11 @@ public class PlayerController : CommonBehaviours
         instance = this;
     }
 
+    protected override void Update()
+    {
+
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -51,7 +56,12 @@ public class PlayerController : CommonBehaviours
                         moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         if (!var1)
                         {
-                            transform.DOMove(finalPos,moveDuration).SetEase(Ease.InOutSine);
+                            transform.DOKill();
+                            transform.DOMove(finalPos,moveDuration).OnComplete(() =>
+                            {
+                                Debug.LogWarning("Geldik");
+                            });
+                            
 
                             StartTrails();
 
@@ -70,6 +80,7 @@ public class PlayerController : CommonBehaviours
                         {
                             if (!var2)
                             {
+                                transform.DOKill();
                                 transform.DOMove(rampStartPos, moveDuration * 4f).SetEase(Ease.InExpo);
 
                                 StartTrails();
@@ -90,6 +101,7 @@ public class PlayerController : CommonBehaviours
                         moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
                         if (!var3)
                         {
+                            transform.DOKill();
                             transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutQuint);
 
                             StartTrails();
