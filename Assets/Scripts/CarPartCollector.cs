@@ -64,6 +64,8 @@ public class CarPartCollector : MonoBehaviour
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh++;
         carMeshes[currentMesh].gameObject.SetActive(true);
+
+        transform.parent.DOScale(transform.parent.localScale * 2f, 1f).SetEase(Ease.InOutSine);
     }
 
     public void DowngradeCar()
@@ -81,6 +83,8 @@ public class CarPartCollector : MonoBehaviour
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh--;
         carMeshes[currentMesh].gameObject.SetActive(true);
+        
+        transform.parent.DOScale(transform.parent.localScale * 0.5f, 1f).SetEase(Ease.InOutSine);
     }
 
     private void ResetValues()

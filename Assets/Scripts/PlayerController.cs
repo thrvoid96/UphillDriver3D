@@ -19,7 +19,8 @@ public class PlayerController : CommonBehaviours
 
     protected override void Update()
     {
-
+        base.Update();
+        Movement();
     }
 
     protected override void Start()
@@ -29,98 +30,99 @@ public class PlayerController : CommonBehaviours
         StartCoroutine(nameof(Movement));
     }
     
-    private IEnumerator Movement()
+    private void Movement()
     {
-        while (true)
+        if (LevelManager.gameState == GameState.Normal && canMove) 
         {
-            if (LevelManager.gameState == GameState.Normal && canMove)
-            {
-                float verticalInput = Input.GetAxis("Vertical");
-                float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+            float horizontalInput = Input.GetAxis("Horizontal");
 
-                if (!isOnRamp)
-                {
-                    var1 = false;
-                    var2 = false;
-                    var3 = false;
-                                        
-                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
-                    transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 125f, 0, Space.Self);
-                    yield return null;
-                }
-                else
-                {
-                    if (verticalInput > 0)
-                    {
-                        distance = Vector3.Distance(transform.position, finalPos);
-                        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
-                        if (!var1)
-                        {
-                            transform.DOKill();
-                            transform.DOMove(finalPos,moveDuration).OnComplete(() =>
-                            {
-                                Debug.LogWarning("Geldik");
-                            });
-                            
-
-                            StartTrails();
-
-                            var1 = true;
-                            var2 = false;
-                            var3 = false;
-                            yield return null;
-                        }
-                        yield return null;
-                    }
-                    else if (verticalInput == 0)
-                    {
-                        distance = Vector3.Distance(transform.position, rampStartPos);
-                        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
-                        if(rampStartPos.y < transform.position.y)
-                        {
-                            if (!var2)
-                            {
-                                transform.DOKill();
-                                transform.DOMove(rampStartPos, moveDuration * 4f).SetEase(Ease.InExpo);
-
-                                StartTrails();
-
-                                var1 = false;
-                                var2 = true;
-                                var3 = false;
-                                yield return null;
-                            }
-                            yield return null;
-                        }
-                        yield return null;
-
-                    }
-                    else
-                    {
-                        distance = Vector3.Distance(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), transform.position);
-                        moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
-                        if (!var3)
-                        {
-                            transform.DOKill();
-                            transform.DOMove(rampStartPos + new Vector3(0,- rampHeight * 0.05f,- rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutQuint);
-
-                            StartTrails();
-
-                            var1 = false;
-                            var2 = false;
-                            var3 = true;
-                            yield return null;
-                        }
-                        yield return null;
-                    }
-
-                }
-
+            if (!isOnRamp)
+            { 
+                var1 = false; 
+                var2 = false; 
+                var3 = false;
+                
+                transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self); 
+                transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 150f, 0, Space.Self);
+                
             }
             else
-            {
-                yield return null;
-            }
-        }
+            
+            { 
+                if (verticalInput > 0) 
+                { 
+                    distance = Vector3.Distance(transform.position, finalPos); 
+                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f); 
+                    
+                    if (!var1) 
+                    { 
+                        transform.DOKill();
+                        
+                        transform.DOMove(finalPos,moveDuration).OnComplete(() => 
+                        { 
+                            if (coefficient == 0.9f) 
+                            { 
+                                ExitRampComplete(); 
+                                Debug.LogWarning("Üst rampaya çıktın"); 
+                            }
+                            
+                        });
+                        
+                        StartTrails();
+                        
+                        var1 = true; 
+                        var2 = false; 
+                        var3 = false; 
+                    } 
+                }
+                else if (verticalInput == 0)
+                
+                {
+                    distance = Vector3.Distance(transform.position, rampStartPos); 
+                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
+                    
+                    if(rampStartPos.y < transform.position.y)
+                    { 
+                        if (!var2) 
+                        { 
+                            transform.DOKill();
+                            
+                            transform.DOMove(rampStartPos, moveDuration * 4f).SetEase(Ease.InExpo);
+                            
+                            StartTrails();
+                            
+                            var1 = false; 
+                            var2 = true; 
+                            var3 = false; 
+                        }
+                        
+                    }
+
+                }
+                else
+                { 
+                    distance = Vector3.Distance(transform.position, rampStartPos); 
+                    moveDuration = Mathf.Clamp(distance / 20f, 0f, 2f); 
+                    if (!var3)
+                    { 
+                        transform.DOKill();
+                        
+                        transform.DOMove(rampStartPos, moveDuration * 1.5f).SetEase(Ease.InOutQuint)
+                            .OnComplete(() => 
+                            { 
+                                ExitRamp(); 
+                                Debug.LogWarning("Rampadan indin"); 
+                            }); 
+                        
+                        StartTrails();
+                        
+                        var1 = false; 
+                        var2 = false; 
+                        var3 = true; 
+                    } 
+                } 
+            } 
+        } 
     }
 }

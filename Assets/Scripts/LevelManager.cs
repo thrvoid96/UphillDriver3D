@@ -117,7 +117,7 @@ public class LevelManager : MonoBehaviour
                 createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[5];
                 return createdEnemy;
 
-            case GameColor.Black:
+            case GameColor.Cyan:
                 createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[6];
                 return createdEnemy;
 
@@ -160,7 +160,7 @@ public class LevelManager : MonoBehaviour
                 objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[5];
                 return objToSpawn;
 
-            case GameColor.Black:
+            case GameColor.Cyan:
                 objToSpawn.transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = materials[6];
                 return objToSpawn;
 

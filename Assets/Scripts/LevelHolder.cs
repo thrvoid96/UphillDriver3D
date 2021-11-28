@@ -15,7 +15,7 @@ public enum GameColor
     Orange,
     Yellow,
     Pink,
-    Black,
+    Cyan,
 }
 
 public enum RampType

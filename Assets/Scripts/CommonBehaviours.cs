@@ -16,7 +16,6 @@ namespace Behaviours
         [SerializeField] protected CarPartCollector carPartCollector;
         [SerializeField] private List<TrailRenderer> allTrails = new List<TrailRenderer>();
         [SerializeField] private float trailStayTime;
-        public float rampClimbSmoothValue;
         public GameColor color;
 
         #endregion
@@ -37,7 +36,7 @@ namespace Behaviours
         public Vector3 collisionFinalPos;
 
         protected bool canMove = true;
-        protected bool isOnRamp, isInMidSection, enteringRamp;
+        protected bool isOnRamp, isInMidSection;
         public bool isCollided;
 
         
@@ -48,7 +47,6 @@ namespace Behaviours
         public int getCurrentGrid
         {
             get => gridIndex;
-            set => gridIndex = value;
         }
 
         public float getMaxSpeed => maxSpeed;
@@ -82,7 +80,7 @@ namespace Behaviours
             if (other.gameObject.layer == LayerMask.NameToLayer("Ramp"))
             {
                 var closestPoint = other.ClosestPoint(transform.position);
-
+                
                 SetRampValues(closestPoint, other.transform);
                 
                 EnterRamp(other);
@@ -90,34 +88,7 @@ namespace Behaviours
             }
             else if (other.gameObject.layer == LayerMask.NameToLayer("MiddleSect"))
             {
-                if (transform.position.y > other.transform.position.y)
-                {
-                    enteringRamp = true;
-                }
-                else
-                {
-                    enteringRamp = false;
-                }
-
-                if (transform.position.z < other.transform.position.z)
-                {
-                    if (enteringRamp)
-                    {
-                        EnterMiddleSection(other.transform);
-                    }
-                    else
-                    {
-                        ExitRampComplete(other.transform);
-                    }
-
-                }
-
-                else
-                {
-                    ExitRamp(other.transform);
-                }
-
-
+                EnterMiddleSection();
             }
 
             else if(other.gameObject.layer == LayerMask.NameToLayer("Finish"))
@@ -177,15 +148,10 @@ namespace Behaviours
 
         private void GetDownFromRamp()
         {
-            var distance =
-                Vector3.Distance(
-                    rampStartPos + new Vector3(0, -rampHeight * 0.05f, -rampLength * 0.05f),
-                    transform.position);
+            var distance = Vector3.Distance(rampStartPos, transform.position);
             var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-            transform.DOMove(rampStartPos + new Vector3(0, -rampHeight * 0.05f, -rampLength * 0.05f),
-                moveDuration).SetEase(Ease.InOutSine).OnComplete(
-                () => { isCollided = false; });
+            transform.DOMove(rampStartPos, moveDuration).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
         }
 
         private void CollisionCalculate(Collider other)
@@ -201,41 +167,7 @@ namespace Behaviours
 
         private void ShakeCalculate()
         {
-            var rotateValue = Quaternion.Euler(10, transform.eulerAngles.y, 10);
-
-            if (transform.position.x >= collisionFinalPos.x)
-            {
-                if (transform.position.z >= collisionFinalPos.z)
-                {
-                    rotateValue.x = rotateValue.x;
-                    rotateValue.z = -rotateValue.z;
-                }
-                else
-                {
-                    rotateValue.x = -rotateValue.x;
-                    rotateValue.z = -rotateValue.z;
-                }
-            }
-            else
-            {
-                if (transform.position.z >= collisionFinalPos.z)
-                {
-                    rotateValue.x = rotateValue.x;
-                    rotateValue.z = rotateValue.z;
-                }
-                else
-                {
-                    rotateValue.x = -rotateValue.x;
-                    rotateValue.z = rotateValue.z;
-                }
-            }
-
-            transform.DORotateQuaternion(rotateValue, 0.25f).SetEase(Ease.InOutSine).OnComplete(
-                () =>
-                {
-                    transform.DORotateQuaternion(Quaternion.Euler(0, transform.eulerAngles.y, 0), 0.25f)
-                        .SetEase(Ease.InOutSine);
-                });
+            transform.DOShakeRotation(0.5f,10f,2,10f,true);
         }
 
         private void SetRampValues(Vector3 closestPoint, Transform colliderTrans)
@@ -246,12 +178,13 @@ namespace Behaviours
             rampAngleX = Mathf.Abs(360 - colliderTrans.eulerAngles.x);
         }
 
-        private void EnterMiddleSection(Transform colliderTrans)
+        private void EnterMiddleSection()
         {
             if (!canMove) return;
             canMove = false;
-
             isInMidSection = true;
+
+            transform.DOKill();
 
             var enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
             var duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
@@ -272,18 +205,20 @@ namespace Behaviours
                 });
         }
 
-        private void EnterRamp(Collider collider)
+        private void EnterRamp(Collider other)
         {
-            transform.DOLookAt(collider.transform.position + new Vector3(transform.position.x - collider.transform.position.x, 0.573f, 0), 0.75f).SetEase(Ease.InOutSine)
+            transform.DOKill();
+            
+            transform.DOLookAt(other.transform.position + new Vector3(transform.position.x - other.transform.position.x, 0.573f, 0), 0.75f).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
-                var startDest = new Vector3(transform.position.x, collider.transform.position.y - (rampHeight * 0.45f), collider.transform.position.z - (rampLength * 0.45f));
+                var startDest = new Vector3(transform.position.x, other.transform.position.y - (rampHeight * 0.45f), other.transform.position.z - (rampLength * 0.45f));
 
                 transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
 
             }).OnComplete(() =>
             {
-                transform.DORotateQuaternion(collider.transform.rotation, 0.1f).OnComplete(() =>
+                transform.DORotateQuaternion(other.transform.rotation, 0.1f).OnComplete(() =>
                 {
                     rampStartPos = transform.position;
 
@@ -301,7 +236,7 @@ namespace Behaviours
             });
         }
 
-        private void ExitRamp(Transform colliderTrans)
+        public void ExitRamp()
         {
             var random = 0;
             if (Random.Range(0, 2) > 0)
@@ -320,7 +255,7 @@ namespace Behaviours
                 
                 canMove = false;
 
-                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z), 0.75f).SetEase(Ease.InOutSine);
+                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f).SetEase(Ease.InOutSine);
 
             })
             .OnComplete(() =>
@@ -331,7 +266,7 @@ namespace Behaviours
                     transform.DOLookAt(transform.position - Vector3.forward, 0.75f).SetEase(Ease.InOutSine)
                 .OnStart(() =>
                 {
-                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), colliderTrans.position.y + 0.573f, colliderTrans.position.z - 10f), 0.75f).SetEase(Ease.InOutSine)
+                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 10f), 0.75f).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
                     {
                         canMove = true;
@@ -349,9 +284,9 @@ namespace Behaviours
             });
         }
 
-        private void ExitRampComplete(Transform colliderTrans)
+        public void ExitRampComplete()
         {
-            var goToPos = new Vector3(transform.position.x, colliderTrans.position.y + 0.573f, colliderTrans.position.z);
+            var goToPos = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z + 10f);
 
             transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f).OnStart(() =>
             {

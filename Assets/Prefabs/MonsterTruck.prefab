@@ -685,12 +685,12 @@ GameObject:
   - component: {fileID: 7360772564429877498}
   - component: {fileID: 3144074512703508227}
   m_Layer: 0
-  m_Name: DummyCar
+  m_Name: MonsterTruck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7360772564429877498
 Transform:
   m_ObjectHideFlags: 0
@@ -727,7 +727,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 253d2da58e53d6542b284f3c3391dd4a, type: 2}
+  - {fileID: 2100000, guid: a403f9dca5169d446ad132501651e169, type: 2}
   - {fileID: -5599917235046592319, guid: 31a724ab9b7d6e74c942474803fd5bca, type: 3}
   - {fileID: 7922251121040759823, guid: 31a724ab9b7d6e74c942474803fd5bca, type: 3}
   - {fileID: 4366405644982245730, guid: 31a724ab9b7d6e74c942474803fd5bca, type: 3}
