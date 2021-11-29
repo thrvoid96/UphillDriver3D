@@ -137,10 +137,9 @@ namespace Behaviours
 
                         if (!isOnRamp)
                         {
-                            CollisionCalculate(other);
+                            CollisionCalculate(enemyCar);
 
                             ShakeCalculate();
-
                         }
                         else
                         {
@@ -152,7 +151,7 @@ namespace Behaviours
                         transform.DOKill();
                         isCollided = true;
                         
-                        CollisionCalculate(other);
+                        CollisionCalculate(enemyCar);
                         ShakeCalculate();
                     }
                 }
@@ -168,20 +167,24 @@ namespace Behaviours
             transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
         }
 
-        private void CollisionCalculate(Collider other)
+        private void CollisionCalculate(CommonBehaviours enemyCar)
         {
-            var direction = transform.position - other.transform.position;
-            collisionFinalPos = transform.position +
-                                new Vector3(direction.x * 1.2f, 0, direction.z * 1.2f);
+            var direction = transform.position - enemyCar.transform.position;
+            collisionFinalPos = transform.position + new Vector3(direction.x * 1.2f * (0.8f / enemyCar.speedRatio), 0, direction.z * 1.2f * (0.8f / enemyCar.speedRatio));
 
-            transform.DOMove(collisionFinalPos, 0.5f * speedRatio).SetEase(Ease.InOutSine)
+            transform.DOMove(collisionFinalPos, 0.5f * (enemyCar.speedRatio * 0.8f)).SetEase(Ease.InOutSine)
 
-                .OnComplete(() => { isCollided = false; });
+                .OnComplete(() => { isCollided = false; })
+                .OnKill(() => { isCollided = false; });
         }
 
         private void ShakeCalculate()
         {
-            transform.DOShakeRotation(0.5f * speedRatio,10f,2,10f,true);
+            transform.DOShakeRotation(0.4f, 10f, 2, 10f, true)
+                .OnKill(() =>
+                {
+                    transform.DORotateQuaternion(Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0), 0f);
+                });
         }
 
         private void SetRampValues(Vector3 closestPoint, Transform colliderTrans)

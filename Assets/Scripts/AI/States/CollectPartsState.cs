@@ -72,7 +72,7 @@ public class CollectPartsState : IState
         {
             _aIPlayer.CalculateValues(finalDest);
 
-            _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration* _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnUpdate(() =>
+            _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnUpdate(() =>
             {
                 _aIPlayer.SmoothMovement();
 

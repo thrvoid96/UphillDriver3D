@@ -25,10 +25,9 @@ public class OnRampState : IState
     public void OnEnter()
     {
         addAmount = Random.Range(1, LevelHolder.instance.howManyFloors[_aIPlayer.getCurrentGrid].blocksToPassRamp);
-        var distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
-        var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
+        _aIPlayer.CalculateValues(_aIPlayer.finalPos);
 
-        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnStart(() => {
+        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnStart(() => {
 
             _aIPlayer.StartTrails();
 
