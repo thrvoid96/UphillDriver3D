@@ -85,6 +85,7 @@ MonoBehaviour:
   amountForUpgrade: 5
   currentMesh: 0
   currentBlendShape: 0
+  speedUpgrade: 15
 --- !u!65 &3423520732984827813
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -215,7 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNum: 0
-  maxSpeed: 30
+  maxSpeed: 20
   carPartCollector: {fileID: 8047832565004506711}
   allTrails:
   - {fileID: 4440940772635781982}
@@ -223,7 +224,6 @@ MonoBehaviour:
   - {fileID: 5173719671764822558}
   - {fileID: 5199900138405161330}
   trailStayTime: 1
-  rampClimbSmoothValue: 1
   color: 0
   collisionFinalPos: {x: 0, y: 0, z: 0}
   isCollided: 0

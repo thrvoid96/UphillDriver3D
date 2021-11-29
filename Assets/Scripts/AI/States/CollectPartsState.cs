@@ -72,14 +72,14 @@ public class CollectPartsState : IState
         {
             _aIPlayer.CalculateValues(finalDest);
 
-            _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration).SetEase(Ease.InOutSine).OnUpdate(() =>
+            _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration* _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnUpdate(() =>
             {
                 _aIPlayer.SmoothMovement();
 
             }).OnComplete(() =>
             {
-                _aIPlayer.transform.DOLookAt(finalDest, 1f).SetEase(Ease.InOutSine);
-                _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0, -0.8f, 0), _aIPlayer.moveDuration).SetEase(Ease.InOutSine).OnComplete(() =>
+                _aIPlayer.transform.DOLookAt(finalDest, 1f * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
+                _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0, -0.8f, 0), _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
                     _aIPlayer.ResetSmoothValue();
                     Loop();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Behaviours;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -10,10 +11,17 @@ public class CarPartCollector : MonoBehaviour
 {
     [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
 
-    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape;
+    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade;
 
     private TweenerCore<float, float, FloatOptions> currentTween;
-    
+
+    private CommonBehaviours currentPlayer;
+
+    private void Start()
+    {
+        currentPlayer = transform.parent.GetComponent<CommonBehaviours>();
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -65,7 +73,11 @@ public class CarPartCollector : MonoBehaviour
         currentMesh++;
         carMeshes[currentMesh].gameObject.SetActive(true);
 
-        transform.parent.DOScale(transform.parent.localScale * 2f, 1f).SetEase(Ease.InOutSine);
+        currentPlayer.transform.DOScale(transform.parent.localScale * 1.5f, 1f).SetEase(Ease.InOutSine);
+
+        currentPlayer.getMaxSpeed += speedUpgrade;
+        
+        currentPlayer.ReCalculateSpeedRatio();
     }
 
     public void DowngradeCar()
@@ -84,7 +96,11 @@ public class CarPartCollector : MonoBehaviour
         currentMesh--;
         carMeshes[currentMesh].gameObject.SetActive(true);
         
-        transform.parent.DOScale(transform.parent.localScale * 0.5f, 1f).SetEase(Ease.InOutSine);
+        currentPlayer.transform.DOScale(transform.parent.localScale / 1.5f, 1f).SetEase(Ease.InOutSine);
+        
+        currentPlayer.getMaxSpeed -= speedUpgrade;
+        
+        currentPlayer.ReCalculateSpeedRatio();
     }
 
     private void ResetValues()

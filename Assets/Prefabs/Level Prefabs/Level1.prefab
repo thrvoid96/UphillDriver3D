@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 1
+  howManyEnemy: 4
   howManyFloors:
   - rampType: 2
     blocksToPassRamp: 10
@@ -55,9 +55,9 @@ MonoBehaviour:
     gridSpacingX: 5
     gridSpacingZ: 5
   - rampType: 0
-    blocksToPassRamp: 30
-    gridSizeX: 5
-    gridSizeZ: 5
+    blocksToPassRamp: 11
+    gridSizeX: 10
+    gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
   - rampType: 0
@@ -68,8 +68,8 @@ MonoBehaviour:
     gridSpacingZ: 5
   - rampType: 2
     blocksToPassRamp: 100
-    gridSizeX: 5
-    gridSizeZ: 5
+    gridSizeX: 10
+    gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
   - rampType: 2
@@ -80,8 +80,8 @@ MonoBehaviour:
     gridSpacingZ: 5
   - rampType: 1
     blocksToPassRamp: 250
-    gridSizeX: 5
-    gridSizeZ: 5
+    gridSizeX: 10
+    gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
   - rampType: 1

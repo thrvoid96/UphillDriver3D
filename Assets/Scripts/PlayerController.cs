@@ -59,7 +59,7 @@ public class PlayerController : CommonBehaviours
                     { 
                         transform.DOKill();
                         
-                        transform.DOMove(finalPos,moveDuration).OnComplete(() => 
+                        transform.DOMove(finalPos,moveDuration * speedRatio).OnComplete(() => 
                         { 
                             if (coefficient == 0.9f) 
                             { 
@@ -88,7 +88,7 @@ public class PlayerController : CommonBehaviours
                         { 
                             transform.DOKill();
                             
-                            transform.DOMove(rampStartPos, moveDuration * 4f).SetEase(Ease.InExpo);
+                            transform.DOMove(rampStartPos, moveDuration * 4f * speedRatio).SetEase(Ease.InExpo);
                             
                             StartTrails();
                             
@@ -108,7 +108,7 @@ public class PlayerController : CommonBehaviours
                     { 
                         transform.DOKill();
                         
-                        transform.DOMove(rampStartPos, moveDuration * 1.5f).SetEase(Ease.InOutQuint)
+                        transform.DOMove(rampStartPos, moveDuration * 1.5f * speedRatio).SetEase(Ease.InOutQuint)
                             .OnComplete(() => 
                             { 
                                 ExitRamp(); 

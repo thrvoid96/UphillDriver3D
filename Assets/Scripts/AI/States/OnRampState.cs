@@ -28,7 +28,7 @@ public class OnRampState : IState
         var distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
         var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, moveDuration).SetEase(Ease.InOutSine).OnStart(() => {
+        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnStart(() => {
 
             _aIPlayer.StartTrails();
 
@@ -36,16 +36,14 @@ public class OnRampState : IState
 
                 if (_aIPlayer.coefficient < 0.9f)
                 {
-                    distance = Vector3.Distance(_aIPlayer.rampStartPos, _aIPlayer.finalPos);
-                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
-
-                    _aIPlayer.transform
-                        .DOMove(
-                            _aIPlayer.rampStartPos + new Vector3(0, -_aIPlayer.rampHeight * 0.05f,
-                                -_aIPlayer.rampLength * 0.05f), moveDuration * 1.5f).SetEase(Ease.InOutQuint);
+                    _aIPlayer.GetDownFromRamp();
                     
                     _aIPlayer.StartTrails();
-                }  
+                }
+                else
+                {
+                    _aIPlayer.ExitRampComplete();
+                }
         });
     }
 

@@ -43,13 +43,21 @@ namespace Behaviours
         protected float smoothSpeed;
 
         private int gridIndex;
+        private float startSpeed;
+
+        public float speedRatio;
         
         public int getCurrentGrid
         {
             get => gridIndex;
         }
 
-        public float getMaxSpeed => maxSpeed;
+        public float getMaxSpeed
+        {
+            get => maxSpeed;
+            set => maxSpeed = value;
+        }
+
 
         public int getPlayerNum  
         {
@@ -67,12 +75,18 @@ namespace Behaviours
 
         protected virtual void Start()
         {
-
+            startSpeed = maxSpeed;
+            ReCalculateSpeedRatio();
         }
 
         protected virtual void Update()
         {
 
+        }
+
+        public void ReCalculateSpeedRatio()
+        {
+            speedRatio = startSpeed / maxSpeed;
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -146,12 +160,12 @@ namespace Behaviours
 
         }
 
-        private void GetDownFromRamp()
+        public void GetDownFromRamp()
         {
             var distance = Vector3.Distance(rampStartPos, transform.position);
             var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
-            transform.DOMove(rampStartPos, moveDuration).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
+            transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
         }
 
         private void CollisionCalculate(Collider other)
@@ -160,14 +174,14 @@ namespace Behaviours
             collisionFinalPos = transform.position +
                                 new Vector3(direction.x * 1.2f, 0, direction.z * 1.2f);
 
-            transform.DOMove(collisionFinalPos, 0.5f).SetEase(Ease.InOutSine)
+            transform.DOMove(collisionFinalPos, 0.5f * speedRatio).SetEase(Ease.InOutSine)
 
                 .OnComplete(() => { isCollided = false; });
         }
 
         private void ShakeCalculate()
         {
-            transform.DOShakeRotation(0.5f,10f,2,10f,true);
+            transform.DOShakeRotation(0.5f * speedRatio,10f,2,10f,true);
         }
 
         private void SetRampValues(Vector3 closestPoint, Transform colliderTrans)
@@ -191,7 +205,7 @@ namespace Behaviours
 
             var posToGo = transform.position + new Vector3(0, 0, 20f);
             
-            transform.DOLookAt(posToGo, duration).OnUpdate(() =>
+            transform.DOLookAt(posToGo, duration * speedRatio).OnUpdate(() =>
                 {
                     smoothSpeed += 1f;
                     smoothSpeed = Mathf.Clamp(smoothSpeed, 0, maxSpeed);
@@ -199,7 +213,7 @@ namespace Behaviours
                 })
                 .OnComplete(() =>
                 {
-                    transform.DOMove(posToGo, 0.75f).SetEase(Ease.InOutSine);
+                    transform.DOMove(posToGo, 0.75f * speedRatio).SetEase(Ease.InOutSine);
 
                     smoothSpeed = 0f;
                 });
@@ -209,12 +223,12 @@ namespace Behaviours
         {
             transform.DOKill();
             
-            transform.DOLookAt(other.transform.position + new Vector3(transform.position.x - other.transform.position.x, 0.573f, 0), 0.75f).SetEase(Ease.InOutSine)
+            transform.DOLookAt(other.transform.position + new Vector3(transform.position.x - other.transform.position.x, 0.573f, 0), 0.75f * speedRatio).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
                 var startDest = new Vector3(transform.position.x, other.transform.position.y - (rampHeight * 0.45f), other.transform.position.z - (rampLength * 0.45f));
 
-                transform.DOMove(startDest, 0.75f).SetEase(Ease.InOutSine);
+                transform.DOMove(startDest, 0.75f * speedRatio).SetEase(Ease.InOutSine);
 
             }).OnComplete(() =>
             {
@@ -248,14 +262,14 @@ namespace Behaviours
                 random = 1;
             }
 
-            transform.DOLookAt(transform.position + transform.right * random, 0.75f).SetEase(Ease.InOutSine)
+            transform.DOLookAt(transform.position + transform.right * random, 0.75f * speedRatio).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
                 isInMidSection = true;
                 
                 canMove = false;
 
-                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f).SetEase(Ease.InOutSine);
+                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine);
 
             })
             .OnComplete(() =>
@@ -263,10 +277,10 @@ namespace Behaviours
                 transform.DORotateQuaternion(Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0), 0.1f)
                 .OnComplete(() =>
                 {
-                    transform.DOLookAt(transform.position - Vector3.forward, 0.75f).SetEase(Ease.InOutSine)
+                    transform.DOLookAt(transform.position - Vector3.forward, 0.75f * speedRatio).SetEase(Ease.InOutSine)
                 .OnStart(() =>
                 {
-                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 10f), 0.75f).SetEase(Ease.InOutSine)
+                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
                     {
                         canMove = true;
@@ -286,15 +300,15 @@ namespace Behaviours
 
         public void ExitRampComplete()
         {
-            var goToPos = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z + 10f);
+            var goToPos = new Vector3(transform.position.x, transform.position.y + 2.3f, transform.position.z + 10f);
 
-            transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f).OnStart(() =>
+            transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f * speedRatio).OnStart(() =>
             {
                 canMove = false;
                 
                 isInMidSection = true;
 
-                transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
+                transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f * speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
                     if(gridIndex < LevelHolder.instance.howManyFloors.Count - 1)
                     {
@@ -303,7 +317,7 @@ namespace Behaviours
                         LevelHolder.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
                     }
 
-                    transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
+                    transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f * speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
                     {                     
                         isInMidSection = false;
                         

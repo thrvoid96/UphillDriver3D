@@ -85,6 +85,7 @@ MonoBehaviour:
   amountForUpgrade: 5
   currentMesh: 0
   currentBlendShape: 0
+  speedUpgrade: 15
 --- !u!65 &4481650543213432281
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -201,7 +202,6 @@ MonoBehaviour:
   - {fileID: 4360221627890532409}
   - {fileID: 3704177130284696405}
   trailStayTime: 1
-  rampClimbSmoothValue: 1
   color: 0
   collisionFinalPos: {x: 0, y: 0, z: 0}
   isCollided: 0
