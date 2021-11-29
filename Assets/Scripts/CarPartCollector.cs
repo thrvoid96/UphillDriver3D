@@ -11,7 +11,7 @@ public class CarPartCollector : MonoBehaviour
 {
     [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
 
-    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade;
+    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade, loseMultiplier;
 
     private TweenerCore<float, float, FloatOptions> currentTween;
 
@@ -67,8 +67,9 @@ public class CarPartCollector : MonoBehaviour
     {
         if(currentMesh == carMeshes.Count - 1) { return; }
 
-        ResetValues();
-
+        inBetween = 0;
+        currentBlendShape = 0;
+        
         carMeshes[currentMesh].gameObject.SetActive(false);
         currentMesh++;
         carMeshes[currentMesh].gameObject.SetActive(true);
@@ -80,16 +81,8 @@ public class CarPartCollector : MonoBehaviour
         currentPlayer.ReCalculateSpeedRatio();
     }
 
-    public void DowngradeCar()
+    private void DowngradeCar()
     {
-        currentTween?.Complete();
-        
-        var blocksToRemove = Mathf.Clamp(inBetween + amountForUpgrade * currentBlendShape + (carMeshes[Mathf.Clamp(currentMesh - 1,0,carMeshes.Count)].sharedMesh.blendShapeCount + 1) * amountForUpgrade, 0,collectedPartsCount);
-        
-        collectedPartsCount -= blocksToRemove;
-        
-        ResetValues();
-        
         if (currentMesh == 0) { return; }
 
         carMeshes[currentMesh].gameObject.SetActive(false);
@@ -103,15 +96,56 @@ public class CarPartCollector : MonoBehaviour
         currentPlayer.ReCalculateSpeedRatio();
     }
 
-    private void ResetValues()
+    public void CalculatePartsAfterCollision()
     {
-        for(int i=0; i< carMeshes[currentMesh].sharedMesh.blendShapeCount; i++)
+        currentTween?.Complete();
+        
+        var blocksToRemove = Mathf.Clamp(inBetween + amountForUpgrade * loseMultiplier, 0,collectedPartsCount);
+        
+        collectedPartsCount -= blocksToRemove;
+
+        var startBlendShape = currentBlendShape;
+
+        currentBlendShape -= loseMultiplier;
+        
+        Debug.LogError(currentBlendShape);
+
+        if (currentBlendShape >= 0)
+        {
+            //Lose parts from current mesh
+            LoseParts(currentBlendShape, currentBlendShape + loseMultiplier);
+        }
+        else
+        {
+            //Lose parts from both meshes
+            LoseParts(0, startBlendShape);
+
+            if (currentMesh != 0)
+            {
+                DowngradeCar();
+            
+                currentBlendShape = (carMeshes[currentMesh].sharedMesh.blendShapeCount) - (loseMultiplier - startBlendShape) + 1;
+            
+                LoseParts(currentBlendShape, carMeshes[currentMesh].sharedMesh.blendShapeCount);
+            }
+            else
+            {
+                currentBlendShape = 0;
+            }
+
+            //Lose parts from last mesh
+        }
+    }
+    private void LoseParts(int startIndex, int endIndex)
+    {
+        Debug.LogError(startIndex);
+        Debug.LogError(endIndex);
+        for(int i = startIndex; i < endIndex; i++)
         {
             carMeshes[currentMesh].SetBlendShapeWeight(i, 100f);
         }
         
         inBetween = 0;
-        currentBlendShape = 0;
     }
     
     

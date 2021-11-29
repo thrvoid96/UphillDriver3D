@@ -133,7 +133,8 @@ namespace Behaviours
                     { 
                         transform.DOKill();
                         isCollided = true;
-                        carPartCollector.DowngradeCar();
+                        
+                        carPartCollector.CalculatePartsAfterCollision();
 
                         if (!isOnRamp)
                         {
@@ -164,15 +165,18 @@ namespace Behaviours
             var distance = Vector3.Distance(rampStartPos, transform.position);
             var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
+            canMove = false;
+
             transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
         }
 
         private void CollisionCalculate(CommonBehaviours enemyCar)
         {
             var direction = transform.position - enemyCar.transform.position;
-            collisionFinalPos = transform.position + new Vector3(direction.x * 1.2f * (0.8f / enemyCar.speedRatio), 0, direction.z * 1.2f * (0.8f / enemyCar.speedRatio));
+            collisionFinalPos = transform.position + new Vector3(direction.x * 1.3f * (1f / enemyCar.speedRatio), 0,
+                direction.z * 1.3f * (1f / enemyCar.speedRatio));
 
-            transform.DOMove(collisionFinalPos, 0.5f * (enemyCar.speedRatio * 0.8f)).SetEase(Ease.InOutSine)
+            transform.DOMove(collisionFinalPos, 0.5f * enemyCar.speedRatio).SetEase(Ease.InOutSine)
 
                 .OnComplete(() => { isCollided = false; })
                 .OnKill(() => { isCollided = false; });

@@ -86,6 +86,8 @@ MonoBehaviour:
   currentMesh: 0
   currentBlendShape: 0
   speedUpgrade: 15
+  loseMultiplier: 2
+  totalForUpgrade: 0
 --- !u!65 &4481650543213432281
 BoxCollider:
   m_ObjectHideFlags: 0
