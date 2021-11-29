@@ -300,7 +300,7 @@ namespace Behaviours
 
         public void ExitRampComplete()
         {
-            var goToPos = new Vector3(transform.position.x, transform.position.y + 2.3f, transform.position.z + 10f);
+            var goToPos = new Vector3(transform.position.x, transform.position.y + 2.1f, transform.position.z + 10f);
 
             transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f * speedRatio).OnStart(() =>
             {
