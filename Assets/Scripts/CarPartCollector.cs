@@ -11,7 +11,7 @@ public class CarPartCollector : MonoBehaviour
 {
     [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
 
-    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade, loseMultiplier;
+    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade, losePartAmount;
 
     private TweenerCore<float, float, FloatOptions> currentTween;
 
@@ -100,20 +100,18 @@ public class CarPartCollector : MonoBehaviour
     {
         currentTween?.Complete();
         
-        var blocksToRemove = Mathf.Clamp(inBetween + amountForUpgrade * loseMultiplier, 0,collectedPartsCount);
+        var blocksToRemove = Mathf.Clamp(inBetween + amountForUpgrade * losePartAmount, 0,collectedPartsCount);
         
         collectedPartsCount -= blocksToRemove;
 
         var startBlendShape = currentBlendShape;
 
-        currentBlendShape -= loseMultiplier;
-        
-        Debug.LogError(currentBlendShape);
+        currentBlendShape -= losePartAmount;
 
         if (currentBlendShape >= 0)
         {
             //Lose parts from current mesh
-            LoseParts(currentBlendShape, currentBlendShape + loseMultiplier);
+            LoseParts(currentBlendShape, currentBlendShape + losePartAmount);
         }
         else
         {
@@ -124,7 +122,7 @@ public class CarPartCollector : MonoBehaviour
             {
                 DowngradeCar();
             
-                currentBlendShape = (carMeshes[currentMesh].sharedMesh.blendShapeCount) - (loseMultiplier - startBlendShape) + 1;
+                currentBlendShape = (carMeshes[currentMesh].sharedMesh.blendShapeCount) - (losePartAmount - startBlendShape) + 1;
             
                 LoseParts(currentBlendShape, carMeshes[currentMesh].sharedMesh.blendShapeCount);
             }
@@ -138,8 +136,6 @@ public class CarPartCollector : MonoBehaviour
     }
     private void LoseParts(int startIndex, int endIndex)
     {
-        Debug.LogError(startIndex);
-        Debug.LogError(endIndex);
         for(int i = startIndex; i < endIndex; i++)
         {
             carMeshes[currentMesh].SetBlendShapeWeight(i, 100f);
