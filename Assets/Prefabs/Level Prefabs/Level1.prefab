@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 1
+  howManyEnemy: 0
   howManyFloors:
   - rampType: 2
     blocksToPassRamp: 10
@@ -60,26 +60,26 @@ MonoBehaviour:
     gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
-  - rampType: 0
+  - rampType: 1
     blocksToPassRamp: 60
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
   - rampType: 2
-    blocksToPassRamp: 100
+    blocksToPassRamp: 120
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
   - rampType: 2
-    blocksToPassRamp: 150
+    blocksToPassRamp: 200
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
-  - rampType: 1
-    blocksToPassRamp: 250
+  - rampType: 0
+    blocksToPassRamp: 350
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5
@@ -106,7 +106,7 @@ MonoBehaviour:
   - tag: Part
     prefab: {fileID: 7101884677563921374, guid: 3dc0777335e20dc40baf98588035b3d7,
       type: 3}
-    size: 2000
+    size: 10000
 --- !u!1 &4473117953589212466
 GameObject:
   m_ObjectHideFlags: 0

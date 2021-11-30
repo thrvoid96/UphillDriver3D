@@ -11,8 +11,7 @@ public class IdleState : IState
 {
     private Animator _animator;
     private AIPlayer _aIPlayer;
-
-
+    
     public IdleState(AIPlayer aIPlayer, Animator animator)
     {
         _animator = animator;

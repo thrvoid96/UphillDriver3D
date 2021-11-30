@@ -15,6 +15,7 @@ TagManager:
   - Player7
   - Player8
   - Player9
+  - BackWall
   layers:
   - Default
   - TransparentFX
@@ -31,7 +32,7 @@ TagManager:
   - Part
   - PartCollector
   - Finish
-  - 
+  - Wall
   - 
   - 
   - 

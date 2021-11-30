@@ -54,13 +54,14 @@ public class AIPlayer : CommonBehaviours
         var collided = new CollisionState(this, animator);
 
         At(collectBlocks, goTowardsRamp, EnoughBlocks(true));
-        
+
         At(idle, goTowardsRamp, EnoughBlocks(true));
         At(idle, onRamp, ClimbingRamp(true));
         
         At(idle, collectBlocks, EnoughBlocks(false));
         At(collided, collectBlocks, EnoughBlocks(false));
         At(collided, collectBlocks, Collided(false));
+
         At(goTowardsRamp, collectBlocks, ZeroBlocks());
 
         _stateMachine.AddAnyTransition(idle, CanMove(false));
@@ -83,8 +84,7 @@ public class AIPlayer : CommonBehaviours
         }
 
         Func<bool> ZeroBlocks() => () => carPartCollector.collectedPartsCount == 0;
-
-
+        
         Func<bool> ClimbingRamp(bool value)
         {
             return delegate
@@ -154,5 +154,5 @@ public class AIPlayer : CommonBehaviours
     {
         smoothSpeed = 0f;
     }
-
+    
 }

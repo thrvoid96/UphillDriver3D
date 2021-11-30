@@ -13,6 +13,8 @@ public class CarPartCollector : MonoBehaviour
 
     public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade, losePartAmount;
 
+    public bool losePartsAfterRamp;
+
     private TweenerCore<float, float, FloatOptions> currentTween;
 
     private CommonBehaviours currentPlayer;
@@ -20,6 +22,8 @@ public class CarPartCollector : MonoBehaviour
     private void Start()
     {
         currentPlayer = transform.parent.GetComponent<CommonBehaviours>();
+        
+        ChangeWheelsAndTrails(currentMesh);
     }
 
 
@@ -79,6 +83,10 @@ public class CarPartCollector : MonoBehaviour
         currentPlayer.getMaxSpeed += speedUpgrade;
         
         currentPlayer.ReCalculateSpeedRatio();
+        
+        ChangeWheelsAndTrails(currentMesh);
+        
+        currentPlayer.RotateWheelsAfterVehicleChange();
     }
 
     private void DowngradeCar()
@@ -94,6 +102,66 @@ public class CarPartCollector : MonoBehaviour
         currentPlayer.getMaxSpeed -= speedUpgrade;
         
         currentPlayer.ReCalculateSpeedRatio();
+        
+        ChangeWheelsAndTrails(currentMesh);
+        
+        currentPlayer.RotateWheelsAfterVehicleChange();
+    }
+
+    private void ChangeWheelsAndTrails(int index)
+    {
+        currentPlayer.currentTrails.Clear();
+        
+        currentPlayer.currentWheels.Clear();
+
+        for (int i = 0; i < 2; i++)
+        {
+            currentPlayer.currentWheels.Add(transform.parent.GetChild(index + 1).GetChild(i).gameObject);
+        
+            currentPlayer.currentTrails.Add(transform.parent.GetChild(index + 1).GetChild(i+2).GetChild(0).GetComponent<TrailRenderer>());
+        }
+    }
+    
+    public void CalculatePartsAfterRamp(int amount)
+    {
+        if (losePartsAfterRamp)
+        {
+            var blocksToRemove = Mathf.Clamp(inBetween + amount, 0,collectedPartsCount);
+        
+            collectedPartsCount -= blocksToRemove;
+
+            var startBlendShape = currentBlendShape;
+
+            currentBlendShape -= amount/amountForUpgrade;
+
+            if (currentBlendShape >= 0)
+            {
+                //Lose parts from current mesh
+                LoseParts(currentBlendShape, currentBlendShape + amount/amountForUpgrade);
+            }
+            else
+            {
+                //Lose parts from both meshes
+                LoseParts(0, startBlendShape);
+                Debug.LogError(startBlendShape);
+
+                if (currentMesh != 0)
+                {
+                    DowngradeCar();
+            
+                    currentBlendShape = (carMeshes[currentMesh].sharedMesh.blendShapeCount) - (amount/amountForUpgrade - startBlendShape) + 1;
+            
+                    LoseParts(currentBlendShape, carMeshes[currentMesh].sharedMesh.blendShapeCount);
+                }
+                else
+                {
+                    currentBlendShape = 0;
+                }
+
+                //Lose parts from last mesh
+            }
+        }
+        
     }
 
     public void CalculatePartsAfterCollision()

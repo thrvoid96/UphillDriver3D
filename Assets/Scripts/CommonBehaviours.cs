@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 //Combine same behaviours between the Player and AI.
 
@@ -14,9 +16,10 @@ namespace Behaviours
         [SerializeField] protected int playerNum;       
         [SerializeField] protected float maxSpeed;
         [SerializeField] protected CarPartCollector carPartCollector;
-        [SerializeField] private List<TrailRenderer> allTrails = new List<TrailRenderer>();
         [SerializeField] private float trailStayTime;
         public GameColor color;
+        
+
 
         #endregion
 
@@ -33,13 +36,16 @@ namespace Behaviours
         [System.NonSerialized] public float rampHeight, rampLength, rampAngleX, coefficient;
         [System.NonSerialized] public Vector3 finalPos;
         [System.NonSerialized] public Vector3 rampStartPos;
-        public Vector3 collisionFinalPos;
+        [System.NonSerialized] public List<TrailRenderer> currentTrails = new List<TrailRenderer>();
+        [System.NonSerialized] public List<GameObject> currentWheels = new List<GameObject>();
+        
+        protected Vector3 collisionFinalPos;
 
         protected bool canMove = true;
-        protected bool isOnRamp, isInMidSection;
-        public bool isCollided;
+        protected bool isOnRamp; 
+        protected bool isCollided;
 
-        
+
         protected float smoothSpeed;
 
         private int gridIndex;
@@ -127,18 +133,18 @@ namespace Behaviours
             {
                 var enemyCar = other.GetComponent<CommonBehaviours>();
                 
-                if(!isInMidSection){
-                    
                     if (enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount)
                     { 
                         transform.DOKill();
+                        
                         isCollided = true;
+                        canMove = false;
                         
                         carPartCollector.CalculatePartsAfterCollision();
 
                         if (!isOnRamp)
                         {
-                            CollisionCalculate(enemyCar);
+                            CollisionWithCar(enemyCar);
 
                             ShakeCalculate();
                         }
@@ -151,15 +157,41 @@ namespace Behaviours
                     {
                         transform.DOKill();
                         isCollided = true;
+                        canMove = false;
                         
-                        CollisionCalculate(enemyCar);
+                        CollisionWithCar(enemyCar);
+                        ShakeCalculate();
+                    } 
+            }
+            
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Wall"))
+            {
+                if (other.CompareTag("BackWall"))
+                {
+                    if (transform.position.z > other.transform.position.z)
+                    {
+                        transform.DOKill();
+                        isCollided = true;
+                        canMove = false;
+
+                        CollisionWithWall(other);
                         ShakeCalculate();
                     }
                 }
+                else
+                {
+                    transform.DOKill();
+                    isCollided = true;
+                    canMove = false;
+
+                    CollisionWithWall(other);
+                    ShakeCalculate();
+                }
+                
             }
 
         }
-
+        
         public void GetDownFromRamp()
         {
             var distance = Vector3.Distance(rampStartPos, transform.position);
@@ -170,7 +202,7 @@ namespace Behaviours
             transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
         }
 
-        private void CollisionCalculate(CommonBehaviours enemyCar)
+        private void CollisionWithCar(CommonBehaviours enemyCar)
         {
             var direction = transform.position - enemyCar.transform.position;
             collisionFinalPos = transform.position + new Vector3(direction.x * 1.3f * (1f / enemyCar.speedRatio), 0,
@@ -178,8 +210,21 @@ namespace Behaviours
 
             transform.DOMove(collisionFinalPos, 0.5f * enemyCar.speedRatio).SetEase(Ease.InOutSine)
 
-                .OnComplete(() => { isCollided = false; })
-                .OnKill(() => { isCollided = false; });
+                .OnComplete(() => { isCollided = false; canMove = true; })
+                .OnKill(() => { isCollided = false; canMove = true; });
+        }
+        
+        private void CollisionWithWall(Collider other)
+        {
+            var direction = other.transform.forward;
+
+            collisionFinalPos = transform.position + new Vector3(direction.x * 1.3f * (1f / speedRatio), 0,
+                direction.z * 1.3f * (1f / speedRatio));
+
+            transform.DOMove(collisionFinalPos, 0.5f * speedRatio).SetEase(Ease.InOutSine)
+
+                .OnComplete(() => { isCollided = false; canMove = true; })
+                .OnKill(() => { isCollided = false; canMove = true; });
         }
 
         private void ShakeCalculate()
@@ -203,8 +248,7 @@ namespace Behaviours
         {
             if (!canMove) return;
             canMove = false;
-            isInMidSection = true;
-
+            
             transform.DOKill();
 
             var enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
@@ -234,6 +278,8 @@ namespace Behaviours
             .OnStart(() =>
             {
                 var startDest = new Vector3(transform.position.x, other.transform.position.y - (rampHeight * 0.45f), other.transform.position.z - (rampLength * 0.45f));
+                
+                isOnRamp = true;
 
                 transform.DOMove(startDest, 0.75f * speedRatio).SetEase(Ease.InOutSine);
 
@@ -247,10 +293,6 @@ namespace Behaviours
 
                     finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + 0.573f, rampLength * coefficient);
                     
-                    isInMidSection = false;
-                    
-                    isOnRamp = true;
-
                     canMove = true;
 
                 }); ;
@@ -260,7 +302,7 @@ namespace Behaviours
         public void ExitRamp()
         {
             var random = 0;
-            if (Random.Range(0, 2) > 0)
+            if (Random.Range(1, 3) > 1)
             {
                 random = -1;
             }
@@ -272,8 +314,6 @@ namespace Behaviours
             transform.DOLookAt(transform.position + transform.right * random, 0.75f * speedRatio).SetEase(Ease.InOutSine)
             .OnStart(() =>
             {
-                isInMidSection = true;
-                
                 canMove = false;
 
                 transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine);
@@ -295,8 +335,6 @@ namespace Behaviours
                         isOnRamp = false;
                         
                         isCollided = false;
-                        
-                        isInMidSection = false;
                     });
 
                 });
@@ -312,22 +350,21 @@ namespace Behaviours
             transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f * speedRatio).OnStart(() =>
             {
                 canMove = false;
-                
-                isInMidSection = true;
 
                 transform.DOMove(goToPos + new Vector3(0, 0, -3f), 0.5f * speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
                 {
                     if(gridIndex < LevelHolder.instance.howManyFloors.Count - 1)
                     {
+
                         gridIndex++;
+                        
+                        carPartCollector.CalculatePartsAfterRamp(LevelHolder.instance.howManyFloors[getCurrentGrid].blocksToPassRamp);
                         
                         LevelHolder.instance.SpawnAllPartsForPlayer(playerNum, gridIndex);
                     }
 
                     transform.DOMove(goToPos + new Vector3(0, 0, 10f), 0.5f * speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
-                    {                     
-                        isInMidSection = false;
-                        
+                    {
                         isOnRamp = false;
 
                         canMove = true;
@@ -344,31 +381,51 @@ namespace Behaviours
 
         public void StartTrails()
         {
-            foreach(TrailRenderer trail in allTrails)
+            foreach(TrailRenderer trail in currentTrails)
             {
                 trail.emitting = true;
             }
-
-            StartCoroutine(nameof(CloseDelay));
         }
 
         public void StopTrails()
         {
-            foreach (TrailRenderer trail in allTrails)
+            foreach (TrailRenderer trail in currentTrails)
             {
                 trail.emitting = false;
             }
         }
 
-        private IEnumerator CloseDelay()
+        public void RotateWheelsAfterVehicleChange()
         {
-            yield return new WaitForSeconds(trailStayTime);
-            StopTrails();
-            yield break;
+            var horizontalInput = Input.GetAxis("Horizontal");
+
+            if (horizontalInput > 0)
+            {
+                for (int i = 0; i < currentWheels.Count; i++)
+                {
+                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), 0f).SetEase(Ease.InOutSine);
+                }
+                
+                StartTrails();
+            }
+            else if (horizontalInput == 0)
+            {
+                for (int i = 0; i < currentWheels.Count; i++)
+                {
+                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0f).SetEase(Ease.InOutSine);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < currentWheels.Count; i++)
+                {
+                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), 0f).SetEase(Ease.InOutSine);
+                }
+                
+                StartTrails();
+            }
         }
-
         
-
     }
 
 }
