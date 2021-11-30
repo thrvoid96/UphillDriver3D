@@ -9,13 +9,10 @@ using UnityEngine;
 public class PlayerController : CommonBehaviours
 {
     public static PlayerController instance;
-    public float rotationSpeed;
-
+    
     private bool var1, var2, var3, var4, var5, var6;
     private float distance,moveDuration;
-
-    private TweenerCore<Quaternion, Vector3, QuaternionOptions> currentTween;
-
+    
     protected override void Awake()
     {
         base.Awake();
@@ -40,10 +37,26 @@ public class PlayerController : CommonBehaviours
             var3 = false;
 
             if (!isOnRamp)
-            { 
-                
-                transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self); 
-                //transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 150f, 0, Space.Self);
+            {
+                //Reverse and forward rotations/speeds
+                if (verticalInput >= 0)
+                {
+                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
+                    transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 150f, 0, Space.Self);
+                    if (horizontalInput != 0)
+                    {
+                        StartTrails();
+                    }
+                }
+                else
+                {
+                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * 0.8f * Vector3.forward, Space.Self); 
+                    transform.Rotate(0, horizontalInput * verticalInput * 0.7f * 2f * Time.deltaTime * 150f, 0, Space.Self);
+                    if (horizontalInput != 0)
+                    {
+                        StopTrails();
+                    }
+                }
                 
                 //Turn right
                 if (horizontalInput > 0)
@@ -52,22 +65,17 @@ public class PlayerController : CommonBehaviours
                     {
                         for (int i = 0; i < currentWheels.Count; i++)
                         {
-                            currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), 0.5f).SetEase(Ease.InOutSine);
+                            currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 20), 0.25f).SetEase(Ease.InOutSine);
                         }
-                        currentTween?.Kill();
-                        
-                        if (verticalInput >= 0)
+
+                        if (verticalInput > 0)
                         {
-                            currentTween = transform.DOLocalRotate(new Vector3(0, 360, 0), 1f * (1/rotationSpeed), RotateMode.LocalAxisAdd)
-                                .SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
+                            StartTrails();
                         }
                         else
                         {
-                            currentTween = transform.DOLocalRotate(new Vector3(0, -360, 0), 1f * (1/rotationSpeed), RotateMode.LocalAxisAdd)
-                                .SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
+                            StopTrails();
                         }
-
-                        StartTrails();
                         
                         var4 = true;
                         var5 = false;
@@ -82,10 +90,8 @@ public class PlayerController : CommonBehaviours
                     {
                         foreach (var wheel in currentWheels)
                         {
-                            wheel.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0.2f).SetEase(Ease.Linear);
+                            wheel.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0.1f).SetEase(Ease.InOutSine);
                         }
-                        
-                        currentTween?.Kill();
 
                         StopTrails();
                         
@@ -101,24 +107,18 @@ public class PlayerController : CommonBehaviours
                     {
                         for (int i = 0; i < currentWheels.Count; i++)
                         {
-                            var a = i > 0 ? 1 : -1;
-                            currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), 0.5f).SetEase(Ease.InOutSine);
+                            currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -20), 0.25f).SetEase(Ease.InOutSine);
                         }
-                        
-                        currentTween?.Kill();
-                        
-                        if (verticalInput >= 0)
+
+                        if (verticalInput > 0)
                         {
-                            currentTween = transform.DOLocalRotate(new Vector3(0, -360, 0), 1f * (1/rotationSpeed), RotateMode.LocalAxisAdd)
-                                .SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
+                            StartTrails();
                         }
                         else
                         {
-                            currentTween = transform.DOLocalRotate(new Vector3(0, 360, 0), 1f * (1/rotationSpeed), RotateMode.LocalAxisAdd)
-                                .SetLoops(-1, LoopType.Restart).SetEase(Ease.Linear);
+                            StopTrails();
                         }
                         
-                        StartTrails();
                         
                         var4 = false;
                         var5 = false;
@@ -148,6 +148,11 @@ public class PlayerController : CommonBehaviours
                             { 
                                 ExitRampComplete(); 
                                 Debug.LogWarning("Üst rampaya çıktın"); 
+                            }
+                            else
+                            {
+                                //Do smoke effects
+                                Debug.LogWarning("Üst rampaya çıkamadın :("); 
                             }
 
                         });
