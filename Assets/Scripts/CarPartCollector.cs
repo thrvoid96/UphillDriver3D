@@ -143,7 +143,6 @@ public class CarPartCollector : MonoBehaviour
             {
                 //Lose parts from both meshes
                 LoseParts(0, startBlendShape);
-                Debug.LogError(startBlendShape);
 
                 if (currentMesh != 0)
                 {

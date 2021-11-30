@@ -18,8 +18,6 @@ namespace Behaviours
         [SerializeField] protected CarPartCollector carPartCollector;
         [SerializeField] private float trailStayTime;
         public GameColor color;
-        
-
 
         #endregion
 
@@ -38,6 +36,8 @@ namespace Behaviours
         [System.NonSerialized] public Vector3 rampStartPos;
         [System.NonSerialized] public List<TrailRenderer> currentTrails = new List<TrailRenderer>();
         [System.NonSerialized] public List<GameObject> currentWheels = new List<GameObject>();
+        
+        private List<ParticleSystem> smokeEffects = new List<ParticleSystem>();
         
         protected Vector3 collisionFinalPos;
 
@@ -83,16 +83,13 @@ namespace Behaviours
         {
             startSpeed = maxSpeed;
             ReCalculateSpeedRatio();
+            
+            GetSmokeEffects();
         }
 
         protected virtual void Update()
         {
 
-        }
-
-        public void ReCalculateSpeedRatio()
-        {
-            speedRatio = startSpeed / maxSpeed;
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -191,6 +188,15 @@ namespace Behaviours
             }
 
         }
+
+        private void GetSmokeEffects()
+        {
+            for (int i = 0; i < transform.GetChild(transform.childCount-1).childCount; i++)
+            {
+                smokeEffects.Add(transform.GetChild(transform.childCount-1).GetChild(i).GetComponent<ParticleSystem>());
+                smokeEffects[i].Stop();
+            }
+        }
         
         public void GetDownFromRamp()
         {
@@ -250,6 +256,11 @@ namespace Behaviours
             canMove = false;
             
             transform.DOKill();
+            
+            for (int i = 0; i < currentWheels.Count; i++)
+            {
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 1f);
+            }
 
             var enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
             var duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
@@ -395,6 +406,27 @@ namespace Behaviours
             }
         }
 
+        public void StartSmokes()
+        {
+            foreach (ParticleSystem smoke in smokeEffects)
+            {
+                smoke.Play();
+            }
+        }
+
+        public void StopSmokes()
+        {
+            foreach (ParticleSystem smoke in smokeEffects)
+            {
+                smoke.Stop();
+            }
+        }
+        
+        public void ReCalculateSpeedRatio()
+        {
+            speedRatio = startSpeed / maxSpeed;
+        }
+
         public void RotateWheelsAfterVehicleChange()
         {
             var horizontalInput = Input.GetAxis("Horizontal");
@@ -403,7 +435,7 @@ namespace Behaviours
             {
                 for (int i = 0; i < currentWheels.Count; i++)
                 {
-                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), 0f).SetEase(Ease.InOutSine);
+                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), 0f).SetEase(Ease.Flash);
                 }
                 
                 StartTrails();
@@ -412,14 +444,14 @@ namespace Behaviours
             {
                 for (int i = 0; i < currentWheels.Count; i++)
                 {
-                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0f).SetEase(Ease.InOutSine);
+                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0f).SetEase(Ease.Flash);
                 }
             }
             else
             {
                 for (int i = 0; i < currentWheels.Count; i++)
                 {
-                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), 0f).SetEase(Ease.InOutSine);
+                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), 0f).SetEase(Ease.Flash);
                 }
                 
                 StartTrails();

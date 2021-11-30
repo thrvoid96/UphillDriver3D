@@ -10,7 +10,8 @@ public class PlayerController : CommonBehaviours
 {
     public static PlayerController instance;
     
-    private bool var1, var2, var3, var4, var5, var6;
+    private bool var1, var2, var3;
+    private bool var4, var5, var6;
     private float distance,moveDuration;
     
     protected override void Awake()
@@ -31,13 +32,12 @@ public class PlayerController : CommonBehaviours
         {
             float verticalInput = Input.GetAxis("Vertical");
             float horizontalInput = Input.GetAxis("Horizontal");
-
-            var1 = false;
-            var2 = false;
-            var3 = false;
-
+            
             if (!isOnRamp)
             {
+                var1 = false;
+                var2 = false;
+                var3 = false;
                 //Reverse and forward rotations/speeds
                 if (verticalInput >= 0)
                 {
@@ -139,11 +139,15 @@ public class PlayerController : CommonBehaviours
                     moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f); 
                     
                     if (!var1) 
-                    { 
+                    {
+                        var1 = true; 
+                        var2 = false; 
+                        var3 = false;
+
                         transform.DOKill();
-                        
-                        transform.DOMove(finalPos,moveDuration * speedRatio).OnComplete(() => 
-                        { 
+
+                        transform.DOMove(finalPos,moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(() => 
+                        {
                             if (coefficient == 0.9f) 
                             { 
                                 ExitRampComplete(); 
@@ -151,49 +155,51 @@ public class PlayerController : CommonBehaviours
                             }
                             else
                             {
-                                //Do smoke effects
-                                Debug.LogWarning("Üst rampaya çıkamadın :("); 
+                                StartSmokes();
+                                
+                                Debug.LogWarning("Üst rampaya çıkamadın :(");
                             }
 
                         });
                         
                         StartTrails();
-                        
-                        var1 = true; 
-                        var2 = false; 
-                        var3 = false; 
+
                     } 
                 }
                 else if (verticalInput == 0)
-                
                 {
                     distance = Vector3.Distance(transform.position, rampStartPos); 
-                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);     
+                    moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);    
                     
                     if(rampStartPos.y < transform.position.y)
                     { 
                         if (!var2) 
                         { 
+                            var1 = false; 
+                            var2 = true; 
+                            var3 = false; 
+                            
                             transform.DOKill();
                             
                             transform.DOMove(rampStartPos, moveDuration * 4f * speedRatio).SetEase(Ease.InExpo);
                             
                             StartTrails();
                             
-                            var1 = false; 
-                            var2 = true; 
-                            var3 = false; 
+                            StopSmokes();
                         }
-                        
                     }
-
                 }
                 else
                 { 
                     distance = Vector3.Distance(transform.position, rampStartPos); 
                     moveDuration = Mathf.Clamp(distance / 20f, 0f, 2f); 
+                    
                     if (!var3)
-                    { 
+                    {
+                        var1 = false; 
+                        var2 = false; 
+                        var3 = true; 
+                        
                         transform.DOKill();
                         
                         transform.DOMove(rampStartPos, moveDuration * 1.5f * speedRatio).SetEase(Ease.InOutQuint)
@@ -205,9 +211,7 @@ public class PlayerController : CommonBehaviours
                         
                         StartTrails();
                         
-                        var1 = false; 
-                        var2 = false; 
-                        var3 = true; 
+                        StopSmokes();
                     } 
                 } 
             } 
