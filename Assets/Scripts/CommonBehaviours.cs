@@ -89,6 +89,7 @@ namespace Behaviours
 
         protected virtual void Update()
         {
+            //Debug.DrawRay(transform.position,-transform.right*18f,Color.red,1f);
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -147,6 +148,8 @@ namespace Behaviours
                         else
                         {
                             GetDownFromRamp();
+                            
+                            ShakeCalculate();
                         }
                     }
                     else if(enemyCar.carPartCollector.collectedPartsCount == carPartCollector.collectedPartsCount)
@@ -321,11 +324,11 @@ namespace Behaviours
                 random = 1;
             }
 
-            if (Physics.Raycast(transform.position,transform.right,15f,LayerMask.GetMask("Wall"),QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position,transform.right,18f,LayerMask.GetMask("Wall"),QueryTriggerInteraction.Collide))
             {
                 random = 1;
             } 
-            else if (Physics.Raycast(transform.position, -transform.right, 15f, LayerMask.GetMask("Wall"), QueryTriggerInteraction.Collide))
+            else if (Physics.Raycast(transform.position, -transform.right, 18f, LayerMask.GetMask("Wall"), QueryTriggerInteraction.Collide))
             {
                 random = -1;
             }

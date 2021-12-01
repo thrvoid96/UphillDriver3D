@@ -87,7 +87,7 @@ MonoBehaviour:
   currentBlendShape: 0
   speedUpgrade: 10
   losePartAmount: 2
-  losePartsAfterRamp: 1
+  losePartsAfterRamp: 0
 --- !u!65 &3423520732984827813
 BoxCollider:
   m_ObjectHideFlags: 0

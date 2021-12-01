@@ -126,10 +126,10 @@ public class AIPlayer : CommonBehaviours
     public void CalculateValues(Vector3 destination)
     {      
         distance = Vector3.Distance(transform.position, destination);
-        moveDuration = Mathf.Clamp(distance / 20f, 1.5f * speedRatio, 3.5f *speedRatio);
+        moveDuration = Mathf.Clamp(distance / 20f, 1.5f * (speedRatio* 0.8f), 3.5f *speedRatio);
 
         angle = Vector3.Angle(transform.forward, destination - transform.position);
-        rotDuration = Mathf.Clamp(angle * 0.02f, 0.5f * speedRatio, 1.5f * speedRatio);
+        rotDuration = Mathf.Clamp(angle * 0.02f, 0.5f * (speedRatio* 0.8f), 1.5f * speedRatio);
 
     }
 
