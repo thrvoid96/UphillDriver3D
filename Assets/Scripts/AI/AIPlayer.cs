@@ -165,9 +165,9 @@ public class AIPlayer : CommonBehaviours
         var cross = Vector3.Cross(transform.forward, currentDestination - transform.position);
         if (cross.y < 0) angle = -angle;
         
-        Debug.LogError(distanceX);
-        Debug.LogError(distanceZ);
-        Debug.LogError(angle);
+        //Debug.LogError(distanceX);
+        //Debug.LogError(distanceZ);
+        //Debug.LogError(angle);
         
         if (angle <= 0f)
         {
