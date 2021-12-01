@@ -43,19 +43,22 @@ public class PlayerController : CommonBehaviours
                 {
                     transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
                     transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 150f, 0, Space.Self);
-                    if (horizontalInput != 0)
+                    
+                    if (horizontalInput>= 0.5f || horizontalInput <= -0.5f)
                     {
                         StartTrails();
+                    }
+                    else
+                    {
+                        StopTrails();
                     }
                 }
                 else
                 {
                     transform.Translate(maxSpeed * Time.deltaTime * verticalInput * 0.8f * Vector3.forward, Space.Self); 
                     transform.Rotate(0, horizontalInput * verticalInput * 0.7f * 2f * Time.deltaTime * 150f, 0, Space.Self);
-                    if (horizontalInput != 0)
-                    {
-                        StopTrails();
-                    }
+                    
+                    StopTrails();
                 }
                 
                 //Turn right
@@ -66,15 +69,6 @@ public class PlayerController : CommonBehaviours
                         for (int i = 0; i < currentWheels.Count; i++)
                         {
                             currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 20), 0.25f).SetEase(Ease.InOutSine);
-                        }
-
-                        if (verticalInput > 0)
-                        {
-                            StartTrails();
-                        }
-                        else
-                        {
-                            StopTrails();
                         }
                         
                         var4 = true;
@@ -92,8 +86,6 @@ public class PlayerController : CommonBehaviours
                         {
                             wheel.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0.1f).SetEase(Ease.InOutSine);
                         }
-
-                        StopTrails();
                         
                         var4 = false;
                         var5 = true;
@@ -109,16 +101,6 @@ public class PlayerController : CommonBehaviours
                         {
                             currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -20), 0.25f).SetEase(Ease.InOutSine);
                         }
-
-                        if (verticalInput > 0)
-                        {
-                            StartTrails();
-                        }
-                        else
-                        {
-                            StopTrails();
-                        }
-                        
                         
                         var4 = false;
                         var5 = false;
@@ -151,6 +133,7 @@ public class PlayerController : CommonBehaviours
                             if (coefficient == 0.9f) 
                             { 
                                 ExitRampComplete(); 
+                                
                                 Debug.LogWarning("Üst rampaya çıktın"); 
                             }
                             else

@@ -321,12 +321,11 @@ namespace Behaviours
                 random = 1;
             }
 
-            RaycastHit hit;
             if (Physics.Raycast(transform.position,transform.right,15f,LayerMask.GetMask("Wall"),QueryTriggerInteraction.Collide))
             {
                 random = 1;
             } 
-            else if (Physics.Raycast(transform.position, transform.right, 10f, LayerMask.GetMask("Wall"), QueryTriggerInteraction.Collide))
+            else if (Physics.Raycast(transform.position, -transform.right, 15f, LayerMask.GetMask("Wall"), QueryTriggerInteraction.Collide))
             {
                 random = -1;
             }
