@@ -55,7 +55,7 @@ public class PlayerController : CommonBehaviours
                 }
                 else
                 {
-                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * 0.4f * Vector3.forward, Space.Self); 
+                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * 0.6f * Vector3.forward, Space.Self); 
                     transform.Rotate(0, horizontalInput * verticalInput * 0.6f * 2f * Time.deltaTime * 150f, 0, Space.Self);
                     
                     StopTrails();

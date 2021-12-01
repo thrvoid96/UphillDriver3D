@@ -216,7 +216,7 @@ namespace Behaviours
             transform.DOMove(collisionFinalPos, 0.5f * enemyCar.speedRatio).SetEase(Ease.InOutSine)
 
                 .OnComplete(() => { isCollided = false; canMove = true; })
-                .OnKill(() => { isCollided = false; canMove = true; });
+                .OnKill(() => { isCollided = false;});
         }
         
         private void CollisionWithWall(Collider other)
@@ -229,7 +229,7 @@ namespace Behaviours
             transform.DOMove(collisionFinalPos, 0.5f * speedRatio).SetEase(Ease.InOutSine)
 
                 .OnComplete(() => { isCollided = false; canMove = true; })
-                .OnKill(() => { isCollided = false; canMove = true; });
+                .OnKill(() => { isCollided = false;});
         }
 
         private void ShakeCalculate()
@@ -348,6 +348,13 @@ namespace Behaviours
                 {
                     transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 15f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
+                    {
+                        canMove = true;
+
+                        isOnRamp = false;
+                        
+                        isCollided = false;
+                    }).OnKill(() =>
                     {
                         canMove = true;
 
