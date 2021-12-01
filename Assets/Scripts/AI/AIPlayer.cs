@@ -22,6 +22,8 @@ public class AIPlayer : CommonBehaviours
     private bool forceIntoIdle;
       
     private float angle, distance;
+
+    private Vector3 currentDestination;
     
     public int getCollectedPartCount => carPartCollector.collectedPartsCount;
     
@@ -130,7 +132,8 @@ public class AIPlayer : CommonBehaviours
 
         angle = Vector3.Angle(transform.forward, destination - transform.position);
         rotDuration = Mathf.Clamp(angle * 0.02f, 0.5f * (speedRatio* 0.8f), 1.5f * speedRatio);
-
+        
+        currentDestination = destination;
     }
 
     public void SmoothMovement()
@@ -138,21 +141,86 @@ public class AIPlayer : CommonBehaviours
         smoothSpeed += 1f;
         smoothSpeed = Mathf.Clamp(smoothSpeed, 0f, maxSpeed);
 
-        if (angle > 90f)
-        {
-            transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
-        }
-        else
+        if (angle < 90f)
         {
             transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * Vector3.forward, Space.Self);
         }
-
+        else
+        {
+            transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
+        }
         
     }
 
     public void ResetSmoothValue()
     {
         smoothSpeed = 0f;
+    }
+
+    public void RotateWheelsRespectively()
+    {
+        var distanceX = currentDestination.x - transform.position.x;
+        var distanceZ = currentDestination.z - transform.position.z;
+        
+        var cross = Vector3.Cross(transform.forward, currentDestination - transform.position);
+        if (cross.y < 0) angle = -angle;
+        
+        Debug.LogError(distanceX);
+        Debug.LogError(distanceZ);
+        Debug.LogError(angle);
+        
+        if (angle <= 0f)
+        {
+            if (distanceX <= 0)
+            {
+                if (distanceZ <= 0)
+                {
+                    TurnWheelsRight(0.25f);
+                }
+                else
+                {
+                    TurnWheelsLeft(0.25f);
+                }
+            }
+            else
+            {
+                if (distanceZ <= 0)
+                {
+                    TurnWheelsLeft(0.25f);
+                }
+                else
+                {
+                    TurnWheelsRight(0.25f);
+                }
+            }
+        }
+        else
+        {
+            if (distanceX <= 0)
+            {
+                if (distanceZ <= 0)
+                {
+                    TurnWheelsLeft(0.25f);
+                }
+                else
+                {
+                    TurnWheelsRight(0.25f);
+                }
+               
+            }
+            else
+            {
+                if (distanceZ <= 0)
+                {
+                    TurnWheelsRight(0.25f);
+                }
+                else
+                {
+                    TurnWheelsLeft(0.25f);
+                }
+            }
+        }
+        
     }
     
 }

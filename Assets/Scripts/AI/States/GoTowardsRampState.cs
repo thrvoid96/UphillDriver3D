@@ -64,6 +64,8 @@ public class GoTowardsRampState : IState
         var finalDest = new Vector3(destination.x, _aIPlayer.transform.position.y, destination.z);
 
         _aIPlayer.CalculateValues(finalDest);
+        
+        _aIPlayer.RotateWheelsRespectively();
 
         _aIPlayer.transform.DOLookAt(finalDest, _aIPlayer.rotDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnUpdate(() =>
         {
@@ -71,6 +73,8 @@ public class GoTowardsRampState : IState
 
         }).OnComplete(() => 
         {
+            _aIPlayer.CenterWheels(0.25f);
+            
             _aIPlayer.transform.DOLookAt(finalDest, 1f * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
             _aIPlayer.transform.DOMove(finalDest, _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
         });

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 4
+  howManyEnemy: 1
   howManyFloors:
   - rampType: 0
     blocksToPassRamp: 10

@@ -66,10 +66,7 @@ public class PlayerController : CommonBehaviours
                 {
                     if (!var4)
                     {
-                        for (int i = 0; i < currentWheels.Count; i++)
-                        {
-                            currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 20), 0.25f).SetEase(Ease.InOutSine);
-                        }
+                        TurnWheelsRight(0.25f);
                         
                         var4 = true;
                         var5 = false;
@@ -82,10 +79,7 @@ public class PlayerController : CommonBehaviours
                 {
                     if (!var5)
                     {
-                        foreach (var wheel in currentWheels)
-                        {
-                            wheel.transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0.1f).SetEase(Ease.InOutSine);
-                        }
+                        CenterWheels(0.1f);
                         
                         var4 = false;
                         var5 = true;
@@ -97,10 +91,7 @@ public class PlayerController : CommonBehaviours
                 {
                     if (!var6)
                     {
-                        for (int i = 0; i < currentWheels.Count; i++)
-                        {
-                            currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -20), 0.25f).SetEase(Ease.InOutSine);
-                        }
+                        TurnWheelsLeft(0.25f);
                         
                         var4 = false;
                         var5 = false;

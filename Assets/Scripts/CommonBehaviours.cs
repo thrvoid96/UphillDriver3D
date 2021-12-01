@@ -444,6 +444,30 @@ namespace Behaviours
         {
             speedRatio = startSpeed / maxSpeed;
         }
+        
+        public void TurnWheelsRight(float time)
+        {
+            for (int i = 0; i < currentWheels.Count; i++)
+            {
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), time).SetEase(Ease.Flash);
+            }
+        }
+
+        public void TurnWheelsLeft(float time)
+        {
+            for (int i = 0; i < currentWheels.Count; i++)
+            {
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), time).SetEase(Ease.Flash);
+            }
+        }
+
+        public void CenterWheels(float time)
+        {
+            for (int i = 0; i < currentWheels.Count; i++)
+            {
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), time).SetEase(Ease.Flash);
+            }
+        }
 
         public void RotateWheelsAfterVehicleChange()
         {
@@ -451,30 +475,23 @@ namespace Behaviours
 
             if (horizontalInput > 0)
             {
-                for (int i = 0; i < currentWheels.Count; i++)
-                {
-                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), 0f).SetEase(Ease.Flash);
-                }
+                TurnWheelsRight(0f);
                 
                 StartTrails();
             }
             else if (horizontalInput == 0)
             {
-                for (int i = 0; i < currentWheels.Count; i++)
-                {
-                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 0f).SetEase(Ease.Flash);
-                }
+                CenterWheels(0f);
             }
             else
             {
-                for (int i = 0; i < currentWheels.Count; i++)
-                {
-                    currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), 0f).SetEase(Ease.Flash);
-                }
-                
+                TurnWheelsLeft(0f);
+
                 StartTrails();
             }
         }
+
+
         
     }
 
