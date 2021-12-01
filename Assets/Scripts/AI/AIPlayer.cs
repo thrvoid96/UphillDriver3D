@@ -56,9 +56,9 @@ public class AIPlayer : CommonBehaviours
         At(collectBlocks, goTowardsRamp, EnoughBlocks(true));
 
         At(idle, goTowardsRamp, EnoughBlocks(true));
+        At(idle, collectBlocks, EnoughBlocks(false));
         At(idle, onRamp, ClimbingRamp(true));
         
-        At(idle, collectBlocks, EnoughBlocks(false));
         At(collided, collectBlocks, EnoughBlocks(false));
         At(collided, collectBlocks, Collided(false));
 

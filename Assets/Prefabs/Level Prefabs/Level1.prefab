@@ -46,46 +46,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorsInThisLevelList: 
-  howManyEnemy: 0
+  howManyEnemy: 1
   howManyFloors:
-  - rampType: 2
+  - rampType: 0
     blocksToPassRamp: 10
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
-  - rampType: 0
+  - rampType: 1
     blocksToPassRamp: 30
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5
     gridSpacingZ: 5
-  - rampType: 1
+  - rampType: 2
     blocksToPassRamp: 60
-    gridSizeX: 10
-    gridSizeZ: 10
-    gridSpacingX: 5
-    gridSpacingZ: 5
-  - rampType: 2
-    blocksToPassRamp: 120
-    gridSizeX: 10
-    gridSizeZ: 10
-    gridSpacingX: 5
-    gridSpacingZ: 5
-  - rampType: 2
-    blocksToPassRamp: 200
-    gridSizeX: 10
-    gridSizeZ: 10
-    gridSpacingX: 5
-    gridSpacingZ: 5
-  - rampType: 0
-    blocksToPassRamp: 350
-    gridSizeX: 10
-    gridSizeZ: 10
-    gridSpacingX: 5
-    gridSpacingZ: 5
-  - rampType: 1
-    blocksToPassRamp: 500
     gridSizeX: 10
     gridSizeZ: 10
     gridSpacingX: 5

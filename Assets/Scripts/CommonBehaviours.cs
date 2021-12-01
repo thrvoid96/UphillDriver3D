@@ -89,7 +89,6 @@ namespace Behaviours
 
         protected virtual void Update()
         {
-
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -204,7 +203,7 @@ namespace Behaviours
             var moveDuration = Mathf.Clamp(distance / 20f, 1.5f, 3.5f);
 
             canMove = false;
-
+            
             transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
         }
 
@@ -320,6 +319,16 @@ namespace Behaviours
             else
             {
                 random = 1;
+            }
+
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position,transform.right,15f,LayerMask.GetMask("Wall"),QueryTriggerInteraction.Collide))
+            {
+                random = 1;
+            } 
+            else if (Physics.Raycast(transform.position, transform.right, 10f, LayerMask.GetMask("Wall"), QueryTriggerInteraction.Collide))
+            {
+                random = -1;
             }
 
             transform.DOLookAt(transform.position + transform.right * random, 0.75f * speedRatio).SetEase(Ease.InOutSine)
