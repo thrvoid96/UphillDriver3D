@@ -75,7 +75,7 @@ public class AIPlayer : CommonBehaviours
         {
             return delegate
             {
-                collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount && !isOnRamp;
+                collectAmountReached = carPartCollector.collectedPartsCount >= collectBlockAmount && !isOnRamp && !isCollided;
 
                 return value
                 ? collectAmountReached

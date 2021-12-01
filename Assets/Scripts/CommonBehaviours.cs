@@ -346,7 +346,7 @@ namespace Behaviours
                     transform.DOLookAt(transform.position - Vector3.forward, 0.75f * speedRatio).SetEase(Ease.InOutSine)
                 .OnStart(() =>
                 {
-                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
+                    transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 15f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
                     {
                         canMove = true;
