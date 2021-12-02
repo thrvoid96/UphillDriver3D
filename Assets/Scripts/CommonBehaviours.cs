@@ -148,8 +148,6 @@ namespace Behaviours
                         else
                         {
                             GetDownFromRamp();
-                            
-                            ShakeCalculate();
                         }
                     }
                     else if(enemyCar.carPartCollector.collectedPartsCount == carPartCollector.collectedPartsCount)
@@ -308,12 +306,13 @@ namespace Behaviours
                     smoothSpeed += 1f;
                     smoothSpeed = Mathf.Clamp(smoothSpeed, 0, maxSpeed);
                     transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
+                    TurnWheelsBackwards();
                 })
                 .OnComplete(() =>
                 {
                     CenterWheels(0.25f);
                     
-                    transform.DOMove(posToGo, 0.75f * speedRatio).SetEase(Ease.InOutSine);
+                    transform.DOMove(posToGo, 0.75f * speedRatio).SetEase(Ease.InOutSine).OnUpdate(TurnWheelsForward);
 
                     smoothSpeed = 0f;
                 });
@@ -330,7 +329,7 @@ namespace Behaviours
                 
                 isOnRamp = true;
 
-                transform.DOMove(startDest, 0.75f * speedRatio).SetEase(Ease.InOutSine);
+                transform.DOMove(startDest, 0.75f * speedRatio).SetEase(Ease.InOutSine).OnUpdate(TurnWheelsForward);
 
             }).OnComplete(() =>
             {
@@ -384,7 +383,8 @@ namespace Behaviours
                     TurnWheelsRight(0.75f * speedRatio);
                 }
 
-                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine);
+                transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f * speedRatio)
+                    .SetEase(Ease.InOutSine).OnUpdate(TurnWheelsBackwards);
 
             })
             .OnComplete(() =>
@@ -405,23 +405,24 @@ namespace Behaviours
                     }
                     
                     transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 15f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
-                    .OnComplete(() =>
-                    {
-                        canMove = true;
-
-                        isOnRamp = false;
+                        .OnUpdate(TurnWheelsBackwards)
                         
-                        isCollided = false;
-
-                    }).OnKill(() =>
-                    {
-                        canMove = true;
-
-                        isOnRamp = false;
-                        
-                        isCollided = false;
-                    });
-
+                        .OnComplete(() => 
+                        { 
+                            canMove = true;
+                            
+                            isOnRamp = false;
+                            
+                            isCollided = false;
+                            
+                        }).OnKill(() => 
+                        { 
+                            canMove = true;
+                            
+                            isOnRamp = false;
+                            
+                            isCollided = false; 
+                        }); 
                 });
                     
                 });
