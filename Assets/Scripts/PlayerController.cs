@@ -79,7 +79,7 @@ public class PlayerController : CommonBehaviours
                 {
                     if (!var5)
                     {
-                        CenterWheels(0.1f);
+                        CenterWheels(0.25f);
                         
                         var4 = false;
                         var5 = true;

@@ -265,9 +265,21 @@ namespace Behaviours
             }
 
             var enteranceAngle = Vector3.Angle(transform.forward, Vector3.forward);
+            var cross = Vector3.Cross(transform.forward, Vector3.forward);
+            var angleWithMinus = cross.y < 0 ? -enteranceAngle : enteranceAngle;
+            
             var duration = Mathf.Clamp(enteranceAngle * 0.02f, 0.1f, 1f);
 
             var posToGo = transform.position + new Vector3(0, 0, 20f);
+            
+            if (angleWithMinus <= 0f)
+            {
+                TurnWheelsRight(duration * speedRatio);
+            }
+            else
+            {
+                TurnWheelsLeft(duration * speedRatio);
+            }
             
             transform.DOLookAt(posToGo, duration * speedRatio).OnUpdate(() =>
                 {
@@ -277,6 +289,8 @@ namespace Behaviours
                 })
                 .OnComplete(() =>
                 {
+                    CenterWheels(0.25f);
+                    
                     transform.DOMove(posToGo, 0.75f * speedRatio).SetEase(Ease.InOutSine);
 
                     smoothSpeed = 0f;
@@ -315,6 +329,7 @@ namespace Behaviours
         public void ExitRamp()
         {
             var random = 0;
+            
             if (Random.Range(1, 3) > 1)
             {
                 random = -1;
@@ -338,6 +353,15 @@ namespace Behaviours
             {
                 canMove = false;
 
+                if (random>0)
+                {
+                    TurnWheelsLeft(0.25f);
+                }
+                else
+                {
+                    TurnWheelsRight(0.25f);
+                }
+
                 transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine);
 
             })
@@ -349,6 +373,15 @@ namespace Behaviours
                     transform.DOLookAt(transform.position - Vector3.forward, 0.75f * speedRatio).SetEase(Ease.InOutSine)
                 .OnStart(() =>
                 {
+                    if (random>0)
+                    {
+                        TurnWheelsRight(0.25f);
+                    }
+                    else
+                    {
+                        TurnWheelsLeft(0.25f);
+                    }
+                    
                     transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 15f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
                     .OnComplete(() =>
                     {
@@ -357,6 +390,9 @@ namespace Behaviours
                         isOnRamp = false;
                         
                         isCollided = false;
+                        
+                        CenterWheels(0.25f);
+                        
                     }).OnKill(() =>
                     {
                         canMove = true;
@@ -364,6 +400,8 @@ namespace Behaviours
                         isOnRamp = false;
                         
                         isCollided = false;
+                        
+                        CenterWheels(0.25f);
                     });
 
                 });

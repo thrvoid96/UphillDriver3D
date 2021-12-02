@@ -160,11 +160,11 @@ public class AIPlayer : CommonBehaviours
     public void RotateWheelsRespectively()
     {
         var cross = Vector3.Cross(transform.forward, currentDestination - transform.position);
-        var newAngle = cross.y < 0 ? -angle : angle;
+        var angleWithMinus = cross.y < 0 ? -angle : angle;
 
-        if (newAngle <= 0f)
+        if (angleWithMinus <= 0f)
         {
-            if (newAngle >= -90f)
+            if (angleWithMinus >= -90f)
             {
                 TurnWheelsLeft(0.25f);
             }
@@ -176,7 +176,7 @@ public class AIPlayer : CommonBehaviours
         }
         else
         {
-            if (newAngle <= 90f)
+            if (angleWithMinus <= 90f)
             {
                 TurnWheelsRight(0.25f);
             }
