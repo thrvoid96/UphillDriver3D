@@ -157,7 +157,7 @@ public class AIPlayer : CommonBehaviours
         smoothSpeed = 0f;
     }
 
-    public void RotateWheelsRespectively()
+    public void RotateWheelsRespectively(float duration)
     {
         var cross = Vector3.Cross(transform.forward, currentDestination - transform.position);
         var angleWithMinus = cross.y < 0 ? -angle : angle;
@@ -166,11 +166,11 @@ public class AIPlayer : CommonBehaviours
         {
             if (angleWithMinus >= -90f)
             {
-                TurnWheelsLeft(0.25f);
+                TurnWheelsLeft(duration);
             }
             else
             {
-                TurnWheelsRight(0.25f);
+                TurnWheelsRight(duration);
             }
             
         }
@@ -178,11 +178,11 @@ public class AIPlayer : CommonBehaviours
         {
             if (angleWithMinus <= 90f)
             {
-                TurnWheelsRight(0.25f);
+                TurnWheelsRight(duration);
             }
             else
             {
-                TurnWheelsLeft(0.25f);
+                TurnWheelsLeft(duration);
             }
         }
         

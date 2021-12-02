@@ -272,13 +272,34 @@ namespace Behaviours
 
             var posToGo = transform.position + new Vector3(0, 0, 20f);
             
-            if (angleWithMinus <= 0f)
+            if (angleWithMinus < 0f)
             {
-                TurnWheelsRight(duration * speedRatio);
+                if (angleWithMinus >= -90f)
+                {
+                    TurnWheelsRight(duration * speedRatio);
+                    
+                }
+                else
+                {
+                    TurnWheelsLeft(duration * speedRatio);
+                }
+            
+            }
+            else if (angleWithMinus > 0f)
+            {
+                if (angleWithMinus <= 90f)
+                {
+                    TurnWheelsLeft(duration * speedRatio);
+                    
+                }
+                else
+                {
+                    TurnWheelsRight(duration * speedRatio);
+                }
             }
             else
             {
-                TurnWheelsLeft(duration * speedRatio);
+                CenterWheels(duration * speedRatio);
             }
             
             transform.DOLookAt(posToGo, duration * speedRatio).OnUpdate(() =>
@@ -355,11 +376,11 @@ namespace Behaviours
 
                 if (random>0)
                 {
-                    TurnWheelsLeft(0.25f);
+                    TurnWheelsLeft(0.75f * speedRatio);
                 }
                 else
                 {
-                    TurnWheelsRight(0.25f);
+                    TurnWheelsRight(0.75f * speedRatio);
                 }
 
                 transform.DOMove(new Vector3(transform.position.x + (-random * 10f), transform.position.y - (rampHeight * 0.05f), transform.position.z - 10f), 0.75f * speedRatio).SetEase(Ease.InOutSine);
@@ -375,11 +396,11 @@ namespace Behaviours
                 {
                     if (random>0)
                     {
-                        TurnWheelsRight(0.25f);
+                        TurnWheelsRight(0.75f * speedRatio);
                     }
                     else
                     {
-                        TurnWheelsLeft(0.25f);
+                        TurnWheelsLeft(0.75f * speedRatio);
                     }
                     
                     transform.DOMove(new Vector3(transform.position.x + (random * 10f), transform.position.y, transform.position.z - 15f), 0.75f * speedRatio).SetEase(Ease.InOutSine)
@@ -390,9 +411,7 @@ namespace Behaviours
                         isOnRamp = false;
                         
                         isCollided = false;
-                        
-                        CenterWheels(0.25f);
-                        
+
                     }).OnKill(() =>
                     {
                         canMove = true;
@@ -400,8 +419,6 @@ namespace Behaviours
                         isOnRamp = false;
                         
                         isCollided = false;
-                        
-                        CenterWheels(0.25f);
                     });
 
                 });
@@ -487,7 +504,7 @@ namespace Behaviours
         {
             for (int i = 0; i < currentWheels.Count; i++)
             {
-                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), time).SetEase(Ease.Flash);
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), time).SetEase(Ease.InOutSine);
             }
         }
 
@@ -495,7 +512,7 @@ namespace Behaviours
         {
             for (int i = 0; i < currentWheels.Count; i++)
             {
-                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), time).SetEase(Ease.Flash);
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), time).SetEase(Ease.InOutSine);
             }
         }
 
@@ -503,7 +520,7 @@ namespace Behaviours
         {
             for (int i = 0; i < currentWheels.Count; i++)
             {
-                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), time).SetEase(Ease.Flash);
+                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), time).SetEase(Ease.InOutSine);
             }
         }
 
