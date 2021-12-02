@@ -65,9 +65,9 @@ public class CollectPartsState : IState
             GotoNextPoint();
             return;
         }
-        var finalDest = destinations[0] + new Vector3(0, -0.8f, 0);
+        var finalDest = destinations[0] + new Vector3(0, -0.5f, 0);
 
-        if (Physics.Raycast(destinations[0] + new Vector3(0f, 1.5f, 0f), Vector3.down, 1.5f, partMask, QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(finalDest + new Vector3(0f, 2f, 0f), Vector3.down, 1.5f, partMask, QueryTriggerInteraction.Collide))
         {
             _aIPlayer.CalculateValues(finalDest);
             
@@ -80,14 +80,21 @@ public class CollectPartsState : IState
             }).OnComplete(() =>
             {
                 _aIPlayer.CenterWheels(0.25f);
-
+                
                 _aIPlayer.transform.DOLookAt(finalDest, 1f * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
-                _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0, -0.8f, 0), _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
-                {
-                    _aIPlayer.ResetSmoothValue();
-                    Loop();
-                });
+                _aIPlayer.transform
+                    .DOMove(finalDest, _aIPlayer.moveDuration * _aIPlayer.speedRatio)
+                    .SetEase(Ease.InOutSine)
+                    .OnUpdate(() =>
+                    {
+                        _aIPlayer.TurnWheelsForward();
 
+                    }).OnComplete(() =>
+                    {
+                        _aIPlayer.ResetSmoothValue();
+                        _aIPlayer.StopWheels();
+                        Loop();
+                    }); 
             });
         }
         else

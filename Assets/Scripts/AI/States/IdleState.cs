@@ -20,6 +20,7 @@ public class IdleState : IState
 
     public void OnEnter()
     {
+        _aIPlayer.StopWheels();
     }
 
     public void OnExit()

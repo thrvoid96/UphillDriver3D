@@ -144,10 +144,12 @@ public class AIPlayer : CommonBehaviours
         if (angle < 90f)
         {
             transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * Vector3.forward, Space.Self);
+            TurnWheelsForward();
         }
         else
         {
             transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * -Vector3.forward, Space.Self);
+            TurnWheelsBackwards();
         }
         
     }
@@ -186,5 +188,7 @@ public class AIPlayer : CommonBehaviours
             }
         }
     }
+    
+    
 
 }

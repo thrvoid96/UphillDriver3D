@@ -28,9 +28,15 @@ public class OnRampState : IState
         _aIPlayer.CalculateValues(_aIPlayer.finalPos);
         a = 100f;
 
-        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnStart(() => {
+        _aIPlayer.transform.DOMove(_aIPlayer.finalPos, _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine)
+            .OnUpdate(() =>
+            { 
+                _aIPlayer.TurnWheelsForward();
+            })
+            .OnStart(() => {
 
             _aIPlayer.StartTrails();
+
             
             DOTween.To(() => a, x => a = x, 0f, _aIPlayer.moveDuration * _aIPlayer.speedRatio * 0.5f)
                 .OnComplete(() =>
@@ -51,12 +57,17 @@ public class OnRampState : IState
                             _aIPlayer.StartTrails();
                             
                             _aIPlayer.StartSmokes();
-                        }).OnComplete(() =>
+                            
+                        }).OnUpdate(() =>
+                        {
+                            _aIPlayer.TurnWheelsForward();
+                        })
+                        .OnComplete(() =>
                         {
                             _aIPlayer.GetDownFromRamp();
                             
                             _aIPlayer.StopSmokes();
-
+                            
                             a = 100f;
                             DOTween.To(() => a, x => a = x, 0f, _aIPlayer.moveDuration * _aIPlayer.speedRatio * 0.5f)
                                 .OnComplete(() =>
@@ -70,8 +81,8 @@ public class OnRampState : IState
                     _aIPlayer.StopTrails();
                     
                     _aIPlayer.ExitRampComplete();
-                }
-        });
+                } 
+            });
     }
 
     public void OnExit()

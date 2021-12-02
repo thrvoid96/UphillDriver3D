@@ -207,7 +207,8 @@ namespace Behaviours
 
             canMove = false;
             
-            transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp);
+            transform.DOMove(rampStartPos, moveDuration * speedRatio).SetEase(Ease.InOutSine).OnComplete(ExitRamp).OnUpdate(
+                TurnWheelsBackwards);
         }
 
         private void CollisionWithCar(CommonBehaviours enemyCar)
@@ -339,7 +340,7 @@ namespace Behaviours
 
                     coefficient = Mathf.Clamp(((float) carPartCollector.collectedPartsCount / LevelHolder.instance.howManyFloors[gridIndex].blocksToPassRamp)* 0.9f, 0.1f, 0.9f);
 
-                    finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + 0.573f, rampLength * coefficient);
+                    finalPos = rampStartPos + new Vector3(0, (rampHeight * coefficient) + (rampHeight * coefficient * 0.05f), rampLength * coefficient);
                     
                     canMove = true;
 
@@ -429,7 +430,7 @@ namespace Behaviours
 
         public void ExitRampComplete()
         {
-            var goToPos = new Vector3(transform.position.x, transform.position.y + 2.1f, transform.position.z + 10f);
+            var goToPos = new Vector3(transform.position.x, transform.position.y + 1.1f, transform.position.z + 10f);
 
             transform.DOLookAt(goToPos + new Vector3(0,0,20f), 0.75f * speedRatio).OnStart(() =>
             {
@@ -521,6 +522,30 @@ namespace Behaviours
             for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
                 currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), time).SetEase(Ease.InOutSine);
+            }
+        }
+        
+        public void TurnWheelsForward()
+        {
+            foreach (var wheel in currentWheels)
+            {
+                wheel.transform.transform.Rotate(1f * 3f * Time.deltaTime * 150f * (1/speedRatio), 0, 0, Space.Self);
+            }
+        }
+
+        public void TurnWheelsBackwards()
+        {
+            foreach (var wheel in currentWheels)
+            {
+                wheel.transform.transform.Rotate(-1f * 1.5f * Time.deltaTime * 150f * (1/speedRatio), 0, 0, Space.Self);
+            }
+        }
+
+        public void StopWheels()
+        {
+            foreach (var wheel in currentWheels)
+            {
+                wheel.transform.transform.Rotate(0f, 0, 0, Space.Self);
             }
         }
         

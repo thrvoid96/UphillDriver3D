@@ -32,6 +32,21 @@ public class PlayerController : CommonBehaviours
         {
             float verticalInput = Input.GetAxis("Vertical");
             float horizontalInput = Input.GetAxis("Horizontal");
+
+            if (verticalInput >= 0)
+            {
+                foreach (var wheel in currentWheels)
+                {
+                    wheel.transform.transform.Rotate(verticalInput * 3f * Time.deltaTime * 150f *(1/speedRatio), 0, 0, Space.Self);
+                }
+            }
+            else
+            {
+                foreach (var wheel in currentWheels)
+                {
+                    wheel.transform.transform.Rotate(verticalInput * 1.5f * Time.deltaTime * 150f *(1/speedRatio), 0, 0, Space.Self);
+                }
+            }
             
             if (!isOnRamp)
             {
@@ -56,8 +71,8 @@ public class PlayerController : CommonBehaviours
                 }
                 else
                 {
-                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * 0.6f * Vector3.forward, Space.Self); 
-                    transform.Rotate(0, horizontalInput * verticalInput * 0.6f * 2f * Time.deltaTime * 150f, 0, Space.Self);
+                    transform.Translate(maxSpeed * Time.deltaTime * verticalInput * 0.5f * Vector3.forward, Space.Self); 
+                    transform.Rotate(0, horizontalInput * verticalInput * 0.5f * 2f * Time.deltaTime * 150f, 0, Space.Self);
                     
                     StopTrails();
                 }

@@ -135,7 +135,7 @@ public class CarPartCollector : MonoBehaviour
 
         for (int i = 0; i < nonRotatingWheelCount; i++)
         {
-            currentPlayer.currentTrails.Add(transform.parent.GetChild(index + 1).GetChild(i+2).GetChild(0).GetComponent<TrailRenderer>());
+            currentPlayer.currentTrails.Add(currentPlayer.transform.GetChild(index + 1).GetChild(currentPlayer.currentWheels.Count + i).GetComponent<TrailRenderer>());
         }
     }
     
