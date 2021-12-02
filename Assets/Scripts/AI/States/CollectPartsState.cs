@@ -33,7 +33,6 @@ public class CollectPartsState : IState
 
     public void OnExit()
     {
-        
     }
 
     public void Tick()
@@ -81,7 +80,7 @@ public class CollectPartsState : IState
             }).OnComplete(() =>
             {
                 _aIPlayer.CenterWheels(0.25f);
-                
+
                 _aIPlayer.transform.DOLookAt(finalDest, 1f * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
                 _aIPlayer.transform.DOMove(destinations[0] + new Vector3(0, -0.8f, 0), _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine).OnComplete(() =>
                 {

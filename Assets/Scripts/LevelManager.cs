@@ -86,47 +86,76 @@ public class LevelManager : MonoBehaviour
         common.color = color;
         common.getPlayerNum = playerNum;
         
+        var carPartCollector = createdEnemy.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<CarPartCollector>();
+        
         createdEnemy.transform.GetChild(0).GetChild(0).GetChild(0).tag = "Player" + playerNum;
         createdEnemy.name = color + "_Enemy";
+
+        ColorPlayer(common.color, carPartCollector);
         
+        return createdEnemy;
+    }
 
-
+    public void ColorPlayer(GameColor color, CarPartCollector carPartCollector)
+    {
         switch (color)
         {
             case GameColor.PlayerColor:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[0];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[0];
+                }
+                break;
 
             case GameColor.Red:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[1];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[1];
+                }
+                break;
 
             case GameColor.Green:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[2];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[2];
+                }
+                break;
 
             case GameColor.Orange:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[3];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[3];
+                }
+                break;
 
             case GameColor.Yellow:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[4];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[4];
+                }
+                break;
 
             case GameColor.Pink:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[5];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[5];
+                }
+                break;
 
             case GameColor.Cyan:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<SkinnedMeshRenderer>().material = materials[6];
-                return createdEnemy;
+                foreach (var mesh in carPartCollector.carMeshes)
+                {
+                    mesh.material = materials[6];
+                }
+                break;
 
             default:
-                createdEnemy.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<MeshRenderer>().material = materials[0];
-                return createdEnemy;
+                Debug.LogError("Switch error");
+                break;
 
         }
     }
+    
     
     //--------------------------------------------------------------------------------------------------------------//
     public GameObject GiveBrickPrefabFromGameColor(GameColor color, GameObject objToSpawn, int playerNum)

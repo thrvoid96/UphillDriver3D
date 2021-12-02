@@ -9,11 +9,14 @@ using UnityEngine;
 
 public class CarPartCollector : MonoBehaviour
 {
-    [SerializeField] private List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
+    public List<SkinnedMeshRenderer> carMeshes = new List<SkinnedMeshRenderer>();
 
-    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade, losePartAmount;
+    public int collectedPartsCount,inBetween,amountForUpgrade, currentMesh, currentBlendShape, speedUpgrade, losePartAmount , rotatingWheelCount, nonRotatingWheelCount;
 
     public bool losePartsAfterRamp;
+    
+    [Header("ONLY ADD FOR PLAYER NOT AI")]
+    public CameraFollow followCamera;
 
     private TweenerCore<float, float, FloatOptions> currentTween;
 
@@ -78,15 +81,21 @@ public class CarPartCollector : MonoBehaviour
         currentMesh++;
         carMeshes[currentMesh].gameObject.SetActive(true);
 
-        currentPlayer.transform.DOScale(transform.parent.localScale * 1.5f, 1f).SetEase(Ease.InOutSine);
+        currentPlayer.transform.DOScale(transform.parent.localScale + new Vector3(1f,1f,1f), 1f).SetEase(Ease.InOutSine);
 
         currentPlayer.getMaxSpeed += speedUpgrade;
         
         currentPlayer.ReCalculateSpeedRatio();
         
         ChangeWheelsAndTrails(currentMesh);
+
+        if (currentPlayer.getPlayerNum == 0)
+        {
+            currentPlayer.RotateWheelsAfterVehicleChange();
         
-        currentPlayer.RotateWheelsAfterVehicleChange();
+            followCamera.ChangeCameraZoom(true);
+        }
+        
     }
 
     private void DowngradeCar()
@@ -97,7 +106,7 @@ public class CarPartCollector : MonoBehaviour
         currentMesh--;
         carMeshes[currentMesh].gameObject.SetActive(true);
         
-        currentPlayer.transform.DOScale(transform.parent.localScale / 1.5f, 1f).SetEase(Ease.InOutSine);
+        currentPlayer.transform.DOScale(transform.parent.localScale + new Vector3(1f,1f,1f), 1f).SetEase(Ease.InOutSine);
         
         currentPlayer.getMaxSpeed -= speedUpgrade;
         
@@ -105,7 +114,12 @@ public class CarPartCollector : MonoBehaviour
         
         ChangeWheelsAndTrails(currentMesh);
         
-        currentPlayer.RotateWheelsAfterVehicleChange();
+        if (currentPlayer.getPlayerNum == 0)
+        {
+            currentPlayer.RotateWheelsAfterVehicleChange();
+        
+            followCamera.ChangeCameraZoom(false);
+        }
     }
 
     private void ChangeWheelsAndTrails(int index)
@@ -114,10 +128,13 @@ public class CarPartCollector : MonoBehaviour
         
         currentPlayer.currentWheels.Clear();
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < rotatingWheelCount + nonRotatingWheelCount; i++)
         {
             currentPlayer.currentWheels.Add(transform.parent.GetChild(index + 1).GetChild(i).gameObject);
-        
+        }
+
+        for (int i = 0; i < nonRotatingWheelCount; i++)
+        {
             currentPlayer.currentTrails.Add(transform.parent.GetChild(index + 1).GetChild(i+2).GetChild(0).GetComponent<TrailRenderer>());
         }
     }
@@ -210,6 +227,5 @@ public class CarPartCollector : MonoBehaviour
         
         inBetween = 0;
     }
-    
-    
+
 }

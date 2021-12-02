@@ -9,8 +9,8 @@ using Random = UnityEngine.Random;
 
 public enum GameColor
 {
-    Red,
     PlayerColor,
+    Red,
     Green,
     Orange,
     Yellow,
@@ -303,7 +303,11 @@ public class LevelHolder : MonoBehaviour
     //----------------------------------------------------------------------------------------//
     public void CreateEnemies()
     {
-        LevelManager.instance.playersOnGameList.Add(PlayerController.instance.GetComponent<CommonBehaviours>());
+        var player = PlayerController.instance.GetComponent<CommonBehaviours>();
+        
+        LevelManager.instance.playersOnGameList.Add(player);
+        LevelManager.instance.ColorPlayer(player.color, player.carPartCollector);
+        
         for (int i = 1; i <= howManyEnemy; i++)
         {
             GameObject enemy = LevelManager.instance.GiveEnemyFromGameColor(colorsInThisLevelList[i] , i);

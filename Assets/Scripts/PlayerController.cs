@@ -9,7 +9,7 @@ using UnityEngine;
 public class PlayerController : CommonBehaviours
 {
     public static PlayerController instance;
-    
+
     private bool var1, var2, var3;
     private bool var4, var5, var6;
     private float distance,moveDuration;
@@ -38,12 +38,13 @@ public class PlayerController : CommonBehaviours
                 var1 = false;
                 var2 = false;
                 var3 = false;
+                
                 //Reverse and forward rotations/speeds
                 if (verticalInput >= 0)
                 {
                     transform.Translate(maxSpeed * Time.deltaTime * verticalInput * Vector3.forward, Space.Self);
                     transform.Rotate(0, horizontalInput * verticalInput * 2f * Time.deltaTime * 150f, 0, Space.Self);
-                    
+
                     if (horizontalInput>= 0.5f || horizontalInput <= -0.5f)
                     {
                         StartTrails();

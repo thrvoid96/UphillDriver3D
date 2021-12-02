@@ -15,7 +15,6 @@ namespace Behaviours
         #region SerializeFields
         [SerializeField] protected int playerNum;       
         [SerializeField] protected float maxSpeed;
-        [SerializeField] protected CarPartCollector carPartCollector;
         [SerializeField] private float trailStayTime;
         public GameColor color;
 
@@ -36,7 +35,7 @@ namespace Behaviours
         [System.NonSerialized] public Vector3 rampStartPos;
         [System.NonSerialized] public List<TrailRenderer> currentTrails = new List<TrailRenderer>();
         [System.NonSerialized] public List<GameObject> currentWheels = new List<GameObject>();
-        
+        [System.NonSerialized] public CarPartCollector carPartCollector;
         private List<ParticleSystem> smokeEffects = new List<ParticleSystem>();
         
         protected Vector3 collisionFinalPos;
@@ -77,6 +76,7 @@ namespace Behaviours
         protected virtual void Awake()
         {
             animator = transform.parent.GetComponent<Animator>();
+            carPartCollector = transform.GetChild(0).GetComponent<CarPartCollector>();
         }
 
         protected virtual void Start()
@@ -259,7 +259,7 @@ namespace Behaviours
             
             transform.DOKill();
             
-            for (int i = 0; i < currentWheels.Count; i++)
+            for (int i = 0; i < currentWheels.Count - carPartCollector.rotatingWheelCount; i++)
             {
                 currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), 1f);
             }
@@ -502,7 +502,7 @@ namespace Behaviours
         
         public void TurnWheelsRight(float time)
         {
-            for (int i = 0; i < currentWheels.Count; i++)
+            for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
                 currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), time).SetEase(Ease.InOutSine);
             }
@@ -510,7 +510,7 @@ namespace Behaviours
 
         public void TurnWheelsLeft(float time)
         {
-            for (int i = 0; i < currentWheels.Count; i++)
+            for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
                 currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), time).SetEase(Ease.InOutSine);
             }
@@ -518,12 +518,12 @@ namespace Behaviours
 
         public void CenterWheels(float time)
         {
-            for (int i = 0; i < currentWheels.Count; i++)
+            for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
                 currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), time).SetEase(Ease.InOutSine);
             }
         }
-
+        
         public void RotateWheelsAfterVehicleChange()
         {
             var horizontalInput = Input.GetAxis("Horizontal");

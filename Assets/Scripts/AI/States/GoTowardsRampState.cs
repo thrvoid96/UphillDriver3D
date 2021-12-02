@@ -26,14 +26,12 @@ public class GoTowardsRampState : IState
         _aIPlayer.ResetSmoothValue();
 
        var amount= _aIPlayer.transform.DOKill();
-       Debug.LogError(amount);
 
-        goTowardsPosition();
+       goTowardsPosition();
     }
 
     public void OnExit()
     {
-        
     }
 
     public void Tick()
@@ -61,7 +59,6 @@ public class GoTowardsRampState : IState
         }).OnComplete(() => 
         {
             _aIPlayer.CenterWheels(0.25f);
-            
             _aIPlayer.transform.DOLookAt(finalDest, 1f * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
             _aIPlayer.transform.DOMove(finalDest, _aIPlayer.moveDuration * _aIPlayer.speedRatio).SetEase(Ease.InOutSine);
         });
