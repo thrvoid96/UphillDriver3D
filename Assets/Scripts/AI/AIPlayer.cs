@@ -140,7 +140,7 @@ public class AIPlayer : CommonBehaviours
     {
         smoothSpeed += 1f;
         smoothSpeed = Mathf.Clamp(smoothSpeed, 0f, maxSpeed);
-
+        
         if (angle < 90f)
         {
             transform.Translate(smoothSpeed * 0.2f * Time.deltaTime * 1f * Vector3.forward, Space.Self);
@@ -159,65 +159,30 @@ public class AIPlayer : CommonBehaviours
 
     public void RotateWheelsRespectively()
     {
-        var distanceX = currentDestination.x - transform.position.x;
-        var distanceZ = currentDestination.z - transform.position.z;
-        
         var cross = Vector3.Cross(transform.forward, currentDestination - transform.position);
-        if (cross.y < 0) angle = -angle;
-        
-        //Debug.LogError(distanceX);
-        //Debug.LogError(distanceZ);
-        //Debug.LogError(angle);
-        
-        if (angle <= 0f)
+        var newAngle = cross.y < 0 ? -angle : angle;
+
+        if (newAngle <= 0f)
         {
-            if (distanceX <= 0)
+            if (newAngle >= -90f)
             {
-                if (distanceZ <= 0)
-                {
-                    TurnWheelsRight(0.25f);
-                }
-                else
-                {
-                    TurnWheelsLeft(0.25f);
-                }
+                TurnWheelsLeft(0.25f);
             }
             else
             {
-                if (distanceZ <= 0)
-                {
-                    TurnWheelsLeft(0.25f);
-                }
-                else
-                {
-                    TurnWheelsRight(0.25f);
-                }
+                TurnWheelsRight(0.25f);
             }
+            
         }
         else
         {
-            if (distanceX <= 0)
+            if (newAngle <= 90f)
             {
-                if (distanceZ <= 0)
-                {
-                    TurnWheelsLeft(0.25f);
-                }
-                else
-                {
-                    TurnWheelsRight(0.25f);
-                }
-               
+                TurnWheelsRight(0.25f);
             }
             else
             {
-                if (distanceZ <= 0)
-                {
-                    TurnWheelsRight(0.25f);
-                }
-                else
-                {
-                    TurnWheelsLeft(0.25f);
-                }
+                TurnWheelsLeft(0.25f);
             }
         }
         
