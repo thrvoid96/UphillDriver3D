@@ -76,7 +76,7 @@ namespace Behaviours
         protected virtual void Awake()
         {
             animator = transform.parent.GetComponent<Animator>();
-            carPartCollector = transform.GetChild(0).GetComponent<CarPartCollector>();
+            carPartCollector = transform.GetComponent<CarPartCollector>();
         }
 
         protected virtual void Start()
@@ -94,7 +94,13 @@ namespace Behaviours
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Ramp"))
+            if (other.CompareTag(gameObject.tag))
+            {
+                carPartCollector.collectedPartsCount++;
+
+                carPartCollector.CheckCarUpgrade();
+            }
+            else if  (other.gameObject.layer == LayerMask.NameToLayer("Ramp"))
             {
                 var closestPoint = other.ClosestPoint(transform.position);
                 
@@ -128,7 +134,7 @@ namespace Behaviours
 
             else if (other.gameObject.layer == LayerMask.NameToLayer("Car"))
             {
-                var enemyCar = other.GetComponent<CommonBehaviours>();
+                var enemyCar = other.transform.parent.GetComponent<CommonBehaviours>();
                 
                     if (enemyCar.carPartCollector.collectedPartsCount > carPartCollector.collectedPartsCount)
                     { 
@@ -504,41 +510,46 @@ namespace Behaviours
         
         public void TurnWheelsRight(float time)
         {
+            //Debug.LogWarning("a");
             for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
-                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 25), time).SetEase(Ease.InOutSine);
+                currentWheels[i].transform.parent.DOLocalRotate(new Vector3(0,0,10f), time).SetEase(Ease.InOutSine);
             }
         }
 
         public void TurnWheelsLeft(float time)
         {
+            //Debug.LogWarning("b");
             for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
-                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, -25), time).SetEase(Ease.InOutSine);
+                currentWheels[i].transform.parent.DOLocalRotate(new Vector3(0,0,-10f), time).SetEase(Ease.InOutSine);
             }
         }
 
         public void CenterWheels(float time)
         {
+            //Debug.LogWarning("c");
             for (int i = 0; i < currentWheels.Count - carPartCollector.nonRotatingWheelCount; i++)
             {
-                currentWheels[i].transform.DOLocalRotateQuaternion(Quaternion.Euler(0, 0, 0), time).SetEase(Ease.InOutSine);
+                currentWheels[i].transform.parent.DOLocalRotate(new Vector3(0,0,0), time).SetEase(Ease.InOutSine);
             }
         }
         
         public void TurnWheelsForward()
         {
+            //Debug.LogWarning("d");
             foreach (var wheel in currentWheels)
             {
-                wheel.transform.transform.Rotate(1f * 3f * Time.deltaTime * 150f * (1/speedRatio), 0, 0, Space.Self);
+                wheel.transform.Rotate(1f * 3f * Time.deltaTime * 150f * (1/speedRatio), 0, 0, Space.Self);
             }
         }
 
         public void TurnWheelsBackwards()
         {
+            //Debug.LogWarning("e");
             foreach (var wheel in currentWheels)
             {
-                wheel.transform.transform.Rotate(-1f * 1.5f * Time.deltaTime * 150f * (1/speedRatio), 0, 0, Space.Self);
+                wheel.transform.Rotate(-1f * 1.5f * Time.deltaTime * 150f * (1/speedRatio), 0, 0, Space.Self);
             }
         }
 
@@ -546,7 +557,7 @@ namespace Behaviours
         {
             foreach (var wheel in currentWheels)
             {
-                wheel.transform.transform.Rotate(0f, 0, 0, Space.Self);
+                wheel.transform.Rotate(0f, 0, 0, Space.Self);
             }
         }
         

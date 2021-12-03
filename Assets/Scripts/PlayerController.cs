@@ -37,14 +37,14 @@ public class PlayerController : CommonBehaviours
             {
                 foreach (var wheel in currentWheels)
                 {
-                    wheel.transform.transform.Rotate(verticalInput * 3f * Time.deltaTime * 150f *(1/speedRatio), 0, 0, Space.Self);
+                    wheel.transform.Rotate(verticalInput * 3f * Time.deltaTime * 150f *(1/speedRatio), 0, 0, Space.Self);
                 }
             }
             else
             {
                 foreach (var wheel in currentWheels)
                 {
-                    wheel.transform.transform.Rotate(verticalInput * 1.5f * Time.deltaTime * 150f *(1/speedRatio), 0, 0, Space.Self);
+                    wheel.transform.Rotate(verticalInput * 1.5f * Time.deltaTime * 150f *(1/speedRatio), 0, 0, Space.Self);
                 }
             }
             

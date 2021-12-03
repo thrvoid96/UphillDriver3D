@@ -197,7 +197,7 @@ public class LevelHolder : MonoBehaviour
     {
         for (int i = 0; i < howManyFloors[gridIndex].blockPositions[playerNum].Count; i++)
         {
-            var objToSpawn= ObjectPooler.instance.SpawnFromPool("Part", howManyFloors[gridIndex].blockPositions[playerNum][i], Quaternion.identity,howManyFloors[gridIndex].gridOrigin ,playerNum);
+            var objToSpawn= ObjectPooler.instance.SpawnFromPool("Part", howManyFloors[gridIndex].blockPositions[playerNum][i], Quaternion.identity,howManyFloors[gridIndex].gridOrigin ,playerNum, i);
         }
 
     }

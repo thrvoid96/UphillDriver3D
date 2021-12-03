@@ -24,23 +24,12 @@ public class CarPartCollector : MonoBehaviour
 
     private void Start()
     {
-        currentPlayer = transform.parent.GetComponent<CommonBehaviours>();
+        currentPlayer = transform.GetComponent<CommonBehaviours>();
         
         ChangeWheelsAndTrails(currentMesh);
     }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag(gameObject.tag))
-        {
-            collectedPartsCount++;
-
-            CheckCarUpgrade();
-        }
-    }
-
-    private void CheckCarUpgrade()
+    
+    public void CheckCarUpgrade()
     {
         inBetween++;
         
@@ -130,12 +119,12 @@ public class CarPartCollector : MonoBehaviour
 
         for (int i = 0; i < rotatingWheelCount + nonRotatingWheelCount; i++)
         {
-            currentPlayer.currentWheels.Add(transform.parent.GetChild(index + 1).GetChild(i).gameObject);
+            currentPlayer.currentWheels.Add(transform.GetChild(index).GetChild(i).GetChild(0).gameObject);
         }
 
         for (int i = 0; i < nonRotatingWheelCount; i++)
         {
-            currentPlayer.currentTrails.Add(currentPlayer.transform.GetChild(index + 1).GetChild(currentPlayer.currentWheels.Count + i).GetComponent<TrailRenderer>());
+            currentPlayer.currentTrails.Add(transform.GetChild(index).GetChild(currentPlayer.currentWheels.Count + i).GetComponent<TrailRenderer>());
         }
     }
     

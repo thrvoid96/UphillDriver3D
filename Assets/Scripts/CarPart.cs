@@ -9,11 +9,11 @@ public class CarPart : MonoBehaviour, IPooledObject
     [SerializeField] private float respawnTime;
     private Transform blockModelTransform;
     private BoxCollider boxCol;
-
-
+    
     private Vector3 startPos;
 
     [HideInInspector] public int playerNum;
+    [HideInInspector] public int blockIndexInList;
 
     private void Start()
     {
@@ -40,13 +40,17 @@ public class CarPart : MonoBehaviour, IPooledObject
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(gameObject.tag))
+        if (other.transform.parent.CompareTag(gameObject.tag))
         {
-            StartCoroutine(respawnCube());
+            StartCoroutine(respawnCube()); 
             boxCol.enabled = false;
             blockModelTransform.gameObject.SetActive(false);
         }
         
+    }
+    public void DisableSpawn()
+    {
+        gameObject.SetActive(false);
     }
 
 }

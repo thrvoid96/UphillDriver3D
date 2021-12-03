@@ -67,7 +67,7 @@ public class CollectPartsState : IState
         }
         var finalDest = destinations[0] + new Vector3(0, -0.5f, 0);
 
-        if (Physics.Raycast(finalDest + new Vector3(0f, 2f, 0f), Vector3.down, 1.5f, partMask, QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(finalDest + new Vector3(0f, 4f, 0f), Vector3.down, 2f, partMask, QueryTriggerInteraction.Collide))
         {
             _aIPlayer.CalculateValues(finalDest);
             

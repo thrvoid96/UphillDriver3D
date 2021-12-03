@@ -95,6 +95,10 @@ MonoBehaviour:
     prefab: {fileID: 7101884677563921374, guid: 3dc0777335e20dc40baf98588035b3d7,
       type: 3}
     size: 10000
+  - tag: Cactus
+    prefab: {fileID: 8874008715416943125, guid: 9ccf87a97dc02b54aa6166a52931b1db,
+      type: 3}
+    size: 1000
 --- !u!1 &4473117953589212466
 GameObject:
   m_ObjectHideFlags: 0

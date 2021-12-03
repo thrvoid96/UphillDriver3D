@@ -86,9 +86,9 @@ public class LevelManager : MonoBehaviour
         common.color = color;
         common.getPlayerNum = playerNum;
         
-        var carPartCollector = createdEnemy.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<CarPartCollector>();
+        var carPartCollector = createdEnemy.transform.GetChild(0).GetChild(0).GetComponent<CarPartCollector>();
         
-        createdEnemy.transform.GetChild(0).GetChild(0).GetChild(0).tag = "Player" + playerNum;
+        common.tag = "Player" + playerNum;
         createdEnemy.name = color + "_Enemy";
 
         ColorPlayer(common.color, carPartCollector);
